@@ -1,5 +1,11 @@
 
+import numpy as np
+from scipy import constants as const
+from scipy.constants import physical_constants
 
+F = physical_constants["Faraday constant"][0]
+R = const.R
+T = 310 # 37 grad Celcium
 
 def getVglucosetransporter(arg):
 
@@ -175,7 +181,8 @@ def getVmalatdehydrogenase(arg, mode="mit"):
         oa = arg["oa_cyt"]
         nad = arg["nad_cyt"]
         nadh = arg["nadh_cyt"]
-    elif mode == "mito":
+
+    elif mode == "mit":
         mal = arg["mal_mit"]
         oa = arg["oa_mit"]
         nad = arg["nad_mit"]
@@ -198,7 +205,7 @@ def getVaspartateaminotransferase(arg, mode="mit"):
         oa = arg["oa_cyt"]
         akg = arg["nad_cyt"]
         glu = arg["nadh_cyt"]
-    elif mode == "mito":
+    elif mode == "mit":
         asp = arg["asp_mit"]
         oa = arg["oa_mit"]
         akg = arg["nad_mit"]
@@ -206,5 +213,29 @@ def getVaspartateaminotransferase(arg, mode="mit"):
 
     tmp = oa * glu / arg["asp_aminotrans"]["Keq"]
     V = arg["asp_aminotrans"]["Vmax"] * (asp * akg - tmp)
+
+    return V
+
+def getVasp_glu_carrier(arg):
+
+    dG = -arg["mito_membrane"]["Vmm"] + 1000 * R * T / F * np.log(arg["mito_membrane"]["h_cyt"] / arg["mito_membrane"]["h_mit"])
+
+    Keq = np.exp(F * dG/(1000 * R * T) )
+
+    tmp1 = arg["asp_mit"] * arg["glu_cyt"] - arg["asp_cyt"] * arg["glu_mit"] / Keq
+    tmp2 = (arg["asp_mit"] + arg["asp_glu_carrier"]["Km_asp_mit"]) * (arg["glu_cyt"] +  arg["asp_glu_carrier"]["Km_glu_cyt"])
+    tmp3 = (arg["asp_cyt"] + arg["asp_glu_carrier"]["Km_asp_cyt"]) * (arg["glu_mit"] +  arg["asp_glu_carrier"]["Km_glu_mit"])
+
+    V = arg["asp_glu_carrier"]["Vmax"] * tmp1 / (tmp2 + tmp3)
+
+    return V
+
+def getVmal_akg_carrier(arg):
+
+    tmp1 = arg["mal_cyt"]*arg["akg_mit"] - arg["mal_mit"]*arg["akg_cyt"]
+    tmp2 = (arg["mal_cyt"] + arg["mal_akg_carrier"]["Km_mal_cyt"]) * (arg["akg_mit"] + arg["mal_akg_carrier"]["Km_akg_mit"])
+    tmp3 = (arg["mal_mit"] + arg["mal_akg_carrier"]["Km_mal_mit"]) * (arg["akg_cyt"] + arg["mal_akg_carrier"]["Km_akg_cyt"])
+
+    V = arg["mal_akg_carrier"]["Vmax"] * tmp1 / (tmp2 + tmp3)
 
     return V

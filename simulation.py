@@ -52,6 +52,29 @@ arg = {
     "nad_mit" : 0,
     "nadh_mit": 0,
 
+    "mal_akg_carrier": {
+        "Vmax" : 32,
+        "Km_mal_cyt" : 1.36,
+        "Km_akg_cyt" : 0.1,
+        "Km_mal_mit" : 0.71,
+        "Km_akg_mit" : 0.2,
+    },
+
+    "asp_glu_carrier": {
+        "Vmax" : 3200,
+        "Km_asp_mit" : 0.05,
+        "Km_glu_cyt" : 2.8,
+        "Km_asp_cyt" : 0.05,
+        "Km_glu_mit" : 2.8,
+    },
+
+    "mito_membrane" : {
+        "Vmm" : -200,
+        "h_cyt" : 1, # !!!!!
+        "h_mit" : 1, # !!!!!
+
+    },
+
     "asp_aminotrans" : {
         "Vmax" : 32,
         "Keq"  : 0.147,
@@ -232,9 +255,13 @@ def model_equations(t, y, arg):
     creatinekinase = lib.getVcreatinekinase(arg)
     cyt_malatdehydrogenase = lib.getVmalatdehydrogenase(arg, mode="cyt")
     mito_malatdehydrogenase = lib.getVmalatdehydrogenase(arg, mode="mit")
-
     cyt_asp_aminotrans = lib.getVaspartateaminotransferase(arg, mode="mit")
     mito_asp_aminotrans = lib.getVaspartateaminotransferase(arg, mode="mit")
+
+    asp_glu_carrier = lib.getVasp_glu_carrier(arg)
+    mal_akg_carrier = lib.getVmal_akg_carrier(arg)
+
+
 
     return [vglc_transp, vhexokinase, glucose6p_isomerase]
 
