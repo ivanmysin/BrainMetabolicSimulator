@@ -90,11 +90,11 @@ def getVtriosep_isomerase(arg):
 
 def getVgrap_dehydrogenase(arg):
 
-    tmp1 = arg["nad_cyt"]*arg["grap"]*arg["pi"] - arg["bpg13"]*arg["nadh_cyt"]/arg["grap_dehydr"]["Keq_gapdh"]
+    tmp1 = arg["nad_cyt"]*arg["grap"]*arg["pi_cyt"] - arg["bpg13"]*arg["nadh_cyt"]/arg["grap_dehydr"]["Keq_gapdh"]
 
     tmp2 = 1 + arg["nad_cyt"]/arg["grap_dehydr"]["Km_nad"]
     tmp3 = 1 + arg["grap"] / arg["grap_dehydr"]["Km_grap"]
-    tmp4 = 1 + arg["pi"] / arg["grap_dehydr"]["Km_pi"]
+    tmp4 = 1 + arg["pi_cyt"] / arg["grap_dehydr"]["Km_pi"]
 
     tmp5 = 1 + arg["nadh_cyt"] / arg["grap_dehydr"]["Km_nadh"]
     tmp6 = 1 + arg["bpg13"] / arg["grap_dehydr"]["Km_bpg13"]
@@ -239,3 +239,79 @@ def getVmal_akg_carrier(arg):
     V = arg["mal_akg_carrier"]["Vmax"] * tmp1 / (tmp2 + tmp3)
 
     return V
+
+def getVcytg3pdehyd(arg):
+     tmp1 = arg["dhap_cyt"] * arg["nadh_cyt"] - arg["g3p_cyt"] * arg["nad_cyt"] / arg["cytgly3pdehyd"]["Keq"]
+
+     tmp2 = 1 + arg["dhap_cyt"]/arg["cytgly3pdehyd"]["Km_dhap"]
+     tmp3 = 1 + arg["nadh_cyt"] / arg["cytgly3pdehyd"]["Km_nadh"]
+
+     tmp4 = 1 + arg["g3p_cyt"] / arg["cytgly3pdehyd"]["Km_g3p"]
+     tmp5 = 1 + arg["nad_cyt"] / arg["cytgly3pdehyd"]["Km_nad"]
+
+     V = arg["cytgly3pdehyd"]["Vmax"] * tmp1 / (tmp2*tmp3 + tmp4*tmp5 - 1)
+
+     return V
+
+def getVmitg3pdehyd(arg):
+
+    Keq_g3pdh = np.exp( (2*arg["mitgly3pdehyd"]["Em_dhap_g3p"] - 2*arg["mitgly3pdehyd"]["Em_FAD_g3p"])*F / 1000 / R / T )
+    tmp1 = arg["dhap_cyt"] * arg["fad"] - arg["g3p_cyt"]*arg["fadh2"] / Keq_g3pdh
+
+    tmp2 = 1 + arg["dhap_cyt"] / arg["mitgly3pdehyd"]["Km_dhap"]
+    tmp3 = 1 + arg["g3p_cyt"] / arg["mitgly3pdehyd"]["Km_g3p"]
+
+    Vg3pdh = arg["mitgly3pdehyd"]["Vmax_g3pdh"] * tmp1 / (tmp2 + tmp3)
+
+    Keq_fad_Q = np.exp( (2*arg["mitgly3pdehyd"]["Em_FAD_g3p"] + 2*arg["mitgly3pdehyd"]["Em_Q"] )*F / 1000 / R / T )
+
+
+    Vqh2 = arg["mitgly3pdehyd"]["Vmax_Q"] * (arg["fadh2"] * arg["Q"] - arg["fad"]*arg["QH2"] / Keq_fad_Q  )
+
+    # mitg3pdehydFADH2, mitg3pdehydQH2
+    return Vg3pdh, Vqh2
+
+
+def getVatp_syntase(arg):
+
+    dG = -arg["mito_membrane"]["Vmm"] + R * T * np.log( arg["mito_membrane"]["h_cyt"] / arg["mito_membrane"]["h_mit"]  ) / (1000 * F)
+    Vmax = 1.8 * 10**-16 * dG**arg["atp_syntase"]["n"]
+
+    U = arg["mito_membrane"]["Vmm"] * F / (1000 * R * T)
+
+    Keq = np.exp( arg["atp_syntase"]["dG0"]/(R * T) - arg["atp_syntase"]["k"] * U ) * (( arg["mito_membrane"]["h_cyt"] / arg["mito_membrane"]["h_mit"]  )**arg["atp_syntase"]["k"])
+
+
+    V = Vmax * (arg["adp_mit"] * arg["pi_mit"] - arg["atp_mit"] / Keq  )
+
+
+    return V
+
+
+def getVatp_atp_axchanger(arg):
+
+    U = arg["mito_membrane"]["Vmm"] * F / (1000 * R * T)
+
+    tmp1 = 1 - np.exp(U) * arg["atp_cyt"] * arg["adp_mit"] / ( arg["adp_cyt"] * arg["atp_mit"])
+    tmp2 = 1 + arg["atp_cyt"] / arg["adp_cyt"]  * np.exp(["atp/atp_axchanger"]["S_Vmm"] * U)
+    tmp3 = 1 + arg["atp_mit"] / arg["adp_mit"]
+
+
+    V = arg["atp/atp_axchanger"]["Vmax"] * tmp1 / (tmp2 * tmp3)
+
+    return V
+
+def getVatp_consumption(arg):
+    V = arg["atp_consumption"]["Vmax"] * arg["atp_cyt"] / (arg["atp_cyt"] + arg["atp_consumption"]["Km_atp"] ) * (1 + arg["atp_consumption"]["activation"])
+
+    return V
+
+
+
+
+
+
+
+
+
+

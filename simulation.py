@@ -18,12 +18,20 @@ arg = {
     "atp_cyt" : 0,
     "adp_cyt" : 0,
     "amp_cyt" : 0,
+
+    "atp_mit": 0,
+    "adp_mit": 0,
+    "amp_mit": 0,
+    "pi_cyt" : 0,
+    "pi_mit" : 0,
+
+
     "glc6p"   : 0,
     "fru6p"   : 0,
     "fru26p"  : 0,
     "fru16bp" : 0,
     "fru16p"  : 0,
-    "pi"      : 0,
+
     "grap"    : 0,
     "dhap"    : 0,
     "bpg13"   : 0,
@@ -51,6 +59,53 @@ arg = {
     "nadh_cyt": 0,
     "nad_mit" : 0,
     "nadh_mit": 0,
+    "fad"     : 0,
+    "fadh2"   : 0,
+
+    "dhap_cyt": 0,
+    "g3p_cyt" : 0,
+
+    "Q"       : 0,
+    "QH2"     : 0,
+
+    "atp_consumption" : {
+        "Vmax" : 1,
+        "Km_atp" : 1,
+        "activation" : 0,
+    },
+
+    "atp/atp_axchanger" : {
+        "Vmax" : 5.4 * 10**-5,
+        "S_Vmm" : 0.3,
+
+    },
+
+    "atp_syntase" : {
+
+        "dG0" : 30500,
+        "n" : 3,
+        "k" : 3,
+    },
+
+    "mitgly3pdehyd": {
+        "Vmax_g3pdh": 6.4 * 10**4,
+        "Vmax_Q" : 3.2 * 10**6,
+        "Em_dhap_g3p" : 190, # mV
+        "Em_FAD_g3p"  : 210, # mV
+        "Em_Q"        : 200, # mV !!!!!!!! нет данных, значние взято от балды
+
+        "Km_dhap": 0.17, # сзято от цитозольного фермента
+        "Km_g3p": 0.3,   # сзято от цитозольного фермента
+    },
+
+    "cytgly3pdehyd": {
+        "Vmax": 3.2 * 10**4,
+        "Keq": 3257.3,
+        "Km_dhap": 0.17,
+        "Km_nadh": 0.01,
+        "Km_g3p": 0.3,
+        "Km_nad": 0.03,
+    },
 
     "mal_akg_carrier": {
         "Vmax" : 32,
@@ -260,6 +315,14 @@ def model_equations(t, y, arg):
 
     asp_glu_carrier = lib.getVasp_glu_carrier(arg)
     mal_akg_carrier = lib.getVmal_akg_carrier(arg)
+    cytg3pdehyd = lib.getVcytg3pdehyd(arg)
+
+    atp_syntase = lib.getVatp_syntase(arg)
+
+    mitg3pdehydFADH2, mitg3pdehydQH2 = lib.getVmitg3pdehyd(arg)
+    atp_atp_axchanger = lib.getVatp_atp_axchanger(arg)
+
+    atp_consumption = lib.getVatp_consumption(arg)
 
 
 
