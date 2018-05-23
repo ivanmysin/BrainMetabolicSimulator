@@ -306,12 +306,83 @@ def getVatp_consumption(arg):
 
     return V
 
+def getIed(arg, ion="K"):
+    if ion == "K":
+        Ion_in = arg["K_cyt"]
+        Ion_mit = arg["K_mit"]
+        P = arg["potassium_ed"]["P_Kmit"]
+    elif ion == "Na":
+        Ion_in = arg["Na_cyt"]
+        Ion_mit = arg["Na_mit"]
+        P = arg["sodium_ed"]["P_Namit"]
+    elif ion == "H+":
+        Ion_in = arg["H+_cyt"]
+        Ion_mit = arg["H+_mit"]
+        P = arg["protons_ed"]["P_H_mit"]
 
 
 
+    U = arg["mito_membrane"]["Vmm"] * F / (1000 * R * T)
+    tmp = (Ion_in - Ion_mit*np.exp(U)) / (1 - np.exp(U))
+    I = arg["mito_membrane"]["Am"] * P * U * F * tmp
+
+    return I
 
 
+def getVpumps(arg, ion="K"):
+
+    if ion == "K":
+        ion_in = arg["K_cyt"]
+        ion_mit = arg["K_mit"]
+        Vmax = arg["K_pump"]["Vmax"]
+
+    elif ion == "Na":
+        ion_in = arg["Na_cyt"]
+        ion_mit = arg["Na_mit"]
+        Vmax = arg["Na_pump"]["Vmax"]
+
+    elif ion == "Pi":
+        ion_in = arg["pi_cyt"]
+        ion_mit = arg["pi_mit"]
+        Vmax = arg["phos_pump"]["Vmax"]
+
+    if ion=="K" or ion=="Na":
+        V = Vmax * (ion_in*arg["H+_mit"] - ion_mit*arg["H+_cyt"])
+    else:
+        V = Vmax * (ion_in * arg["H+_cyt"] - ion_mit * arg["H+_mit"])
+
+    return V
 
 
+def getIca_ed(arg):
+
+    U = arg["mito_membrane"]["Vmm"] * F / (1000 * R * T)
+    tmp1 = (arg["Ca_cyt"] - arg["Ca_mit"] * np.exp(2 * U)) / (1 - np.exp(2 * U))
+    tmp2 = arg["calcium_ed"]["P_RMC"]*(1 - arg["Ca_cyt"]/(arg["Ca_cyt"] + arg["calcium_ed"]["Ki_cacyt" ]))
+    tmp3 = arg["calcium_ed"]["P_Mcu"] * arg["Ca_cyt"]**arg["calcium_ed"]["n"] / (arg["Ca_cyt"]**arg["calcium_ed"]["n"] + arg["calcium_ed"]["Km_Mcu"]**arg["calcium_ed"]["n"])
+    tmp4 = arg["Ca_cyt"]**arg["calcium_ed"]["n_a"] / (arg["Ca_cyt"]**arg["calcium_ed"]["n_a"] + arg["calcium_ed"]["Ka"]**arg["calcium_ed"]["n_a"])
+
+    I = arg["mito_membrane"]["Vmm"]["Am"] * 2 * U * F * tmp1 * (tmp2 + tmp3 * tmp4)
+    return I
 
 
+def getIca_na_pump(arg):
+
+    Keq = np.exp(-0.001 * arg["mito_membrane"]["Vmm"] * F / R / T)
+    tmp1 = arg["Ca_mit"] / (arg["Ca_mit"] + arg["ca_na_pump"]["Km_ca"])
+    tmp2 = arg["Na_cyt"]**arg["ca_na_pump"]["n"] / (arg["Na_cyt"]**arg["ca_na_pump"]["n"] + arg["ca_na_pump"]["Km_na"]**arg["ca_na_pump"]["n"])
+    tmp3 = arg["Ca_mit"] * arg["Na_cyt"]**arg["ca_na_pump"]["n_Na"] - arg["Ca_cyt"] * arg["Na_mit"]**arg["ca_na_pump"]["n_Na"] / Keq
+
+    I = tmp1 * tmp2 * tmp3
+
+    return I
+
+def getIca_h_pump(arg):
+    Keq = np.exp(-0.001 * arg["mito_membrane"]["Vmm"] * F / R / T)
+
+    tmp1 =  arg["Ca_mit"] / (arg["Ca_mit"] + arg["ca_h_pump"]["Km_ca"])
+    tmp2 =  arg["Ca_mit"] * arg["H+_cyt"]**arg["ca_h_pump"]["n_H"] - arg["Ca_cyt"] * arg["H+_mit"]**arg["ca_h_pump"]["n_H"] / Keq
+
+    I = tmp1 * tmp2
+
+    return I

@@ -68,6 +68,61 @@ arg = {
     "Q"       : 0,
     "QH2"     : 0,
 
+    "K_mit"   : 0,
+    "K_cyt"   : 0,
+    "Na_mit"  : 0,
+    "Na_cyt"  : 0,
+    "H+_cyt"  : 0,
+    "H+_mit"  : 0,
+    "Ca_cyt"  : 0,
+    "Ca_mit"  : 0,
+
+    "ca_h_pump" : {
+        "Km_ca" : 0.01,
+        "n_H"   : 3,
+    },
+
+    "ca_na_pump" : {
+        "Km_na" : 8,
+        "Km_ca" : 0.0096,
+        "n_Na"  : 3,
+        "n"     : 2.8,
+    },
+
+    "calcium_ed" : {
+        "P_RMC"    : 2*10**-6, # m/s
+        "Ki_cacyt" : 0.0001,
+        "P_Mcu"    : 2 * 10**-2, # m/s
+        "Km_Mcu"   : 19.2,
+        "n"        : 0.6,
+        "Ka"       : 0.0003,
+        "n_a"      : 5,
+    },
+
+    "phos_pump" : {
+        "Vmax"  : 43.3485,
+    },
+
+    "Na_pump": {
+        "Vmax": 5*10**-3,
+    },
+
+    "K_pump" : {
+        "Vmax" : 7.5 * 10**-4,
+    },
+
+    "protons_ed" : {
+        "P_H_mit" : 2 * 10**-4, # m/s
+    },
+
+    "sodium_ed" : {
+        "P_Namit" : 10**-10 # m/s
+    },
+
+    "potassium_ed" : {
+        "P_Kmit" : 2 * 10**-10, # m/s !!!!!
+    },
+
     "atp_consumption" : {
         "Vmax" : 1,
         "Km_atp" : 1,
@@ -127,6 +182,8 @@ arg = {
         "Vmm" : -200,
         "h_cyt" : 1, # !!!!!
         "h_mit" : 1, # !!!!!
+        "Am"    : 3.7 * 10**-5, # cm**2
+        "Cmit"  : 0.9 * 10**-6, #F/cm**2
 
     },
 
@@ -324,6 +381,22 @@ def model_equations(t, y, arg):
 
     atp_consumption = lib.getVatp_consumption(arg)
 
+    potassium_current_ed = lib.getIed(arg, ion="K")
+    sodium_current_ed = lib.getIed(arg, ion="Na")
+    protons_current_ed = lib.getIed(arg, ion="H+")
+
+    phos_pump = lib.getVpumps(arg, ion="pi")
+
+    calcium_ed = lib.getIca_ed(arg)
+
+    ca_na_pump = lib.getIca_na_pump(arg)
+
+    ca_h_pump = lib.getIca_h_pump(arg)
+
+
+
+    # calculate balans of currents
+    # update mitochondrial potential
 
 
     return [vglc_transp, vhexokinase, glucose6p_isomerase]
