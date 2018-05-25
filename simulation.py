@@ -67,6 +67,9 @@ arg = {
 
     "Q"       : 0,
     "QH2"     : 0,
+    "cytc_ox" : 0,
+    "cyt_red" : 0,
+    "O2_mit"  : 0,
 
     "K_mit"   : 0,
     "K_cyt"   : 0,
@@ -76,6 +79,25 @@ arg = {
     "H+_mit"  : 0,
     "Ca_cyt"  : 0,
     "Ca_mit"  : 0,
+
+
+    "complex4" : {
+        "Vmax" : 32.5,
+        "Km_O2" : 0.001,
+        "Km_cytc" : 0.001,
+        "n"       : 2,
+        "dGh"     : 1,
+
+    },
+
+    "complex3" : {
+        "Vmax" : 2.25*10**4,
+        "n" : 2,
+    },
+
+    "complex1" : {
+        "Vmax" : 2.25,
+    },
 
     "ca_h_pump" : {
         "Km_ca" : 0.01,
@@ -184,6 +206,10 @@ arg = {
         "h_mit" : 1, # !!!!!
         "Am"    : 3.7 * 10**-5, # cm**2
         "Cmit"  : 0.9 * 10**-6, #F/cm**2
+
+        "Em_N"  : 1,     # !!!!! нет данных
+        "Em_Q"  : 1,     # !!!!! нет данных
+        "Em_cytc" : 1,  # !!!!! нет данных
 
     },
 
@@ -388,12 +414,12 @@ def model_equations(t, y, arg):
     phos_pump = lib.getVpumps(arg, ion="pi")
 
     calcium_ed = lib.getIca_ed(arg)
-
     ca_na_pump = lib.getIca_na_pump(arg)
-
     ca_h_pump = lib.getIca_h_pump(arg)
 
-
+    complex1 = lib.getVcomplex1(arg)
+    complex3 = lib.getVcomplex3(arg)
+    complex4 = lib.getVcomplex4(arg)
 
     # calculate balans of currents
     # update mitochondrial potential

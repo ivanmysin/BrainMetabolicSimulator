@@ -386,3 +386,30 @@ def getIca_h_pump(arg):
     I = tmp1 * tmp2
 
     return I
+
+def getVcomplex1(arg):
+    U = arg["mito_membrane"]["Vmm"] * F / (1000 * R * T)
+    Keq = np.exp(2*arg["mito_membrane"]["Em_N"] + 2*arg["mito_membrane"]["Em_Q"]  + 4*U ) * (arg["mito_membrane"]["h_mit"]/arg["mito_membrane"]["h_cyt"])**4
+    V = arg["complex1"]["Vmax"] * (arg["nadh_mit"] * arg["Q"] - arg["nad_mit"] * arg["QH2"] / Keq)
+
+    return V
+
+def getVcomplex3(arg):
+    U = arg["mito_membrane"]["Vmm"] * F / (1000 * R * T)
+
+    tmp = (arg["mito_membrane"]["h_mit"]/arg["mito_membrane"]["h_cyt"])**4
+    Keq = np.exp(-2 * arg["mito_membrane"]["Em_Q"] + 2 * arg["mito_membrane"]["Em_cytc"] + 2*U) * tmp
+
+    n =  arg["complex3"]["n"]
+    V  = arg["complex3"]["Vmax"]*(arg["QH2"] * arg["cytc_ox"]**n - arg["Q"] * arg["cytc_red"]**n  / Keq)
+    return V
+
+def getVcomplex4(arg):
+
+    tmp1 = arg["cytc_red"]**arg["complex4"]["n"] / (arg["cytc_red"]**arg["complex4"]["n"] + arg["complex4"]["Km_cytc"]**arg["complex4"]["n"])
+    tmp2 = arg["O2_mit"] / (arg["O2_mit"] + arg["complex4"]["Km_O2"])
+    tmp3 = (np.exp(-0.001 * arg["complex4"]["dGh"] * F / R / T  ))**2
+
+    V = arg["complex4"]["Vmax"] * tmp1*tmp2*tmp3
+
+    return V
