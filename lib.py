@@ -413,3 +413,27 @@ def getVcomplex4(arg):
     V = arg["complex4"]["Vmax"] * tmp1*tmp2*tmp3
 
     return V
+
+def getVpyr_exchanger(arg):
+
+    tmp1 = arg["pyr_cyt"] * arg["H+_cyt"] - arg["pyr_mit"] * arg["H+_mit"]
+    tmp2 = 1 + arg["pyr_cyt"]/arg["pyr_exchanger"]["Km_pyr_cit"]
+    tmp3 = 1 + arg["pyr_mit"]/arg["pyr_exchanger"]["Km_pyr_mit"]
+
+    V = arg["pyr_exchanger"]["Vmax"] * tmp1 / (tmp2 * tmp3)
+
+    return V
+
+def getVpyr_dehydrogenase_complex(arg):
+
+    tmp1 = 1 + arg["pyr_dehyd_comp"]["Amax_Ca"] * arg["Ca_mit"] / (arg["Ca_mit"] + arg["pyr_dehyd_comp"]["Ka_Ca"] )
+    tmp2 = arg["pyr"]["mit"] / (arg["pyr"]["mit"] + arg["pyr_dehyd_comp"]["Km_pyr"] )
+    tmp3 = arg["fad_pdhg"] / (arg["fad_pdhg"] + arg["pyr_dehyd_comp"]["Km_fad"])
+    tmp4 = arg["CoA"] / (arg["CoA"] + arg["pyr_dehyd_comp"]["Km_CoA"]*(1 + arg["ACoA"] / arg["pyr_dehyd_comp"]["Ki_AcoA"]))
+    pyr_dehyd_compACoA = arg["pyr_dehyd_comp"]["Vmax_pdhc_fad"] * tmp1 * tmp2 * tmp3 * tmp4
+
+    Keq = np.exp( 2*(arg["pyr_dehyd_comp"]["Em_fad"] + arg["pyr_dehyd_comp"]["Em_nad"])*F*0.001 / R / T  )
+    tmp5 = arg["fadh2_pdhg"] * arg["nad_mit"] - arg["fad_pdhg"]*arg["nadh_mit"] / Keq
+    pyr_dehyd_compFad = arg["pyr_dehyd_comp"]["Vmax_pdhc_nad"] * tmp5 / (arg["nad_mit"] + arg["pyr_dehyd_comp"]["Km_nad"])
+
+    return pyr_dehyd_compACoA, pyr_dehyd_compFad

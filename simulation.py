@@ -39,6 +39,7 @@ arg = {
     "pg2"     : 0,
     "pep"     : 0,
     "pyr_cyt" : 0,
+    "pyr_mit" : 0,
     "lac"     : 0,
     "lac_ext" : 0,
     "cr"      : 0,
@@ -80,6 +81,33 @@ arg = {
     "Ca_cyt"  : 0,
     "Ca_mit"  : 0,
 
+    "CoA"     : 0,
+    "ACoA"    : 0,
+    "fad_pdhg" : 0,
+    "fadh2_pdhg" : 0,
+
+
+
+    "pyr_dehyd_comp" : {
+        "Vmax_pdhc_fad" : 13.1,
+        "Vmax_pdhc_nad" : 1e4, # !!!!!!
+        "Amax_Ca"  : 1.7,
+        "Ka_Ca"    : 10**-3,
+        "Km_pyr"   : 0.068,
+        "Km_nad"   : 0.041,
+        "Km_CoA"   : 0.0047,
+        "Ki_AcoA"  : 0.0004,
+        "Km_fad"   : 0.00001,
+        "Em_fad"   : 297,
+        "Em_nad"   : 300, # !!!!!!! нет данных
+    },
+
+    "pyr_exchanger" : {
+        "Vmax" : 128,
+        "Km_pyr_cit" : 0.15,
+        "Km_pyr_mit" : 0.15,
+
+    },
 
     "complex4" : {
         "Vmax" : 32.5,
@@ -421,11 +449,14 @@ def model_equations(t, y, arg):
     complex3 = lib.getVcomplex3(arg)
     complex4 = lib.getVcomplex4(arg)
 
+    pyr_exchanger = lib.getVpyr_exchanger(arg)
+    pyr_dehyd_compACoA, pyr_dehyd_compFad = lib.getVpyr_dehydrogenase_complex(arg)
+
     # calculate balans of currents
     # update mitochondrial potential
 
 
-    return [vglc_transp, vhexokinase, glucose6p_isomerase]
+    return []
 
 model_equations(0, 0, arg)
 
