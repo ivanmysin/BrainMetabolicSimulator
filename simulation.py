@@ -24,6 +24,8 @@ arg = {
     "amp_mit": 0,
     "pi_cyt" : 0,
     "pi_mit" : 0,
+    "gtp_mit" : 0,
+    "gdp_mit" : 0,
 
 
     "glc6p"   : 0,
@@ -83,10 +85,80 @@ arg = {
 
     "CoA"     : 0,
     "ACoA"    : 0,
+    "sucCoA" : 0,
     "fad_pdhg" : 0,
     "fadh2_pdhg" : 0,
 
 
+
+    "citr" : 0,
+    "isocitr" : 0,
+
+    "sucCoAsyntase" : {
+        "Vmax" : 1.92 * 10**4,
+        "Keq"  : 3.8,
+        "Amax_P" : 1.2,
+        "Km_P"   : 2.5, # 0.72 другое значение указвнное в статье !!!!!!!!!!!!
+        "n_P"    : 3,
+        "Km_SucCoA" : 0.041,
+        "Km_adp"   : 0.25,
+        "Km_suc"   : 1.6,
+        "Km_CoA"   : 0.056,
+        "Km_atp"   : 0.017,
+
+        "Km_sucCoA_G" : 0.086,
+        "Km_gdp"  : 0.007,
+        "Km_gtp"  : 0.036,
+        "Km_suc_G" : 0.49,
+        "Km_CoA_G" : 0.036,
+
+    },
+
+    "akg_dehydr" : {
+        "Vmax_nad" : 134.4,
+        "Vmax_fad" : 1e4,
+
+        "Km1" : 2.5,
+        "Km2" : 2.5, #  !!!!! величина взята от балды !!!!!
+        "Ki_ca" : 1, # !!!!! величина взята от балды !!!!!
+
+
+        "Km_nad" : 0.021,
+        "Ki_nadh" : 0.0045,
+        "Km_CoA"  : 0.013,
+        "Km_SucCoA" : 0.0045,
+        "Km_fad" : 0.00001,
+
+        "Em_fad" : 297,
+        "Em_nad"  : 297, # !!!!! величина взята от балды !!!!!
+
+    },
+
+    "isocit_dehydr" : {
+        "Vmax" : 64,
+        "n_isocit" : 1.9,
+        "Km1_isocit" : 0.11,
+        "Km2_isocit" : 0.06,
+        "Ka_Ca" : 0.0074,
+        "n_Ca"  : 2,
+        "Km_nad" : 0.091,
+        "Ki_nadh" : 0.041,
+    },
+
+    "aconitase" : {
+        "Vmax" : 1.6 * 10**6,
+        "Keq"  : 0.067,
+        "Km_cit" : 0.48,
+        "Km_isocit" : 0.12,
+    },
+
+    "citrate_syntase" : {
+        "Vmax" : 1.28 * 10**3,
+        "Km_oxa" : 0.0045,
+        "Ki_cit" : 3.7,
+        "Km_accoa" : 0.005,
+        "Ki_CoA"  : 0.025,
+    },
 
     "pyr_dehyd_comp" : {
         "Vmax_pdhc_fad" : 13.1,
@@ -451,6 +523,13 @@ def model_equations(t, y, arg):
 
     pyr_exchanger = lib.getVpyr_exchanger(arg)
     pyr_dehyd_compACoA, pyr_dehyd_compFad = lib.getVpyr_dehydrogenase_complex(arg)
+    citrate_syntase = lib.getVcitratesyntase(arg)
+    aconitase = lib.getVaconitase(arg)
+    isocit_dehydr = lib.getVisocit_dehydrogenase(arg)
+    akg_dehydr_fad, akg_dehydr_nad  = lib.getVakg_dehydrogenase(arg)
+
+    sucCoAsyntase_atp = lib.getVsucCoAsyntase(arg, mode="atp")
+    sucCoAsyntase_gtp = lib.getVsucCoAsyntase(arg, mode="gtp")
 
     # calculate balans of currents
     # update mitochondrial potential

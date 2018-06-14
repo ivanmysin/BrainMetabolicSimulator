@@ -437,3 +437,92 @@ def getVpyr_dehydrogenase_complex(arg):
     pyr_dehyd_compFad = arg["pyr_dehyd_comp"]["Vmax_pdhc_nad"] * tmp5 / (arg["nad_mit"] + arg["pyr_dehyd_comp"]["Km_nad"])
 
     return pyr_dehyd_compACoA, pyr_dehyd_compFad
+
+def getVcitratesyntase(arg):
+
+    tmp1 = arg["oa_mit"] / ( arg["oa_mit"] + arg["citrate_syntase"]["Km_oxa"]*(1 + arg["citr"]/arg["citrate_syntase"]["Ki_cit"]))
+    tmp2 = arg["ACoA"] / (arg["ACoA"] + arg["citrate_syntase"]["Km_accoa"]*(1 + arg["CoA"]/arg["citrate_syntase"]["Ki_CoA"]))
+
+    V = arg["citrate_syntase"]["Vmax"] * tmp1 * tmp2
+    return V
+
+def getVaconitase(arg):
+
+    tmp1 = arg["citr"] - arg["isocitr"] /  arg["aconitase"]["Keq"]
+    tmp2 = 1 + arg["citr"]/arg["aconitase"]["Km_cit"] + arg["isocitr"]/arg["aconitase"]["Km_isocit"]
+
+    V = arg["aconitase"]["Vmax"] * tmp1 / tmp2
+    return V
+
+def getVisocit_dehydrogenase(arg):
+
+    Km_isocitr = arg["isocit_dehydr"]["Km1_isocit"] / (1 + (arg["Ca_mit"]/arg["isocit_dehydr"]["Ka_Ca"])**arg["isocit_dehydr"]["n_Ca"]) + arg["isocit_dehydr"]["Km2_isocit"]
+    tmp1 = arg["isocitr"]**arg["isocit_dehydr"]["n_isocit"] / (arg["isocitr"]**arg["isocit_dehydr"]["n_isocit"] + Km_isocitr**arg["isocit_dehydr"]["n_isocit"])
+    tmp2 = arg["nad_mit"] / (arg["nad_mit"] + arg["isocit_dehydr"]["Km_nad"] * (1 + arg["nadh_mit"]/arg["isocit_dehydr"]["Ki_nadh"]) )
+    V = arg["isocit_dehydr"]["Vmax"] * tmp1 * tmp2
+    return V
+
+
+def getVakg_dehydrogenase(arg):
+    Km = (arg["akg_dehydr"]["Km1"]/(1 + arg["Ca_mit"]/arg["akg_dehydr"]["Ki_ca"]) + arg["akg_dehydr"]["Km2"] ) * (1 + arg["nadh_mit"] / arg["akg_dehydr"]["Ki_nadh"])
+    tmp1 = arg["akg_mit"] / (arg["akg_mit"] + Km)
+
+    tmp2 = arg["fad"] / (arg["fad"] + arg["akg_dehydr"]["Km_fad"])
+    tmp3 = arg["CoA"] / (arg["CoA"] + arg["akg_dehydr"]["Km_CoA"]*(1 + arg["sucCoA"]/arg["akg_dehydr"]["Km_SucCoA"]) )
+
+    Vfad = arg["akg_dehydr"]["Vmax_fad"] * tmp1 * tmp2 * tmp3
+
+    Keq = np.exp(0.002 * F * (arg["akg_dehydr"]["Em_fad"] + arg["akg_dehydr"]["Em_nad"]) / R / T )
+    tmp4 = arg["fadh2"] * ["nad_mit"] - arg["fad"]*arg["nadh_mit"] / Keq
+    tmp5 = arg["nad_mit"] + arg["akg_dehydr"]["Km_nad"] * (1 + arg["nadh_mit"]/arg["Ki_nadh"])
+
+    Vnad = arg["akg_dehydr"]["Vmax_nad"] * tmp4 / tmp5
+
+    return Vfad, Vnad
+
+def getVsucCoAsyntase(arg, mode="gtp"):
+
+    if mode == "gtp":
+        Km_sucCoA = arg["sucCoAsyntase"]["Km_sucCoA_G"]
+        Km_suc = arg["sucCoAsyntase"]["Km_suc_G"]
+        Km_CoA = arg["sucCoAsyntase"]["Km_CoA_G"]
+        nuc3P = arg["agp_mit"]
+        nuc2P = arg["agp_mit"]
+        Km_nuc3P = arg["sucCoAsyntase"]["Km_gdp"]
+        Km_nuc2P = arg["sucCoAsyntase"]["Km_gtp"]
+
+    elif mode == "atp":
+        Km_sucCoA = arg["sucCoAsyntase"]["Km_sucCoA"]
+        Km_suc = arg["sucCoAsyntase"]["Km_suc"]
+        Km_CoA = arg["sucCoAsyntase"]["Km_CoA"]
+
+        nuc3P = arg["atp_mit"]
+        nuc2P = arg["adp_mit"]
+        Km_nuc3P = arg["sucCoAsyntase"]["Km_atp"]
+        Km_nuc2P = arg["sucCoAsyntase"]["Km_atp"]
+
+    tmp1 = arg["sucCoAsyntase"]["Amax_P"]**arg["sucCoAsyntase"]["n_P"] * arg["pi_mit"]**arg["sucCoAsyntase"]["n_P"]
+    tmp1 /= (arg["pi_mit"]**arg["sucCoAsyntase"]["n_P"] + arg["sucCoAsyntase"]["Km_P"]**arg["sucCoAsyntase"]["n_P"])
+    tmp1 += 1
+
+    tmp2 = arg["sucCoA"] * arg["gdp_mit"] * arg["pi_mit"] - arg["suc"]*arg["CoA"]*arg["gtp_mit"]/arg["sucCoAsyntase"]["Keq"]
+
+    vsuccoa = 1 + arg["sucCoA"] / Km_sucCoA
+    vnuc3P = 1 + nuc3P/Km_nuc3P
+    vp = 1 + arg["pi_mit"] / arg["sucCoAsyntase"]["Km_P"]
+
+    Vsuc = 1 + arg["suc"] / Km_suc
+    Vcoa = 1 + arg["CoA"] / Km_CoA
+    vnuc2P = 1 + nuc2P / Km_nuc2P
+
+    V = arg["sucCoAsyntase"]["Vmax"] * tmp1 * tmp2 / (vsuccoa*vnuc3P*vp + Vsuc*Vcoa*vnuc2P - 1)
+
+    return V
+
+
+
+
+
+
+
+
