@@ -13,86 +13,110 @@ y0, t0 = [1.0], 0
 
 arg = {
 
-    "glc_ext" : 0,
-    "glc_cyt" : 0,
-    "atp_cyt" : 0,
-    "adp_cyt" : 0,
-    "amp_cyt" : 0,
+    "glc_ext" : 1.0,
+    "glc_cyt" : 1.0,
+    "atp_cyt" : 1.0,
+    "adp_cyt" : 1.0,
+    "amp_cyt" : 1.0,
 
-    "atp_mit": 0,
-    "adp_mit": 0,
-    "amp_mit": 0,
-    "pi_cyt" : 0,
-    "pi_mit" : 0,
-    "gtp_mit" : 0,
-    "gdp_mit" : 0,
+    "atp_mit": 1.0,
+    "adp_mit": 1.0,
+    "amp_mit": 1.0,
+    "pi_cyt" : 1.0,
+    "pi_mit" : 1.0,
+    "gtp_mit" : 1.0,
+    "gdp_mit" : 1.0,
 
+    "glc6p"   : 1.0,
+    "fru6p"   : 1.0,
+    "fru26p"  : 1.0,
+    "fru16bp" : 1.0,
+    "fru16p"  : 1.0,
 
-    "glc6p"   : 0,
-    "fru6p"   : 0,
-    "fru26p"  : 0,
-    "fru16bp" : 0,
-    "fru16p"  : 0,
+    "grap"    : 1.0,
+    "dhap"    : 1.0,
+    "bpg13"   : 1.0,
+    "pg3"     : 1.0,
+    "pg2"     : 1.0,
+    "pep"     : 1.0,
+    "pyr_cyt" : 1.0,
+    "pyr_mit" : 1.0,
+    "lac"     : 1.0,
+    "lac_ext" : 1.0,
+    "cr"      : 1.0,
+    "crp"     : 1.0,
 
-    "grap"    : 0,
-    "dhap"    : 0,
-    "bpg13"   : 0,
-    "pg3"     : 0,
-    "pg2"     : 0,
-    "pep"     : 0,
-    "pyr_cyt" : 0,
-    "pyr_mit" : 0,
-    "lac"     : 0,
-    "lac_ext" : 0,
-    "cr"      : 0,
-    "crp"     : 0,
+    "mal_cyt" : 1.0,
+    "oa_cyt"  : 1.0,
+    "mal_mit":  1.0,
+    "oa_mit":   1.0,
+    "asp_cyt" : 1.0,
+    "asp_mit" : 1.0,
+    "akg_cyt" : 1.0,
+    "akg_mit" : 1.0,
+    "glu_cyt" : 1.0,
+    "glu_mit" : 1.0,
+    "suc"     : 1.0,
+    "fum"     : 1.0,
 
-    "mal_cyt" : 0,
-    "oa_cyt"  : 0,
-    "mal_mit":  0,
-    "oa_mit":   0,
-    "asp_cyt" : 0,
-    "asp_mit" : 0,
-    "akg_cyt" : 0,
-    "akg_mit" : 0,
-    "glu_cyt" : 0,
-    "glu_mit" : 0,
+    "nad_cyt" : 1.0,
+    "nadh_cyt": 1.0,
+    "nad_mit" : 1.0,
+    "nadh_mit": 1.0,
+    "fad"     : 1.0,
+    "fadh2"   : 1.0,
 
-    "nad_cyt" : 0,
-    "nadh_cyt": 0,
-    "nad_mit" : 0,
-    "nadh_mit": 0,
-    "fad"     : 0,
-    "fadh2"   : 0,
+    "dhap_cyt": 1.0,
+    "g3p_cyt" : 1.0,
 
-    "dhap_cyt": 0,
-    "g3p_cyt" : 0,
+    "Q"       : 1.0,
+    "QH2"     : 1.0,
+    "cytc_ox" : 1.0,
+    "cytc_red" : 1.0,
+    "O2_mit"  : 1.0,
 
-    "Q"       : 0,
-    "QH2"     : 0,
-    "cytc_ox" : 0,
-    "cyt_red" : 0,
-    "O2_mit"  : 0,
+    "K_mit"   : 1.0,
+    "K_cyt"   : 1.0,
+    "Na_mit"  : 1.0,
+    "Na_cyt"  : 1.0,
+    "H+_cyt"  : 1.0,
+    "H+_mit"  : 1.0,
+    "Ca_cyt"  : 1.0,
+    "Ca_mit"  : 1.0,
 
-    "K_mit"   : 0,
-    "K_cyt"   : 0,
-    "Na_mit"  : 0,
-    "Na_cyt"  : 0,
-    "H+_cyt"  : 0,
-    "H+_mit"  : 0,
-    "Ca_cyt"  : 0,
-    "Ca_mit"  : 0,
+    "CoA"     : 1.0,
+    "ACoA"    : 1.0,
+    "sucCoA" : 1.0,
+    "fad_pdhg" : 1.0,
+    "fadh2_pdhg" : 1.0,
 
-    "CoA"     : 0,
-    "ACoA"    : 0,
-    "sucCoA" : 0,
-    "fad_pdhg" : 0,
-    "fadh2_pdhg" : 0,
+    "citr" : 1.0,
+    "isocitr" : 1.0,
 
+    "mal_dehydr" : {
+        "Vmax" : 3.2 * 10**4,
+        "Keq"  : 0.0001,
+        "Km_nad" : 0.06,
+        "Km_mal" : 0.145,
+        "Km_oa"  : 0.017,
+        "Km_nadh" : 0.044,
+    },
 
+    "fumarase" : {
+        "Vmax" : 6.4 * 10**7,
+        "Keq"  : 4.4,
+        "Km_fum" : 0.14,
+        "Km_mal" : 0.3,
+    },
 
-    "citr" : 0,
-    "isocitr" : 0,
+    "suc_dehydr": {
+        "Vmax_succdh" : 1.6*10**5,
+        "Vmax_nadh" : 10**12,
+        "Km_suc"    : 1.6,
+        "Ki_mal"    : 2.2,
+        "Km_nad"    : 1.0, # !!!!!!! значение свято от балды
+        "Em_FAD-succdh" : 100,
+    },
 
     "sucCoAsyntase" : {
         "Vmax" : 1.92 * 10**4,
@@ -100,12 +124,11 @@ arg = {
         "Amax_P" : 1.2,
         "Km_P"   : 2.5, # 0.72 другое значение указвнное в статье !!!!!!!!!!!!
         "n_P"    : 3,
-        "Km_SucCoA" : 0.041,
+        "Km_sucCoA" : 0.041,
         "Km_adp"   : 0.25,
         "Km_suc"   : 1.6,
         "Km_CoA"   : 0.056,
         "Km_atp"   : 0.017,
-
         "Km_sucCoA_G" : 0.086,
         "Km_gdp"  : 0.007,
         "Km_gtp"  : 0.036,
@@ -468,82 +491,90 @@ arg = {
 
 }
 
+class Simulator():
 
-def model_equations(t, y, arg):
+    def __init__(self, arg):
 
-    # Glycolysis
+        self.arg = arg
 
-    # Glucose transporter
-    vglc_transp = lib.getVglucosetransporter(arg)
-    # Hexokinase
-    vhexokinase = lib.getVhexokinase(arg)
-    glucose6p_isomerase = lib.getVglucose6p_isomerase(arg)
-    phosphofructokinase1 = lib.getVphosphofructokinase1(arg)
-    fru16bisphosphatase = lib.getVfru16bisphosphatase(arg)
-    aldolase = lib.getValdolase(arg)
-    triosep_isomerase = lib.getVtriosep_isomerase(arg)
-    grap_dehydr = lib.getVgrap_dehydrogenase(arg)
-    ph_glyceratekinase = lib.getVphosphoglyceratekinase(arg)
-    ph_glyceratemutase = lib.getVphosphoglyceratemutase(arg)
-    enolase = lib.getVenolase(arg)
-    pyruvatekinase = lib.getVpyruvatekinase(arg)
-    ldg = lib.getVlactatedehydrogenase(arg)
-    # Monocarboxilate transporter
-    mct = lib.getVmonocarboxilatetransporter(arg)
-    creatinekinase = lib.getVcreatinekinase(arg)
-    cyt_malatdehydrogenase = lib.getVmalatdehydrogenase(arg, mode="cyt")
-    mito_malatdehydrogenase = lib.getVmalatdehydrogenase(arg, mode="mit")
-    cyt_asp_aminotrans = lib.getVaspartateaminotransferase(arg, mode="mit")
-    mito_asp_aminotrans = lib.getVaspartateaminotransferase(arg, mode="mit")
+    def model_equations(self, t, y):
+        arg = self.arg
 
-    asp_glu_carrier = lib.getVasp_glu_carrier(arg)
-    mal_akg_carrier = lib.getVmal_akg_carrier(arg)
-    cytg3pdehyd = lib.getVcytg3pdehyd(arg)
+        # Glycolysis
 
-    atp_syntase = lib.getVatp_syntase(arg)
+        # Glucose transporter
+        vglc_transp = lib.getVglucosetransporter(arg)
+        # Hexokinase
+        vhexokinase = lib.getVhexokinase(arg)
+        glucose6p_isomerase = lib.getVglucose6p_isomerase(arg)
+        phosphofructokinase1 = lib.getVphosphofructokinase1(arg)
+        fru16bisphosphatase = lib.getVfru16bisphosphatase(arg)
+        aldolase = lib.getValdolase(arg)
+        triosep_isomerase = lib.getVtriosep_isomerase(arg)
+        grap_dehydr = lib.getVgrap_dehydrogenase(arg)
+        ph_glyceratekinase = lib.getVphosphoglyceratekinase(arg)
+        ph_glyceratemutase = lib.getVphosphoglyceratemutase(arg)
+        enolase = lib.getVenolase(arg)
+        pyruvatekinase = lib.getVpyruvatekinase(arg)
+        ldg = lib.getVlactatedehydrogenase(arg)
+        # Monocarboxilate transporter
+        mct = lib.getVmonocarboxilatetransporter(arg)
+        creatinekinase = lib.getVcreatinekinase(arg)
+        cyt_malatdehydrogenase = lib.getVmalatdehydrogenase(arg, mode="cyt")
+        mito_malatdehydrogenase = lib.getVmalatdehydrogenase(arg, mode="mit")
+        cyt_asp_aminotrans = lib.getVaspartateaminotransferase(arg, mode="mit")
+        mito_asp_aminotrans = lib.getVaspartateaminotransferase(arg, mode="mit")
 
-    mitg3pdehydFADH2, mitg3pdehydQH2 = lib.getVmitg3pdehyd(arg)
-    atp_atp_axchanger = lib.getVatp_atp_axchanger(arg)
+        asp_glu_carrier = lib.getVasp_glu_carrier(arg)
+        mal_akg_carrier = lib.getVmal_akg_carrier(arg)
+        cytg3pdehyd = lib.getVcytg3pdehyd(arg)
 
-    atp_consumption = lib.getVatp_consumption(arg)
+        atp_syntase = lib.getVatp_syntase(arg)
 
-    potassium_current_ed = lib.getIed(arg, ion="K")
-    sodium_current_ed = lib.getIed(arg, ion="Na")
-    protons_current_ed = lib.getIed(arg, ion="H+")
+        mitg3pdehydFADH2, mitg3pdehydQH2 = lib.getVmitg3pdehyd(arg)
+        atp_atp_axchanger = lib.getVatp_atp_axchanger(arg)
 
-    phos_pump = lib.getVpumps(arg, ion="pi")
+        atp_consumption = lib.getVatp_consumption(arg)
 
-    calcium_ed = lib.getIca_ed(arg)
-    ca_na_pump = lib.getIca_na_pump(arg)
-    ca_h_pump = lib.getIca_h_pump(arg)
+        potassium_current_ed = lib.getIed(arg, ion="K")
+        sodium_current_ed = lib.getIed(arg, ion="Na")
+        protons_current_ed = lib.getIed(arg, ion="H+")
 
-    complex1 = lib.getVcomplex1(arg)
-    complex3 = lib.getVcomplex3(arg)
-    complex4 = lib.getVcomplex4(arg)
+        phos_pump = lib.getVpumps(arg, ion="pi")
 
-    pyr_exchanger = lib.getVpyr_exchanger(arg)
-    pyr_dehyd_compACoA, pyr_dehyd_compFad = lib.getVpyr_dehydrogenase_complex(arg)
-    citrate_syntase = lib.getVcitratesyntase(arg)
-    aconitase = lib.getVaconitase(arg)
-    isocit_dehydr = lib.getVisocit_dehydrogenase(arg)
-    akg_dehydr_fad, akg_dehydr_nad  = lib.getVakg_dehydrogenase(arg)
+        calcium_ed = lib.getIca_ed(arg)
+        ca_na_pump = lib.getIca_na_pump(arg)
+        ca_h_pump = lib.getIca_h_pump(arg)
 
-    sucCoAsyntase_atp = lib.getVsucCoAsyntase(arg, mode="atp")
-    sucCoAsyntase_gtp = lib.getVsucCoAsyntase(arg, mode="gtp")
+        complex1 = lib.getVcomplex1(arg)
+        complex3 = lib.getVcomplex3(arg)
+        complex4 = lib.getVcomplex4(arg)
 
-    # calculate balans of currents
-    # update mitochondrial potential
+        pyr_exchanger = lib.getVpyr_exchanger(arg)
+        pyr_dehyd_compACoA, pyr_dehyd_compFad = lib.getVpyr_dehydrogenase_complex(arg)
+        citrate_syntase = lib.getVcitratesyntase(arg)
+        aconitase = lib.getVaconitase(arg)
+        isocit_dehydr = lib.getVisocit_dehydrogenase(arg)
+        akg_dehydr_fad, akg_dehydr_nad  = lib.getVakg_dehydrogenase(arg)
+
+        sucCoAsyntase_atp = lib.getVsucCoAsyntase(arg, mode="atp")
+        sucCoAsyntase_gtp = lib.getVsucCoAsyntase(arg, mode="gtp")
+
+        v_succdh_fad, v_succdh = lib.getVsuc_dehydrydrogenase(arg)
+        fumarase = lib.getVfumarase(arg)
+
+        mal_dehydr = lib.getVmal_dehydr(arg)
 
 
-    return []
+        # calculate balans of currents
+        # update mitochondrial potential
 
-model_equations(0, 0, arg)
 
-# r = ode(model_equations).set_integrator('dopri5', method='bdf')
-#
-# r.set_initial_value(y0, t0).set_f_params([0.2])  #.set_jac_params([-0.2])
-# t1 = 10
-# dt = 0.1
-# while r.successful() and r.t < t1:
-#     # r.integrate(r.t + dt)
-#     print(r.t+dt, r.integrate(r.t+dt))
+        return []
+
+simulalor = Simulator(arg)
+
+
+
+simulalor.model_equations(0, 0)
+

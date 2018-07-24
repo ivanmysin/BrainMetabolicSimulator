@@ -293,7 +293,7 @@ def getVatp_atp_axchanger(arg):
     U = arg["mito_membrane"]["Vmm"] * F / (1000 * R * T)
 
     tmp1 = 1 - np.exp(U) * arg["atp_cyt"] * arg["adp_mit"] / ( arg["adp_cyt"] * arg["atp_mit"])
-    tmp2 = 1 + arg["atp_cyt"] / arg["adp_cyt"]  * np.exp(["atp/atp_axchanger"]["S_Vmm"] * U)
+    tmp2 = 1 + arg["atp_cyt"] / arg["adp_cyt"]  * np.exp(arg["atp/atp_axchanger"]["S_Vmm"] * U)
     tmp3 = 1 + arg["atp_mit"] / arg["adp_mit"]
 
 
@@ -341,7 +341,7 @@ def getVpumps(arg, ion="K"):
         ion_mit = arg["Na_mit"]
         Vmax = arg["Na_pump"]["Vmax"]
 
-    elif ion == "Pi":
+    elif ion == "pi":
         ion_in = arg["pi_cyt"]
         ion_mit = arg["pi_mit"]
         Vmax = arg["phos_pump"]["Vmax"]
@@ -362,7 +362,7 @@ def getIca_ed(arg):
     tmp3 = arg["calcium_ed"]["P_Mcu"] * arg["Ca_cyt"]**arg["calcium_ed"]["n"] / (arg["Ca_cyt"]**arg["calcium_ed"]["n"] + arg["calcium_ed"]["Km_Mcu"]**arg["calcium_ed"]["n"])
     tmp4 = arg["Ca_cyt"]**arg["calcium_ed"]["n_a"] / (arg["Ca_cyt"]**arg["calcium_ed"]["n_a"] + arg["calcium_ed"]["Ka"]**arg["calcium_ed"]["n_a"])
 
-    I = arg["mito_membrane"]["Vmm"]["Am"] * 2 * U * F * tmp1 * (tmp2 + tmp3 * tmp4)
+    I = arg["mito_membrane"]["Am"] * 2 * U * F * tmp1 * (tmp2 + tmp3 * tmp4)
     return I
 
 
@@ -427,7 +427,7 @@ def getVpyr_exchanger(arg):
 def getVpyr_dehydrogenase_complex(arg):
 
     tmp1 = 1 + arg["pyr_dehyd_comp"]["Amax_Ca"] * arg["Ca_mit"] / (arg["Ca_mit"] + arg["pyr_dehyd_comp"]["Ka_Ca"] )
-    tmp2 = arg["pyr"]["mit"] / (arg["pyr"]["mit"] + arg["pyr_dehyd_comp"]["Km_pyr"] )
+    tmp2 = arg["pyr_mit"] / (arg["pyr_mit"] + arg["pyr_dehyd_comp"]["Km_pyr"] )
     tmp3 = arg["fad_pdhg"] / (arg["fad_pdhg"] + arg["pyr_dehyd_comp"]["Km_fad"])
     tmp4 = arg["CoA"] / (arg["CoA"] + arg["pyr_dehyd_comp"]["Km_CoA"]*(1 + arg["ACoA"] / arg["pyr_dehyd_comp"]["Ki_AcoA"]))
     pyr_dehyd_compACoA = arg["pyr_dehyd_comp"]["Vmax_pdhc_fad"] * tmp1 * tmp2 * tmp3 * tmp4
@@ -473,8 +473,8 @@ def getVakg_dehydrogenase(arg):
     Vfad = arg["akg_dehydr"]["Vmax_fad"] * tmp1 * tmp2 * tmp3
 
     Keq = np.exp(0.002 * F * (arg["akg_dehydr"]["Em_fad"] + arg["akg_dehydr"]["Em_nad"]) / R / T )
-    tmp4 = arg["fadh2"] * ["nad_mit"] - arg["fad"]*arg["nadh_mit"] / Keq
-    tmp5 = arg["nad_mit"] + arg["akg_dehydr"]["Km_nad"] * (1 + arg["nadh_mit"]/arg["Ki_nadh"])
+    tmp4 = arg["fadh2"] * arg["nad_mit"] - arg["fad"]*arg["nadh_mit"] / Keq
+    tmp5 = arg["nad_mit"] + arg["akg_dehydr"]["Km_nad"] * (1 + arg["nadh_mit"]/arg["akg_dehydr"]["Ki_nadh"])
 
     Vnad = arg["akg_dehydr"]["Vmax_nad"] * tmp4 / tmp5
 
@@ -486,13 +486,14 @@ def getVsucCoAsyntase(arg, mode="gtp"):
         Km_sucCoA = arg["sucCoAsyntase"]["Km_sucCoA_G"]
         Km_suc = arg["sucCoAsyntase"]["Km_suc_G"]
         Km_CoA = arg["sucCoAsyntase"]["Km_CoA_G"]
-        nuc3P = arg["agp_mit"]
-        nuc2P = arg["agp_mit"]
+        nuc3P = arg["gtp_mit"]
+        nuc2P = arg["gtp_mit"]
         Km_nuc3P = arg["sucCoAsyntase"]["Km_gdp"]
         Km_nuc2P = arg["sucCoAsyntase"]["Km_gtp"]
 
     elif mode == "atp":
         Km_sucCoA = arg["sucCoAsyntase"]["Km_sucCoA"]
+
         Km_suc = arg["sucCoAsyntase"]["Km_suc"]
         Km_CoA = arg["sucCoAsyntase"]["Km_CoA"]
 
@@ -520,9 +521,41 @@ def getVsucCoAsyntase(arg, mode="gtp"):
     return V
 
 
+def getVsuc_dehydrydrogenase(arg):
+
+    Keq_succdh = 1.0 # !!!!!!! np.exp( (25-arg["suc_dehydr"]["Em_FAD-succdh"]) * F / R / T )
+    tmp1 = arg["suc"] * arg["Q"] - arg["fum"] * arg["QH2"] / Keq_succdh
+    tmp2 = arg["suc"] + arg["suc_dehydr"]["Km_suc"]*(1 + arg["mal_mit"]/arg["suc_dehydr"]["Ki_mal"])
+
+    v_succdh_fad = arg["suc_dehydr"]["Vmax_succdh"] * tmp1 / tmp2
+
+    Keq_pdhc_fad_nad = 1.0 # !!! np.exp(-arg["suc_dehydr"]["Em_FAD-succdh"] * F / R / T) ## !!!!!! add - before Em
+    tmp3 = arg["fadh2"] * arg["nad_mit"] - arg["fad"] * arg["nadh_mit"] / Keq_pdhc_fad_nad
+
+    v_succdh = arg["suc_dehydr"]["Vmax_nadh"] * tmp3 / (arg["suc_dehydr"]["Km_nad"])
+
+    return v_succdh_fad, v_succdh
 
 
+def getVfumarase(arg):
 
+    tmp1 = arg["fum"] - arg["mal_mit"] / arg["fumarase"]["Keq"]
+    tmp2 = 1 + arg["fum"]/arg["fumarase"]["Km_fum"] - arg["mal_mit"] / arg["fumarase"]["Km_mal"]
+
+    V = arg["fumarase"]["Vmax"] * tmp1 / tmp2
+
+    return V
+
+def getVmal_dehydr(arg):
+
+    tmp1 = arg["mal_mit"] * arg["nad_mit"] - arg["oa_mit"]*arg["nadh_mit"] / arg["mal_dehydr"]["Keq"]
+
+    tmp2 = (1 + arg["mal_mit"] / arg["mal_dehydr"]["Km_mal"]) * (1 + arg["nad_mit"] / arg["mal_dehydr"]["Km_nad"])
+    tmp3 = (1 + arg["oa_mit"] / arg["mal_dehydr"]["Km_oa"] ) * (1 + arg["nadh_mit"] / arg["mal_dehydr"]["Km_nadh"])
+
+    V = arg["mal_dehydr"]["Vmax"] * tmp1 / (tmp2 + tmp3 - 1)
+
+    return V
 
 
 
