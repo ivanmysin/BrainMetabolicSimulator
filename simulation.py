@@ -1,8 +1,8 @@
 import numpy as np
-from scipy.integrate import ode
+from scipy.integrate import odeint, solve_ivp
 import lib
 
-y0, t0 = [1.0], 0
+
 
 # Notations
 # glc is glucose
@@ -498,25 +498,112 @@ class Simulator():
         self.arg = arg
 
     def model_equations(self, t, y):
+        self.arg["glc_ext"] = y[0]
+        self.arg["glc_cyt"] = y[1]
+        self.arg["atp_cyt"] = y[2]
+        self.arg["adp_cyt"] = y[3]
+        self.arg["amp_cyt"] = y[4]
+
+        self.arg["atp_mit"] = y[5]
+        self.arg["adp_mit"] = y[6]
+        self.arg["amp_mit"] = y[7]
+        self.arg["pi_cyt"] = y[8]
+        self.arg["pi_mit"] = y[9]
+        self.arg["gtp_mit"] = y[10]
+        self.arg["gdp_mit"] = y[11]
+
+        self.arg["glc6p"] = y[12]
+        self.arg["fru6p"] = y[13]
+        self.arg["fru26p"] = y[14]
+        self.arg["fru16bp"] = y[15]
+        self.arg["fru16p"] = y[16]
+
+        self.arg["grap"] = y[17]
+        self.arg["dhap"] = y[18]
+        self.arg["bpg13"] = y[19]
+        self.arg["pg3"] = y[20]
+        self.arg["pg2"] = y[21]
+        self.arg["pep"] = y[22]
+        self.arg["pyr_cyt"] = y[23]
+        self.arg["pyr_mit"] = y[24]
+        self.arg["lac"] = y[25]
+        self.arg["lac_ext"] = y[26]
+        self.arg["cr"] = y[27]
+        self.arg["crp"] = y[28]
+
+        self.arg["mal_cyt"] = y[29]
+        self.arg["oa_cyt"] = y[30]
+        self.arg["mal_mit"] = y[31]
+        self.arg["oa_mit"] = y[32]
+        self.arg["asp_cyt"] = y[33]
+        self.arg["asp_mit"] = y[34]
+        self.arg["akg_cyt"] = y[35]
+        self.arg["akg_mit"] = y[36]
+        self.arg["glu_cyt"] = y[37]
+        self.arg["glu_mit"] = y[38]
+        self.arg["suc"] = y[39]
+        self.arg["fum"] = y[40]
+
+        self.arg["nad_cyt"] = y[41]
+        self.arg["nadh_cyt"] = y[42]
+        self.arg["nad_mit"] = y[43]
+        self.arg["nadh_mit"] = y[44]
+        self.arg["fad"] = y[45]
+        self.arg["fadh2"] = y[46]
+
+        self.arg["dhap_cyt"] = y[47]
+        self.arg["g3p_cyt"] = y[48]
+
+        self.arg["Q"] = y[49]
+        self.arg["QH2"] = y[50]
+        self.arg["cytc_ox"] = y[51]
+        self.arg["cytc_red"] = y[52]
+        self.arg["O2_mit"] = y[53]
+
+        self.arg["K_mit"] = y[54]
+        self.arg["K_cyt"] = y[55]
+        self.arg["Na_mit"] = y[56]
+        self.arg["Na_cyt"] = y[57]
+        self.arg["H+_cyt"] = y[58]
+        self.arg["H+_mit"] = y[59]
+        self.arg["Ca_cyt"] = y[60]
+        self.arg["Ca_mit"] = y[61]
+
+        self.arg["CoA"] = y[62]
+        self.arg["ACoA"] = y[63]
+        self.arg["sucCoA"] = y[64]
+        self.arg["fad_pdhg"] = y[65]
+        self.arg["fadh2_pdhg"] = y[66]
+
+        self.arg["citr"] = y[67]
+        self.arg["isocitr"] = y[68]
+
+        self.arg["mito_membrane"]["Vmm"] = y[69]
+
+
+
         arg = self.arg
+
 
         # Glycolysis
 
-        # Glucose transporter
-        vglc_transp = lib.getVglucosetransporter(arg)
-        # Hexokinase
-        vhexokinase = lib.getVhexokinase(arg)
-        glucose6p_isomerase = lib.getVglucose6p_isomerase(arg)
-        phosphofructokinase1 = lib.getVphosphofructokinase1(arg)
-        fru16bisphosphatase = lib.getVfru16bisphosphatase(arg)
-        aldolase = lib.getValdolase(arg)
-        triosep_isomerase = lib.getVtriosep_isomerase(arg)
-        grap_dehydr = lib.getVgrap_dehydrogenase(arg)
-        ph_glyceratekinase = lib.getVphosphoglyceratekinase(arg)
-        ph_glyceratemutase = lib.getVphosphoglyceratemutase(arg)
-        enolase = lib.getVenolase(arg)
-        pyruvatekinase = lib.getVpyruvatekinase(arg)
-        ldg = lib.getVlactatedehydrogenase(arg)
+
+        vglc_transp = lib.getVglucosetransporter(arg)                     # Glucose transporter
+        vhexokinase = lib.getVhexokinase(arg)                             # Hexokinase
+        glucose6p_isomerase = lib.getVglucose6p_isomerase(arg)            # Glucose-6-phosphate isomerase
+        phosphofructokinase1 = lib.getVphosphofructokinase1(arg)          # Phosphofructokinase 1
+        phosphofructokinase2 = lib.getVphosphofructokinase2(arg)          # Phosphofructokinase 2
+
+        fru16bisphosphatase = lib.getVfru16bisphosphatase(arg)            # Fructose-1,6-bisphosphotase
+        fru26bisphosphatase = lib.getVfru26bisphosphatase(arg)            # Fructose-2,6-bisphosphatase
+        aldolase = lib.getValdolase(arg)                                  # Aldolase
+        triosep_isomerase = lib.getVtriosep_isomerase(arg)                # Triosophosphateisomerase
+        grap_dehydr = lib.getVgrap_dehydrogenase(arg)                     # Glyverolphosphatedehydrogenase
+        ph_glyceratekinase = lib.getVphosphoglyceratekinase(arg)          # Phosphoglyceratekinase
+        ph_glyceratemutase = lib.getVphosphoglyceratemutase(arg)          # Phosphoglyceratemutase
+        enolase = lib.getVenolase(arg)                                    # Enolase
+        pyruvatekinase = lib.getVpyruvatekinase(arg)                      # Pyruvatekinase
+        ldg = lib.getVlactatedehydrogenase(arg)                           # Lactate dedydrogenase
         # Monocarboxilate transporter
         mct = lib.getVmonocarboxilatetransporter(arg)
         creatinekinase = lib.getVcreatinekinase(arg)
@@ -569,12 +656,106 @@ class Simulator():
         # calculate balans of currents
         # update mitochondrial potential
 
+        dydt = [0.0 for _ in range(70)]
 
-        return []
+        dydt[0] = 0                             # external glucose
+        dydt[1] = vglc_transp - vhexokinase     # cytosole glucose
+
+        # cytosole ATP
+        dydt[2] =  -vhexokinase-phosphofructokinase1-phosphofructokinase2+ph_glyceratekinase+pyruvatekinase-creatinekinase
+
+        dydt[3] = vhexokinase + phosphofructokinase1+phosphofructokinase2 - ph_glyceratekinase-pyruvatekinase+creatinekinase                   # cytosole ADP
+
+        dydt[4] = phosphofructokinase2           # cytosole AMP
+
+
+        dydt[5] = 0        # Mitochondrial ATP
+        dydt[6] = 0        # Mitochondrial ADP
+        dydt[7] = 0         # Mitochondrial AMP
+        dydt[8] = fru16bisphosphatase + fru26bisphosphatase - grap_dehydr        # cytosole nonorganic phosphate
+        dydt[9] = 0          # mitochondrial nonorganic phosphate
+        dydt[10] = 0         # Mitochondrial GTF
+        dydt[11] = 0            # "Mitochondrial GDF
+
+        dydt[12] = vhexokinase - glucose6p_isomerase     # glukose-6-phosphate
+        dydt[13] = glucose6p_isomerase - phosphofructokinase1 + fru16bisphosphatase - phosphofructokinase2 + fru26bisphosphatase    # fructose-6-phosphate
+        dydt[14] = phosphofructokinase2 - fru26bisphosphatase     # fructose-2,6-phosphate
+        dydt[15] = phosphofructokinase1-fru16bisphosphatase      # fructose-1,6-bisphosphate
+        dydt[16] = phosphofructokinase1-aldolase      # fructose-1,6-phosphate fru16p
+
+        dydt[17] = aldolase + triosep_isomerase - grap_dehydr     # Glycerol phosphate   "grap"
+        dydt[18] = aldolase - triosep_isomerase       #   hap
+        dydt[19] = grap_dehydr - ph_glyceratekinase       #   bpg13
+        dydt[20] = ph_glyceratekinase - ph_glyceratemutase      #   pg
+        dydt[21] = ph_glyceratemutase - enolase      #   pg2
+        dydt[22] = enolase - pyruvatekinase      # Phosphoenol pyruvate "pep"
+        dydt[23] = pyruvatekinase-ldg       # Cytosole Pyruvate pyr_cyt
+        dydt[24] = 0       # Mitochondrial pyruvate  "pyr_mit"
+        dydt[25] = ldg+mct       # Cytosole lactate lac
+        dydt[26] = 0       # Extracellular lactate    lac_ext
+        dydt[27] = -creatinekinase       # Creatine cr
+        dydt[28] = creatinekinase       # Creatine phosphate "crp"
+
+        dydt[29] = 0       # Cytosole malate   mal_cyt
+        dydt[30] = 0       # Cytosole oxaloacetate oa_cyt
+        dydt[31] = 0       # Mitochondrial malate mal_mit
+        dydt[32] = 0       # Mitochondrial oxaloacetate   oa_mit
+        dydt[33] = 0       # Cytosole aspartate asp_cyt
+        dydt[34] = 0       # Mitochondrial aspartate asp_mit
+        dydt[35] = 0       # Cytosole alpha-ketoglutorate akg_cyt
+        dydt[36] = 0       # Mitochondrial alpha-ketoglutorate akg_mit
+        dydt[37] = 0       # Cytosole glutamate glu_cyt
+        dydt[38] = 0       # Mitochondrial glutamate glu_mit
+        dydt[39] = 0       # Succinate suc
+        dydt[40] = 0       # Fumarate fum
+
+        dydt[41] = -grap_dehydr       # Cytosole NAD+ nad_cyt
+        dydt[42] = grap_dehydr       # Cytosole NADH nadh_cyt
+        dydt[43] = ldg       # Mitochondrial NAD+ nad_mit
+        dydt[44] = -ldg       # Mitochondrial NADH nadh_mit
+        dydt[45] = 0       # Mitochondrial FAD   fad
+        dydt[46] = 0       # Mitochondrial FADH2 fadh2
+
+        dydt[47] = 0       #  dhap_cyt
+        dydt[48] = 0       #  g3p_cyt
+
+
+        dydt[49] = 0        # Coensime Q || Q
+        dydt[50] = 0        # Coensime Q reduced "QH2"
+        dydt[51] = 0        # Cytochrome c oxidized cytc_ox
+        dydt[52] = 0        # cytochrome c reduced cytc_red
+        dydt[53] = 0        # Mitochondrial Oxigen O2_mit
+
+        dydt[54] = 0         # Mitochondrial potassium K_mit
+        dydt[55] = 0         # Cytosole potassium  K_cyt
+        dydt[56] = 0         # Mitochondrial sodium Na_mit
+        dydt[57] = 0         # Cytosole sodium Na_cyt
+        dydt[58] = 0         # Cytosole proton H+_cyt
+        dydt[59] = 0         # Mitochondrial proton H+_mit
+        dydt[60] = 0         # Cytosole calcium Ca_cyt
+        dydt[61] = 0         # Mitochondrial calcium Ca_mit
+
+        dydt[62] = 0          # Coensime CoA CoA
+        dydt[63] = 0          # Acetile coensime CoA ACoA
+        dydt[64] = 0          # Succinile CoA sucCoA
+        dydt[65] = 0          # fad_pdhg
+        dydt[66] = 0          # fadh2_pdhg
+
+        dydt[67] = 0           # Citrate citr
+        dydt[68] = 0           # Isocitrate isocitr
+
+        dydt[69] = 0            # Voltage on mitochondrial membrane  mito_membrane-Vmm
+
+
+
+        return dydt
 
 simulalor = Simulator(arg)
 
+y0 = [1.0 for _ in range(70)]
+y0[-1] = -200
 
 
-simulalor.model_equations(0, 0)
+simulalor.model_equations(0, y0)
 
+sol = solve_ivp(simulalor.model_equations, [0, 1000], y0)
