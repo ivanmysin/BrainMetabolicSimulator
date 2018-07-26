@@ -2,13 +2,93 @@ import numpy as np
 from scipy.integrate import odeint, solve_ivp
 import lib
 
-
-
 # Notations
-# glc is glucose
-# atp ia ATP
-# glc6p is glucose-6-P
-# fru6p is fructose-6-P
+
+metabolites = []
+
+metabolites.append({"idx" : 0, "full" : "External glucose", "short" : "glc_ext"})
+metabolites.append({"idx" : 1, "full" : "Cytosolic glucose", "short" : "glc"})
+metabolites.append({"idx" : 2, "full" : "Cytosolic ATP", "short" : "atp_cyt"})
+metabolites.append({"idx" : 3, "full" : "Cytosolic ADP", "short" : "adp_cyt"})
+metabolites.append({"idx" : 4, "full" : "Cytosolic AMP", "short" : "amp_cyt"})
+metabolites.append({"idx" : 5, "full" : "Mitochondrial ATP", "short" : "atp_mit"})
+metabolites.append({"idx" : 6, "full" : "Mitochondrial ADP", "short" : "adp_mit"})
+metabolites.append({"idx" : 7, "full" : "Mitochondrial AMP", "short" : "amp_mit"})
+metabolites.append({"idx" : 8, "full" : "Cytosolic inorganic phosphate", "short" : "pi_cyt"})
+metabolites.append({"idx" : 9, "full" : "Mitochondrial inorganic phosphate", "short" : "pi_mit"})
+metabolites.append({"idx" : 10, "full" : "Mitochondrial GTP", "short" : "gtp_mit"})
+metabolites.append({"idx" : 11, "full" : "Mitochondrial GDP", "short" : "gdp_mit"})
+metabolites.append({"idx" : 12, "full" : "Glucose-6-phosphate", "short" : "glc6p"})
+metabolites.append({"idx" : 13, "full" : "Fructose-6-phosphate", "short" : "fru6p"})
+metabolites.append({"idx" : 14, "full" : "Fructose-2,6-bisphosphate", "short" : "fru26p"})
+metabolites.append({"idx" : 15, "full" : "Fructose-1,6-bisphosphate", "short" : "fru16p"})
+metabolites.append({"idx" : 16, "full" : "Glycerol 3-phosphate", "short" : "grap"})
+metabolites.append({"idx" : 17, "full" : "Dihydroxyacetone phosphate", "short" : "dhap"})
+metabolites.append({"idx" : 18, "full" : "1,3-Bisphosphoglycerate", "short" : "bpg13"})
+metabolites.append({"idx" : 19, "full" : "3-Phosphoglycerate", "short" : "pg3"})
+metabolites.append({"idx" : 20, "full" : "Phosphoenolpyruvate", "short" : "pep"})
+metabolites.append({"idx" : 21, "full" : "Cytosolic pyruvate", "short" : "pyr_cyt"})
+metabolites.append({"idx" : 22, "full" : "Mitochondrial pyruvate", "short" : "pyr_mit"})
+metabolites.append({"idx" : 23, "full" : "Cytosolic lactate", "short" : "lac"})
+metabolites.append({"idx" : 24, "full" : "External lactate", "short" : "lac_ext"})
+metabolites.append({"idx" : 25, "full" : "Creatine", "short" : "cr"})
+metabolites.append({"idx" : 26, "full" : "Creatine phosphate", "short" : "crp"})
+metabolites.append({"idx" : 27, "full" : "Cytosolic malate", "short" : "mal_cyt"})
+metabolites.append({"idx" : 28, "full" : "Cytosolic oxaloacetate", "short" : "oa_cyt"})
+metabolites.append({"idx" : 29, "full" : "Mitochondrial malate", "short" : "mal_mit"})
+metabolites.append({"idx" : 30, "full" : "Mitochondrial oxaloacetate", "short" : "oa_mit"})
+metabolites.append({"idx" : 31, "full" : "Cytosolic aspartate", "short" : "asp_cyt"})
+metabolites.append({"idx" : 32, "full" : "Mitochondrial aspartate", "short" : "asp_mit"})
+metabolites.append({"idx" : 33, "full" : "Cytosolic alpha-ketoglutarate", "short" : "akg_cyt"})
+metabolites.append({"idx" : 34, "full" : "Mitochondrial alpha-ketoglutarate", "short" : "akg_mit"})
+metabolites.append({"idx" : 35, "full" : "Cytosolic glutamate", "short" : "glu_cyt"})
+metabolites.append({"idx" : 36, "full" : "Mitochondrial glutamate", "short" : "glu_mit"})
+metabolites.append({"idx" : 37, "full" : "Succinate", "short" : "suc"})
+metabolites.append({"idx" : 38, "full" : "Fumarate", "short" : "fum"})
+metabolites.append({"idx" : 39, "full" : "Cytosolic NAD+", "short" : "nad_cyt"})
+metabolites.append({"idx" : 40, "full" : "Cytosolic NADH", "short" : "nadh_cyt"})
+metabolites.append({"idx" : 41, "full" : "Mitochondrial NAD+", "short" : "nad_mit"})
+metabolites.append({"idx" : 42, "full" : "Mitochondrial NADH", "short" : "nadh_mit"})
+
+metabolites.append({"idx" : 43, "full" : "FAD of succinate dehydrogenase", "short" : "fad_sucdh"})
+metabolites.append({"idx" : 44, "full" : "FADH2 of succinate dehydrogenase", "short" : "fadh2_sucdh"})
+metabolites.append({"idx" : 45, "full" : "FAD of glycerol-3-phosphate dehydrogenase", "short" : "fad_g3dh"})
+metabolites.append({"idx" : 46, "full" : "FADH2 of glycerol-3-phosphate dehydrogenase", "short" : "fadh2_g3dh"})
+
+metabolites.append({"idx" : 66, "full" : "FAD of pyruvate dehydrogenase complex", "short" : "fad_pdhc"})
+metabolites.append({"idx" : 67, "full" : "FADH2 of pyruvate dehydrogenase complex", "short" : "fadh2_pdhc"})
+
+metabolites.append({"idx" : 68, "full" : "FAD of alpha-ketoglutarate dehydrogenase complex", "short" : "fad_akgdhc"})
+metabolites.append({"idx" : 69, "full" : "FADH2 of alpha-ketoglutarate dehydrogenase complex", "short" : "fadh2_akgdhc"})
+
+
+
+metabolites.append({"idx" : 47, "full" : "Coenzyme Q oxidized", "short" : "Q"})
+metabolites.append({"idx" : 48, "full" : "Coenzyme QH2 reduced", "short" : "QH2"})
+metabolites.append({"idx" : 49, "full" : "Cytochrome c oxidized", "short" : "cytc_ox"})
+metabolites.append({"idx" : 50, "full" : "Cytochrome c reduced", "short" : "cytc_red"})
+metabolites.append({"idx" : 51, "full" : "Mitochondrial oxigen (O2)", "short" : "o2_mit"})
+metabolites.append({"idx" : 52, "full" : "Mitochondrial potassium (K)", "short" : "k_mit"})
+metabolites.append({"idx" : 53, "full" : "Cytosolic potassium (K)", "short" : "k_cyt"})
+metabolites.append({"idx" : 54, "full" : "Mitochondrial sodium (Na)", "short" : "na_mit"})
+metabolites.append({"idx" : 55, "full" : "Cytosolic sodium (Na)", "short" : "na_cyt"})
+metabolites.append({"idx" : 56, "full" : "Cytosolic proton (H+)", "short" : "h+_cyt"})
+metabolites.append({"idx" : 57, "full" : "Mitochondrial proton (H+)", "short" : "h+_mit"})
+metabolites.append({"idx" : 58, "full" : "Cytosolic calcium (Ca)", "short" : "ca_cyt"})
+metabolites.append({"idx" : 59, "full" : "Mitochondrial calcium (Ca)", "short" : "ca_mit"})
+metabolites.append({"idx" : 60, "full" : "CoA", "short" : "coa"})
+metabolites.append({"idx" : 61, "full" : "Acetyl-CoA", "short" : "acoa"})
+metabolites.append({"idx" : 62, "full" : "Succinyl-CoA", "short" : "succoa"})
+
+
+metabolites.append({"idx" : 63, "full" : "Citrate", "short" : "citr"})
+metabolites.append({"idx" : 64, "full" : "Isocitrate", "short" : "isocitr"})
+
+metabolites.append({"idx" : 65, "full" : "Voltage on mitochondrial membrane", "short" : "Vmm"})
+
+
+
+
 
 
 arg = {
@@ -666,13 +746,13 @@ class Simulator():
 
         dydt[3] = vhexokinase + phosphofructokinase1+phosphofructokinase2 - ph_glyceratekinase-pyruvatekinase+creatinekinase                   # cytosole ADP
 
-        dydt[4] = phosphofructokinase2           # cytosole AMP
+        dydt[4] = 0           # cytosole AMP
 
 
         dydt[5] = 0        # Mitochondrial ATP
         dydt[6] = 0        # Mitochondrial ADP
         dydt[7] = 0         # Mitochondrial AMP
-        dydt[8] = fru16bisphosphatase + fru26bisphosphatase - grap_dehydr        # cytosole nonorganic phosphate
+        dydt[8] = vhexokinase + phosphofructokinase1 + fru16bisphosphatase + fru26bisphosphatase - grap_dehydr        # cytosole nonorganic phosphate
         dydt[9] = 0          # mitochondrial nonorganic phosphate
         dydt[10] = 0         # Mitochondrial GTF
         dydt[11] = 0            # "Mitochondrial GDF
@@ -680,8 +760,9 @@ class Simulator():
         dydt[12] = vhexokinase - glucose6p_isomerase     # glukose-6-phosphate
         dydt[13] = glucose6p_isomerase - phosphofructokinase1 + fru16bisphosphatase - phosphofructokinase2 + fru26bisphosphatase    # fructose-6-phosphate
         dydt[14] = phosphofructokinase2 - fru26bisphosphatase     # fructose-2,6-phosphate
-        dydt[15] = phosphofructokinase1-fru16bisphosphatase      # fructose-1,6-bisphosphate
-        dydt[16] = phosphofructokinase1-aldolase      # fructose-1,6-phosphate fru16p
+        dydt[15] = phosphofructokinase1-fru16bisphosphatase-aldolase      # fructose-1,6-bisphosphate
+
+        # dydt[16] = phosphofructokinase1-aldolase      # fructose-1,6-phosphate fru16p
 
         dydt[17] = aldolase + triosep_isomerase - grap_dehydr     # Glycerol phosphate   "grap"
         dydt[18] = aldolase - triosep_isomerase       #   hap
