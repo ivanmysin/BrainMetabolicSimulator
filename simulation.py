@@ -49,20 +49,10 @@ metabolites.append({"idx" : 39, "full" : "Cytosolic NAD+", "short" : "nad_cyt"})
 metabolites.append({"idx" : 40, "full" : "Cytosolic NADH", "short" : "nadh_cyt"})
 metabolites.append({"idx" : 41, "full" : "Mitochondrial NAD+", "short" : "nad_mit"})
 metabolites.append({"idx" : 42, "full" : "Mitochondrial NADH", "short" : "nadh_mit"})
-
 metabolites.append({"idx" : 43, "full" : "FAD of succinate dehydrogenase", "short" : "fad_sucdh"})
 metabolites.append({"idx" : 44, "full" : "FADH2 of succinate dehydrogenase", "short" : "fadh2_sucdh"})
 metabolites.append({"idx" : 45, "full" : "FAD of glycerol-3-phosphate dehydrogenase", "short" : "fad_g3dh"})
 metabolites.append({"idx" : 46, "full" : "FADH2 of glycerol-3-phosphate dehydrogenase", "short" : "fadh2_g3dh"})
-
-metabolites.append({"idx" : 66, "full" : "FAD of pyruvate dehydrogenase complex", "short" : "fad_pdhc"})
-metabolites.append({"idx" : 67, "full" : "FADH2 of pyruvate dehydrogenase complex", "short" : "fadh2_pdhc"})
-
-metabolites.append({"idx" : 68, "full" : "FAD of alpha-ketoglutarate dehydrogenase complex", "short" : "fad_akgdhc"})
-metabolites.append({"idx" : 69, "full" : "FADH2 of alpha-ketoglutarate dehydrogenase complex", "short" : "fadh2_akgdhc"})
-
-
-
 metabolites.append({"idx" : 47, "full" : "Coenzyme Q oxidized", "short" : "Q"})
 metabolites.append({"idx" : 48, "full" : "Coenzyme QH2 reduced", "short" : "QH2"})
 metabolites.append({"idx" : 49, "full" : "Cytochrome c oxidized", "short" : "cytc_ox"})
@@ -79,18 +69,56 @@ metabolites.append({"idx" : 59, "full" : "Mitochondrial calcium (Ca)", "short" :
 metabolites.append({"idx" : 60, "full" : "CoA", "short" : "coa"})
 metabolites.append({"idx" : 61, "full" : "Acetyl-CoA", "short" : "acoa"})
 metabolites.append({"idx" : 62, "full" : "Succinyl-CoA", "short" : "succoa"})
-
-
 metabolites.append({"idx" : 63, "full" : "Citrate", "short" : "citr"})
 metabolites.append({"idx" : 64, "full" : "Isocitrate", "short" : "isocitr"})
-
 metabolites.append({"idx" : 65, "full" : "Voltage on mitochondrial membrane", "short" : "Vmm"})
+metabolites.append({"idx" : 66, "full" : "FAD of pyruvate dehydrogenase complex", "short" : "fad_pdhc"})
+metabolites.append({"idx" : 67, "full" : "FADH2 of pyruvate dehydrogenase complex", "short" : "fadh2_pdhc"})
+metabolites.append({"idx" : 68, "full" : "FAD of alpha-ketoglutarate dehydrogenase complex", "short" : "fad_akgdhc"})
+metabolites.append({"idx" : 69, "full" : "FADH2 of alpha-ketoglutarate dehydrogenase complex", "short" : "fadh2_akgdhc"})
+
+metabolites.append({"idx" : 70, "full" : "CO2", "short" : "co2"})
+
+enzymes = []
+enzymes.append({"reagends":[27, 39], "pruducts":[28, 40], "short":"mal_dehydr", "full":"Cytosolic malate dehydrogenase", "func": lib.getVmal_dehydr })
+enzymes.append({"reagends":[29, 41], "pruducts":[30, 42], "short":"mal_dehydr", "full":"Mitochondrial malate dehydrogenase",  "func": lib.getVmal_dehydr })
+enzymes.append({"reagends":[38], "pruducts":[29], "short":"fumarase", "full":"Fumarase",  "func": lib.getVfumarase })
+enzymes.append({"reagends":[37, 43], "pruducts":[38, 44], "short":"suc_dehydr_s1", "full":"Succinate dehydrogenase stage 1",  "func":lib.getVsuc_dehydrydrogenase_stage1  })
+enzymes.append({"reagends":[37, 47], "pruducts":[38, 48], "short":"suc_dehydr_s2", "full":"Succinate dehydrogenase stage 2",  "func":lib.getVsuc_dehydrydrogenase_stage2  })
+enzymes.append({"reagends":[62, 6, 9], "pruducts":[37, 60, 5], "short":"sucCoAsyntase_atp", "full":"Succinil-CoA synthetase with ATP",  "func": lib.getVsucCoAsyntase })
+enzymes.append({"reagends":[62, 11, 9], "pruducts":[37, 60, 10], "short":"sucCoAsyntase_gtp", "full":"Succinil-CoA synthetase with GTP",  "func": lib.getVsucCoAsyntase })
+enzymes.append({"reagends":[34, 68, 60], "pruducts":[62, 69], "short":"akg_dehydr_s1", "full":"Alpha-ketoglutarate dehydrogenase stage 1",  "func": lib.getVakg_dehydrogenase_stage1 })
+enzymes.append({"reagends":[69, 41], "pruducts":[68, 42], "short":"akg_dehydr_s2", "full":"Alpha-ketoglutarate dehydrogenase stage 2",  "func": lib.getVakg_dehydrogenase_stage2 })
+enzymes.append({"reagends":[64, 41], "pruducts":[34, 42], "short":"isocit_dehydr", "full":"Isocitrate dehydrogenase",  "func": lib.getVisocit_dehydrogenase })
+enzymes.append({"reagends":[63], "pruducts":[64], "short":"aconitase", "full":"Aconitase",  "func": lib.getVaconitase })
+enzymes.append({"reagends":[30, 61], "pruducts":[63], "short":"citrate_syntase", "full":"Citrate syntase",  "func": lib.getVcitratesyntase })
+enzymes.append({"reagends":[22, 60, 66], "pruducts":[61, 69, 70], "short":"pyr_dehyd_comp_s1", "full":"Pyruvate dehydrogenase stage 1",  "func": lib.getVpyr_dehydrogenase_complex_stage1 })
+enzymes.append({"reagends":[69, 41], "pruducts":[42, 68], "short":"pyr_dehyd_comp_s2", "full":"Pyruvate dehydrogenase stage 2",  "func": lib.getVpyr_dehydrogenase_complex_stage2 })
+enzymes.append({"reagends":[21, 56], "pruducts":[22, 57], "short":"pyr_exchanger", "full":"Pyruvate exchanger",  "func": lib.getVpyr_exchanger })
+enzymes.append({"reagends":[50, 51, 57], "pruducts":[49, 56], "short":"complex4", "full":"Complex IV",  "func": lib.getVcomplex4})
+enzymes.append({"reagends":[48, 49, 57], "pruducts":[47, 50, 56], "short":"complex3", "full":"Complex III",  "func": lib.getVcomplex3})
+enzymes.append({"reagends":[42, 47, 57], "pruducts":[41, 48, 56], "short":"complex1", "full":"Complex I",  "func": lib.getVcomplex1})
+enzymes.append({"reagends":[59, 56], "pruducts":[58, 57], "short":"ca_h_pump", "full":"Ca - H pump",  "func": lib.getIca_h_pump})
+enzymes.append({"reagends":[59], "pruducts":[58], "short":"calcium_ed", "full":"calcium_ed",  "func": lib.getIca_ed})
+enzymes.append({"reagends":[2], "pruducts":[3, 8], "short":"atp_consumption", "full":"ATP consumption",  "func": lib.getVatp_consumption})
+enzymes.append({"reagends":[5, 3], "pruducts":[2, 6], "short":"atp/adp_axchanger", "full":"ATP/ADP axchanger",  "func": lib.getVatp_consumption})
+enzymes.append({"reagends":[5], "pruducts":[6, 9], "short":"atp_syntase", "full":"ATP synthetase",  "func": lib.getVatp_syntase})
+enzymes.append({"reagends":[16, 45], "pruducts":[17, 46], "short":"mitgly3pdehyd_s1", "full":"Mitochondrial glycerol-3-phosphate dehydrogenase stage 1",  "func": lib.getVmitg3pdehyd_stage1})
+enzymes.append({"reagends":[46, 47], "pruducts":[45, 48], "short":"mitgly3pdehyd_s2", "full":"Mitochondrial glycerol-3-phosphate dehydrogenase stage 2",  "func": lib.getVmitg3pdehyd_stage2})
+enzymes.append({"reagends":[17, 40], "pruducts":[16, 39], "short":"cytgly3pdehyd", "full":"Cytosolic glycerol-3-phosphate dehydrogenase",  "func": lib.getVcytg3pdehyd})
+enzymes.append({"reagends":[27, 34], "pruducts":[33, 29], "short":"mal_akg_carrier", "full":"Malate/alpha-ketoglutarate carrier",  "func": lib.getVmal_akg_carrier})
+enzymes.append({"reagends":[32, 36, 56], "pruducts":[31,35, 57], "short":"asp_glu_carrier", "full":"Aspartate/glutamate carrier",  "func": lib.getVasp_glu_carrier})
+enzymes.append({"reagends":[32, 34], "pruducts":[30, 36], "short":"asp_aminotrans", "full":"Mitochondrial aminotranferase",  "func": lib.getVaspartateaminotransferase})
+enzymes.append({"reagends":[31, 33], "pruducts":[28, 35], "short":"asp_aminotrans", "full":"Cytosolic aminotranferase",  "func": lib.getVaspartateaminotransferase})
+enzymes.append({"reagends":[2, 25], "pruducts":[26, 3], "short":"creatinekinase", "full":"Creatine kinase",  "func": lib.getVcreatinekinase})
+enzymes.append({"reagends":[23], "pruducts":[24], "short":"MCT", "full":"Monocarboxylate transporter",  "func": lib.getVmonocarboxilatetransporter})
+enzymes.append({"reagends":[21, 40], "pruducts":[24, 39], "short":"LDG", "full":"Lactate dehydrogenase",  "func": lib.getVlactatedehydrogenase})
 
 
 
 
 
-
+"""
 arg = {
 
     "glc_ext" : 1.0,
@@ -354,7 +382,7 @@ arg = {
         "activation" : 0,
     },
 
-    "atp/atp_axchanger" : {
+    "atp/adp_axchanger" : {
         "Vmax" : 5.4 * 10**-5,
         "S_Vmm" : 0.3,
 
@@ -831,6 +859,7 @@ class Simulator():
 
         return dydt
 
+
 simulalor = Simulator(arg)
 
 y0 = [1.0 for _ in range(70)]
@@ -840,3 +869,6 @@ y0[-1] = -200
 simulalor.model_equations(0, y0)
 
 sol = solve_ivp(simulalor.model_equations, [0, 1000], y0)
+
+
+"""
