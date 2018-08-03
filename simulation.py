@@ -76,9 +76,10 @@ metabolites.append({"idx" : 66, "full" : "FAD of pyruvate dehydrogenase complex"
 metabolites.append({"idx" : 67, "full" : "FADH2 of pyruvate dehydrogenase complex", "short" : "fadh2_pdhc"})
 metabolites.append({"idx" : 68, "full" : "FAD of alpha-ketoglutarate dehydrogenase complex", "short" : "fad_akgdhc"})
 metabolites.append({"idx" : 69, "full" : "FADH2 of alpha-ketoglutarate dehydrogenase complex", "short" : "fadh2_akgdhc"})
-
 metabolites.append({"idx" : 70, "full" : "CO2", "short" : "co2"})
+metabolites.append({"idx" : 71, "full" : "2-Phosphoglycerate", "short" : "pg2"})
 
+"""
 enzymes = []
 enzymes.append({"reagends":[27, 39], "pruducts":[28, 40], "short":"mal_dehydr", "full":"Cytosolic malate dehydrogenase", "func": lib.getVmal_dehydr })
 enzymes.append({"reagends":[29, 41], "pruducts":[30, 42], "short":"mal_dehydr", "full":"Mitochondrial malate dehydrogenase",  "func": lib.getVmal_dehydr })
@@ -114,93 +115,12 @@ enzymes.append({"reagends":[2, 25], "pruducts":[26, 3], "short":"creatinekinase"
 enzymes.append({"reagends":[23], "pruducts":[24], "short":"MCT", "full":"Monocarboxylate transporter",  "func": lib.getVmonocarboxilatetransporter})
 enzymes.append({"reagends":[21, 40], "pruducts":[24, 39], "short":"LDG", "full":"Lactate dehydrogenase",  "func": lib.getVlactatedehydrogenase})
 
-
-
-
-
 """
-arg = {
 
-    "glc_ext" : 1.0,
-    "glc_cyt" : 1.0,
-    "atp_cyt" : 1.0,
-    "adp_cyt" : 1.0,
-    "amp_cyt" : 1.0,
 
-    "atp_mit": 1.0,
-    "adp_mit": 1.0,
-    "amp_mit": 1.0,
-    "pi_cyt" : 1.0,
-    "pi_mit" : 1.0,
-    "gtp_mit" : 1.0,
-    "gdp_mit" : 1.0,
 
-    "glc6p"   : 1.0,
-    "fru6p"   : 1.0,
-    "fru26p"  : 1.0,
-    "fru16bp" : 1.0,
-    "fru16p"  : 1.0,
 
-    "grap"    : 1.0,
-    "dhap"    : 1.0,
-    "bpg13"   : 1.0,
-    "pg3"     : 1.0,
-    "pg2"     : 1.0,
-    "pep"     : 1.0,
-    "pyr_cyt" : 1.0,
-    "pyr_mit" : 1.0,
-    "lac"     : 1.0,
-    "lac_ext" : 1.0,
-    "cr"      : 1.0,
-    "crp"     : 1.0,
-
-    "mal_cyt" : 1.0,
-    "oa_cyt"  : 1.0,
-    "mal_mit":  1.0,
-    "oa_mit":   1.0,
-    "asp_cyt" : 1.0,
-    "asp_mit" : 1.0,
-    "akg_cyt" : 1.0,
-    "akg_mit" : 1.0,
-    "glu_cyt" : 1.0,
-    "glu_mit" : 1.0,
-    "suc"     : 1.0,
-    "fum"     : 1.0,
-
-    "nad_cyt" : 1.0,
-    "nadh_cyt": 1.0,
-    "nad_mit" : 1.0,
-    "nadh_mit": 1.0,
-    "fad"     : 1.0,
-    "fadh2"   : 1.0,
-
-    "dhap_cyt": 1.0,
-    "g3p_cyt" : 1.0,
-
-    "Q"       : 1.0,
-    "QH2"     : 1.0,
-    "cytc_ox" : 1.0,
-    "cytc_red" : 1.0,
-    "O2_mit"  : 1.0,
-
-    "K_mit"   : 1.0,
-    "K_cyt"   : 1.0,
-    "Na_mit"  : 1.0,
-    "Na_cyt"  : 1.0,
-    "H+_cyt"  : 1.0,
-    "H+_mit"  : 1.0,
-    "Ca_cyt"  : 1.0,
-    "Ca_mit"  : 1.0,
-
-    "CoA"     : 1.0,
-    "ACoA"    : 1.0,
-    "sucCoA" : 1.0,
-    "fad_pdhg" : 1.0,
-    "fadh2_pdhg" : 1.0,
-
-    "citr" : 1.0,
-    "isocitr" : 1.0,
-
+enzyme_params = {
     "mal_dehydr" : {
         "Vmax" : 3.2 * 10**4,
         "Keq"  : 0.0001,
@@ -432,9 +352,6 @@ arg = {
     },
 
     "mito_membrane" : {
-        "Vmm" : -200,
-        "h_cyt" : 1, # !!!!!
-        "h_mit" : 1, # !!!!!
         "Am"    : 3.7 * 10**-5, # cm**2
         "Cmit"  : 0.9 * 10**-6, #F/cm**2
 
@@ -541,7 +458,7 @@ arg = {
 
     "fru-2,6-bisphosphatase" : {
         "Vmax" : 0.052,
-        "Km_fru26p" : 0.07,
+        "Km" : 0.07,
         "Ki_fru6p" : 0.02,
 
     },
@@ -557,7 +474,7 @@ arg = {
 
     "fru-1,6-bisphosphatase" : {
         "Vmax" : 0.455,
-        "Km_fru6p" : 0.132,
+        "Km" : 0.132,
     },
 
     "phosphofructokinase1": {
@@ -568,14 +485,14 @@ arg = {
         "Ki_atp" : 1.2,
         "K0" : 0.55,
         "Ka_fru26p" : 0.0042,
-        "nfru26p" : 5.5,
+        "n_fru26p" : 5.5,
         "Ka_fru26p" : 0.005,
 
     },
 
     "glc6p_isomerase" : {
         "Vmax" : 24.4,
-        "Keq_g6piso": 0.5157,
+        "Keq": 0.5157,
         "Km_glc6p" : 0.593,
         "Km_fru6p": 0.095,
     },
@@ -584,7 +501,7 @@ arg = {
         "Vmax" : 9.36,
         "Km_glc" : 0.043,
         "Km_atp" : 0.37,
-        "Kiatp_glc6p" : 0.074,
+        "Ki_atp" : 0.074,
         "Ki_glc6p" : 0.1,
 
 
@@ -595,280 +512,49 @@ arg = {
         "Km_glc_cyt" : 2.87,
         "Km_glc_ext" : 2.87,
     }
-
-
 }
 
 class Simulator():
 
-    def __init__(self, arg):
+    def __init__(self, enzyme_params, metabolites):
 
-        self.arg = arg
+        # enzyme_params
+        self.enzymes = []
 
-    def model_equations(self, t, y):
-        self.arg["glc_ext"] = y[0]
-        self.arg["glc_cyt"] = y[1]
-        self.arg["atp_cyt"] = y[2]
-        self.arg["adp_cyt"] = y[3]
-        self.arg["amp_cyt"] = y[4]
-
-        self.arg["atp_mit"] = y[5]
-        self.arg["adp_mit"] = y[6]
-        self.arg["amp_mit"] = y[7]
-        self.arg["pi_cyt"] = y[8]
-        self.arg["pi_mit"] = y[9]
-        self.arg["gtp_mit"] = y[10]
-        self.arg["gdp_mit"] = y[11]
-
-        self.arg["glc6p"] = y[12]
-        self.arg["fru6p"] = y[13]
-        self.arg["fru26p"] = y[14]
-        self.arg["fru16bp"] = y[15]
-        self.arg["fru16p"] = y[16]
-
-        self.arg["grap"] = y[17]
-        self.arg["dhap"] = y[18]
-        self.arg["bpg13"] = y[19]
-        self.arg["pg3"] = y[20]
-        self.arg["pg2"] = y[21]
-        self.arg["pep"] = y[22]
-        self.arg["pyr_cyt"] = y[23]
-        self.arg["pyr_mit"] = y[24]
-        self.arg["lac"] = y[25]
-        self.arg["lac_ext"] = y[26]
-        self.arg["cr"] = y[27]
-        self.arg["crp"] = y[28]
-
-        self.arg["mal_cyt"] = y[29]
-        self.arg["oa_cyt"] = y[30]
-        self.arg["mal_mit"] = y[31]
-        self.arg["oa_mit"] = y[32]
-        self.arg["asp_cyt"] = y[33]
-        self.arg["asp_mit"] = y[34]
-        self.arg["akg_cyt"] = y[35]
-        self.arg["akg_mit"] = y[36]
-        self.arg["glu_cyt"] = y[37]
-        self.arg["glu_mit"] = y[38]
-        self.arg["suc"] = y[39]
-        self.arg["fum"] = y[40]
-
-        self.arg["nad_cyt"] = y[41]
-        self.arg["nadh_cyt"] = y[42]
-        self.arg["nad_mit"] = y[43]
-        self.arg["nadh_mit"] = y[44]
-        self.arg["fad"] = y[45]
-        self.arg["fadh2"] = y[46]
-
-        self.arg["dhap_cyt"] = y[47]
-        self.arg["g3p_cyt"] = y[48]
-
-        self.arg["Q"] = y[49]
-        self.arg["QH2"] = y[50]
-        self.arg["cytc_ox"] = y[51]
-        self.arg["cytc_red"] = y[52]
-        self.arg["O2_mit"] = y[53]
-
-        self.arg["K_mit"] = y[54]
-        self.arg["K_cyt"] = y[55]
-        self.arg["Na_mit"] = y[56]
-        self.arg["Na_cyt"] = y[57]
-        self.arg["H+_cyt"] = y[58]
-        self.arg["H+_mit"] = y[59]
-        self.arg["Ca_cyt"] = y[60]
-        self.arg["Ca_mit"] = y[61]
-
-        self.arg["CoA"] = y[62]
-        self.arg["ACoA"] = y[63]
-        self.arg["sucCoA"] = y[64]
-        self.arg["fad_pdhg"] = y[65]
-        self.arg["fadh2_pdhg"] = y[66]
-
-        self.arg["citr"] = y[67]
-        self.arg["isocitr"] = y[68]
-
-        self.arg["mito_membrane"]["Vmm"] = y[69]
+        self.enzymes.append( lib.GlucoseTransporter(0, 1, enzyme_params["glc_trs"]) )
+        self.enzymes.append( lib.Hexokinase(1, 2, 12, 6, enzyme_params["hexokinase"]) )
+        self.enzymes.append( lib.Glucose6phosphate_isomerase(12, 13, enzyme_params["glc6p_isomerase"]) )
+        self.enzymes.append( lib.Phosphofructokinase_type1(13, 2, 15, 3, 8, 14, enzyme_params["phosphofructokinase1"] ) )
+        self.enzymes.append( lib.Fructose16_bisphosphatase(15,13, 8, enzyme_params["fru-1,6-bisphosphatase"] ) )
+        self.enzymes.append( lib.Phosphofructokinase_type2(13, 2, 14, 3, 4, enzyme_params["phosphofructokinase2"] ) )
+        self.enzymes.append( lib.Fructose26_bisphosphatase(14, 13, 8, enzyme_params["fru-2,6-bisphosphatase"] ) )
+        self.enzymes.append( lib.Aldolase(15, 16, 17, enzyme_params["aldolase"] ) )
+        self.enzymes.append( lib.Triosophosphate_isomerase(16, 17, enzyme_params["triosep-isomerase"] ) )
+        self.enzymes.append( lib.Glyceraldehyde_3_phosphate_dehydrogenase(16, 8, 39, 18, 40, enzyme_params["grap_dehydr"] ) )
+        self.enzymes.append(lib.Phosphoglycerate_kinase(18, 3, 19, 2, enzyme_params["p-glyceratekinase"] ) )
+        self.enzymes.append(lib.Phosphoglycerate_mutase(19, 71, enzyme_params["p-gricerate_mutase"] ) )
+        self.enzymes.append(lib.Enolase(71, 20, enzyme_params["enolase"] ) )
+        self.enzymes.append(lib.Pyruvate_kinase(20, 3, 21, 2, enzyme_params["pyruvatekinase"] ) )
+        self.enzymes.append(lib.Lactate_dehydrogenase(21, 40, 23, 39, enzyme_params["LDG"] ) )
+        self.enzymes.append(lib.Monocarboxilate_transporter(24, 23, enzyme_params["MCT"] ) )
+        self.enzymes.append(lib.Creatine_kinase(2, 25, 3, 26,  enzyme_params["creatinekinase"] ) )
 
 
+    def run_model(self, t, y):
+        dydt = [0.0 for _ in range(len(y))]
 
-        arg = self.arg
-
-
-        # Glycolysis
-
-
-        vglc_transp = lib.getVglucosetransporter(arg)                     # Glucose transporter
-        vhexokinase = lib.getVhexokinase(arg)                             # Hexokinase
-        glucose6p_isomerase = lib.getVglucose6p_isomerase(arg)            # Glucose-6-phosphate isomerase
-        phosphofructokinase1 = lib.getVphosphofructokinase1(arg)          # Phosphofructokinase 1
-        phosphofructokinase2 = lib.getVphosphofructokinase2(arg)          # Phosphofructokinase 2
-
-        fru16bisphosphatase = lib.getVfru16bisphosphatase(arg)            # Fructose-1,6-bisphosphotase
-        fru26bisphosphatase = lib.getVfru26bisphosphatase(arg)            # Fructose-2,6-bisphosphatase
-        aldolase = lib.getValdolase(arg)                                  # Aldolase
-        triosep_isomerase = lib.getVtriosep_isomerase(arg)                # Triosophosphateisomerase
-        grap_dehydr = lib.getVgrap_dehydrogenase(arg)                     # Glyverolphosphatedehydrogenase
-        ph_glyceratekinase = lib.getVphosphoglyceratekinase(arg)          # Phosphoglyceratekinase
-        ph_glyceratemutase = lib.getVphosphoglyceratemutase(arg)          # Phosphoglyceratemutase
-        enolase = lib.getVenolase(arg)                                    # Enolase
-        pyruvatekinase = lib.getVpyruvatekinase(arg)                      # Pyruvatekinase
-        ldg = lib.getVlactatedehydrogenase(arg)                           # Lactate dedydrogenase
-        # Monocarboxilate transporter
-        mct = lib.getVmonocarboxilatetransporter(arg)
-        creatinekinase = lib.getVcreatinekinase(arg)
-        cyt_malatdehydrogenase = lib.getVmalatdehydrogenase(arg, mode="cyt")
-        mito_malatdehydrogenase = lib.getVmalatdehydrogenase(arg, mode="mit")
-        cyt_asp_aminotrans = lib.getVaspartateaminotransferase(arg, mode="mit")
-        mito_asp_aminotrans = lib.getVaspartateaminotransferase(arg, mode="mit")
-
-        asp_glu_carrier = lib.getVasp_glu_carrier(arg)
-        mal_akg_carrier = lib.getVmal_akg_carrier(arg)
-        cytg3pdehyd = lib.getVcytg3pdehyd(arg)
-
-        atp_syntase = lib.getVatp_syntase(arg)
-
-        mitg3pdehydFADH2, mitg3pdehydQH2 = lib.getVmitg3pdehyd(arg)
-        atp_atp_axchanger = lib.getVatp_atp_axchanger(arg)
-
-        atp_consumption = lib.getVatp_consumption(arg)
-
-        potassium_current_ed = lib.getIed(arg, ion="K")
-        sodium_current_ed = lib.getIed(arg, ion="Na")
-        protons_current_ed = lib.getIed(arg, ion="H+")
-
-        phos_pump = lib.getVpumps(arg, ion="pi")
-
-        calcium_ed = lib.getIca_ed(arg)
-        ca_na_pump = lib.getIca_na_pump(arg)
-        ca_h_pump = lib.getIca_h_pump(arg)
-
-        complex1 = lib.getVcomplex1(arg)
-        complex3 = lib.getVcomplex3(arg)
-        complex4 = lib.getVcomplex4(arg)
-
-        pyr_exchanger = lib.getVpyr_exchanger(arg)
-        pyr_dehyd_compACoA, pyr_dehyd_compFad = lib.getVpyr_dehydrogenase_complex(arg)
-        citrate_syntase = lib.getVcitratesyntase(arg)
-        aconitase = lib.getVaconitase(arg)
-        isocit_dehydr = lib.getVisocit_dehydrogenase(arg)
-        akg_dehydr_fad, akg_dehydr_nad  = lib.getVakg_dehydrogenase(arg)
-
-        sucCoAsyntase_atp = lib.getVsucCoAsyntase(arg, mode="atp")
-        sucCoAsyntase_gtp = lib.getVsucCoAsyntase(arg, mode="gtp")
-
-        v_succdh_fad, v_succdh = lib.getVsuc_dehydrydrogenase(arg)
-        fumarase = lib.getVfumarase(arg)
-
-        mal_dehydr = lib.getVmal_dehydr(arg)
-
-
-        # calculate balans of currents
-        # update mitochondrial potential
-
-        dydt = [0.0 for _ in range(70)]
-
-        dydt[0] = 0                             # external glucose
-        dydt[1] = vglc_transp - vhexokinase     # cytosole glucose
-
-        # cytosole ATP
-        dydt[2] =  -vhexokinase-phosphofructokinase1-phosphofructokinase2+ph_glyceratekinase+pyruvatekinase-creatinekinase
-
-        dydt[3] = vhexokinase + phosphofructokinase1+phosphofructokinase2 - ph_glyceratekinase-pyruvatekinase+creatinekinase                   # cytosole ADP
-
-        dydt[4] = 0           # cytosole AMP
-
-
-        dydt[5] = 0        # Mitochondrial ATP
-        dydt[6] = 0        # Mitochondrial ADP
-        dydt[7] = 0         # Mitochondrial AMP
-        dydt[8] = vhexokinase + phosphofructokinase1 + fru16bisphosphatase + fru26bisphosphatase - grap_dehydr        # cytosole nonorganic phosphate
-        dydt[9] = 0          # mitochondrial nonorganic phosphate
-        dydt[10] = 0         # Mitochondrial GTF
-        dydt[11] = 0            # "Mitochondrial GDF
-
-        dydt[12] = vhexokinase - glucose6p_isomerase     # glukose-6-phosphate
-        dydt[13] = glucose6p_isomerase - phosphofructokinase1 + fru16bisphosphatase - phosphofructokinase2 + fru26bisphosphatase    # fructose-6-phosphate
-        dydt[14] = phosphofructokinase2 - fru26bisphosphatase     # fructose-2,6-phosphate
-        dydt[15] = phosphofructokinase1-fru16bisphosphatase-aldolase      # fructose-1,6-bisphosphate
-
-        # dydt[16] = phosphofructokinase1-aldolase      # fructose-1,6-phosphate fru16p
-
-        dydt[17] = aldolase + triosep_isomerase - grap_dehydr     # Glycerol phosphate   "grap"
-        dydt[18] = aldolase - triosep_isomerase       #   hap
-        dydt[19] = grap_dehydr - ph_glyceratekinase       #   bpg13
-        dydt[20] = ph_glyceratekinase - ph_glyceratemutase      #   pg
-        dydt[21] = ph_glyceratemutase - enolase      #   pg2
-        dydt[22] = enolase - pyruvatekinase      # Phosphoenol pyruvate "pep"
-        dydt[23] = pyruvatekinase-ldg       # Cytosole Pyruvate pyr_cyt
-        dydt[24] = 0       # Mitochondrial pyruvate  "pyr_mit"
-        dydt[25] = ldg+mct       # Cytosole lactate lac
-        dydt[26] = 0       # Extracellular lactate    lac_ext
-        dydt[27] = -creatinekinase       # Creatine cr
-        dydt[28] = creatinekinase       # Creatine phosphate "crp"
-
-        dydt[29] = 0       # Cytosole malate   mal_cyt
-        dydt[30] = 0       # Cytosole oxaloacetate oa_cyt
-        dydt[31] = 0       # Mitochondrial malate mal_mit
-        dydt[32] = 0       # Mitochondrial oxaloacetate   oa_mit
-        dydt[33] = 0       # Cytosole aspartate asp_cyt
-        dydt[34] = 0       # Mitochondrial aspartate asp_mit
-        dydt[35] = 0       # Cytosole alpha-ketoglutorate akg_cyt
-        dydt[36] = 0       # Mitochondrial alpha-ketoglutorate akg_mit
-        dydt[37] = 0       # Cytosole glutamate glu_cyt
-        dydt[38] = 0       # Mitochondrial glutamate glu_mit
-        dydt[39] = 0       # Succinate suc
-        dydt[40] = 0       # Fumarate fum
-
-        dydt[41] = -grap_dehydr       # Cytosole NAD+ nad_cyt
-        dydt[42] = grap_dehydr       # Cytosole NADH nadh_cyt
-        dydt[43] = ldg       # Mitochondrial NAD+ nad_mit
-        dydt[44] = -ldg       # Mitochondrial NADH nadh_mit
-        dydt[45] = 0       # Mitochondrial FAD   fad
-        dydt[46] = 0       # Mitochondrial FADH2 fadh2
-
-        dydt[47] = 0       #  dhap_cyt
-        dydt[48] = 0       #  g3p_cyt
-
-
-        dydt[49] = 0        # Coensime Q || Q
-        dydt[50] = 0        # Coensime Q reduced "QH2"
-        dydt[51] = 0        # Cytochrome c oxidized cytc_ox
-        dydt[52] = 0        # cytochrome c reduced cytc_red
-        dydt[53] = 0        # Mitochondrial Oxigen O2_mit
-
-        dydt[54] = 0         # Mitochondrial potassium K_mit
-        dydt[55] = 0         # Cytosole potassium  K_cyt
-        dydt[56] = 0         # Mitochondrial sodium Na_mit
-        dydt[57] = 0         # Cytosole sodium Na_cyt
-        dydt[58] = 0         # Cytosole proton H+_cyt
-        dydt[59] = 0         # Mitochondrial proton H+_mit
-        dydt[60] = 0         # Cytosole calcium Ca_cyt
-        dydt[61] = 0         # Mitochondrial calcium Ca_mit
-
-        dydt[62] = 0          # Coensime CoA CoA
-        dydt[63] = 0          # Acetile coensime CoA ACoA
-        dydt[64] = 0          # Succinile CoA sucCoA
-        dydt[65] = 0          # fad_pdhg
-        dydt[66] = 0          # fadh2_pdhg
-
-        dydt[67] = 0           # Citrate citr
-        dydt[68] = 0           # Isocitrate isocitr
-
-        dydt[69] = 0            # Voltage on mitochondrial membrane  mito_membrane-Vmm
-
-
-
+        for enzyme in self.enzymes:
+            dydt = enzyme.update(y, dydt)
         return dydt
 
 
-simulalor = Simulator(arg)
+simulalor = Simulator(enzyme_params, metabolites)
 
 y0 = [1.0 for _ in range(70)]
 y0[-1] = -200
 
 
-simulalor.model_equations(0, y0)
+simulalor.run_model(0, y0)
+# sol = solve_ivp(simulalor.run_model, [0, 1000], y0)
 
-sol = solve_ivp(simulalor.model_equations, [0, 1000], y0)
 
-
-"""
