@@ -8,7 +8,7 @@ R = const.R
 T = 310 # 37 grad Celcium
 
 
-class Eznyme:
+class Enzyme:
 
     def __init__(self):
         pass
@@ -18,7 +18,7 @@ class Eznyme:
 
 
 
-class GlucoseTransporter(Eznyme):
+class GlucoseTransporter(Enzyme):
 
     def __init__(self, glc_ext, glc_cyt, params):
         self.glc_ext_idx = glc_ext
@@ -45,7 +45,7 @@ class GlucoseTransporter(Eznyme):
         return dydt
 ########################################################################################################
 
-class Hexokinase(Eznyme):
+class Hexokinase(Enzyme):
 
     def __init__(self, glc_cyt, atp_cyt, glc6p, adp_cyt, params):
 
@@ -79,7 +79,7 @@ class Hexokinase(Eznyme):
         return dydt
 #######################################################################################################
 
-class Glucose6phosphate_isomerase(Eznyme):
+class Glucose6phosphate_isomerase(Enzyme):
 
     def __init__(self, glc6p, fru6p, params):
 
@@ -105,7 +105,7 @@ class Glucose6phosphate_isomerase(Eznyme):
         return dydt
 #################################################################################################
 
-class Phosphofructokinase_type1(Eznyme):
+class Phosphofructokinase_type1(Enzyme):
 
     def __init__(self, fru6p, atp_cyt, fru16p, adp_cyt, pi_cyt, fru26p, params):
 
@@ -151,7 +151,7 @@ class Phosphofructokinase_type1(Eznyme):
 
         return dydt
 #####################################################################################################
-class Fructose16_bisphosphatase(Eznyme):
+class Fructose16_bisphosphatase(Enzyme):
     def __init__(self, fru16p, fru6p, pi_cyt, params):
         self.fru16p_idx = fru16p
         self.fru6p_idx = fru6p
@@ -173,7 +173,7 @@ class Fructose16_bisphosphatase(Eznyme):
         return dydt
 #####################################################################################################
 
-class Phosphofructokinase_type2(Eznyme):
+class Phosphofructokinase_type2(Enzyme):
 
     def __init__(self, fru6p, atp_cyt, fru26p, adp_cyt, amp, params):
         self.fru6p_idx = fru6p
@@ -210,7 +210,7 @@ class Phosphofructokinase_type2(Eznyme):
         return dydt
 ######################################################################################################
 
-class Fructose26_bisphosphatase(Eznyme):
+class Fructose26_bisphosphatase(Enzyme):
 
     def __init__(self, fru26p, fru6p, pi_cyt, params):
         self.fru26p_idx = fru26p
@@ -240,7 +240,7 @@ class Fructose26_bisphosphatase(Eznyme):
 
 #######################################################################################################
 
-class Aldolase(Eznyme):
+class Aldolase(Enzyme):
 
     def __init__(self, fru16p, grap, dhap, params):
         self.fru16p_idx = fru16p
@@ -276,7 +276,7 @@ class Aldolase(Eznyme):
         return dydt
 #######################################################################################################
 
-class Triosophosphate_isomerase(Eznyme):
+class Triosophosphate_isomerase(Enzyme):
 
     def __init__(self, grap, dhap, params):
         self.grap_idx = grap
@@ -302,7 +302,7 @@ class Triosophosphate_isomerase(Eznyme):
 
 ######################################################################################################
 
-class Glyceraldehyde_3_phosphate_dehydrogenase(Eznyme):
+class Glyceraldehyde_3_phosphate_dehydrogenase(Enzyme):
 
     def __init__(self, grap, pi, nad, bpg13, nadh, params):
         self.grap_idx = grap
@@ -349,7 +349,7 @@ class Glyceraldehyde_3_phosphate_dehydrogenase(Eznyme):
 
 #####################################################################################################
 
-class Phosphoglycerate_kinase(Eznyme):
+class Phosphoglycerate_kinase(Enzyme):
 
     def __init__(self, bpg13, adp, pg3, atp, params):
 
@@ -390,7 +390,7 @@ class Phosphoglycerate_kinase(Eznyme):
 
 #######################################################################################################
 
-class Phosphoglycerate_mutase(Eznyme):
+class Phosphoglycerate_mutase(Enzyme):
 
     def __init__(self, pg3, pg2, params):
 
@@ -420,7 +420,7 @@ class Phosphoglycerate_mutase(Eznyme):
 
 #######################################################################################################
 
-class Enolase(Eznyme):
+class Enolase(Enzyme):
 
     def __init__(self, pg2, pep, params):
         self.pg2_idx = pg2
@@ -447,7 +447,7 @@ class Enolase(Eznyme):
         return dydt
 ######################################################################################################
 
-class Pyruvate_kinase(Eznyme):
+class Pyruvate_kinase(Enzyme):
 
     def __init__(self, pep, adp, pyr, atp, params):
 
@@ -482,7 +482,7 @@ class Pyruvate_kinase(Eznyme):
         return dydt
 
 ########################################################################################################
-class Lactate_dehydrogenase(Eznyme):
+class Lactate_dehydrogenase(Enzyme):
 
     def __init__(self, pyr, nadh, lac, nad, params):
 
@@ -524,7 +524,7 @@ class Lactate_dehydrogenase(Eznyme):
 
 ########################################################################################################
 
-class Monocarboxilate_transporter(Eznyme):
+class Monocarboxilate_transporter(Enzyme):
 
     def __init__(self, lac_ext, lac_cyt, params):
         self.lac_ext_idx = lac_ext
@@ -555,7 +555,7 @@ class Monocarboxilate_transporter(Eznyme):
 
 #########################################################################################################
 
-class Creatine_kinase(Eznyme):
+class Creatine_kinase(Enzyme):
 
     def __init__(self, atp, cr, adp, crp, params):
 
@@ -589,7 +589,7 @@ class Creatine_kinase(Eznyme):
 #########################################################################################################
 
 
-class Malate_dehydrogenase(Eznyme):
+class Malate_dehydrogenase(Enzyme):
 
     def __init__(self, mal, oa, nad, nadh, params):
 
@@ -629,7 +629,7 @@ class Malate_dehydrogenase(Eznyme):
         return dydt
 ########################################################################################################
 
-class Aspartate_aminotransferase(Eznyme):
+class Aspartate_aminotransferase(Enzyme):
 
     def __init__(self, asp, akg, oa, glu, params):
         self.oa_idx = oa
@@ -659,7 +659,7 @@ class Aspartate_aminotransferase(Eznyme):
         return dydt
 #############################################################################################################
 
-class Aspartate_glutamate_carrier(Eznyme):
+class Aspartate_glutamate_carrier(Enzyme):
 
     def __init__(self, asp_mit, glu_cyt, h_cyt, asp_cyt, glu_mit, h_mit, Vmm, params):
         self.asp_mit_idx = asp_mit
@@ -710,7 +710,7 @@ class Aspartate_glutamate_carrier(Eznyme):
 
 #################################################################################################################
 
-class Malate_alphaketoglutarate_carrier(Eznyme):
+class Malate_alphaketoglutarate_carrier(Enzyme):
 
     def __init__(self, mal_cyt, akg_mit, mal_mit, akg_cyt, params):
 
@@ -748,7 +748,7 @@ class Malate_alphaketoglutarate_carrier(Eznyme):
 
 ###############################################################################################################
 
-class Glycerol_3phosphate_dehydrogenase_cytosolic(Eznyme):
+class Glycerol_3phosphate_dehydrogenase_cytosolic(Enzyme):
 
     def __init__(self, dhap, nadh, g3p, nad, params):
         self.dhap_idx = dhap
@@ -788,7 +788,7 @@ class Glycerol_3phosphate_dehydrogenase_cytosolic(Eznyme):
 
 ###########################################################################################################
 
-class Glycerol_3phosphate_dehydrogenase_mitochondrial(Eznyme):
+class Glycerol_3phosphate_dehydrogenase_mitochondrial(Enzyme):
 
     def __init__(self, g3p, dhap, fad_g3dh, fadh2_g3dh, Q, QH2, params):
         self.dhap_idx = dhap
@@ -846,7 +846,7 @@ class Glycerol_3phosphate_dehydrogenase_mitochondrial(Eznyme):
 
 #########################################################################################################
 
-class ATP_synthetase(Eznyme):
+class ATP_synthetase(Enzyme):
 
     def __init__(self, atp, adp, pi, h_cyt, h_mit, Vmm, params):
         self.atp_idx = atp
@@ -886,7 +886,7 @@ class ATP_synthetase(Eznyme):
 
 ##########################################################################################################
 
-class ATP_ADP_axchanger(Eznyme):
+class ATP_ADP_axchanger(Enzyme):
 
     def __init__(self, atp_mit, adp_cyt, adp_mit, atp_cyt, Vmm, params):
         self.atp_mit_idx = atp_mit
@@ -925,7 +925,7 @@ class ATP_ADP_axchanger(Eznyme):
 
 ############################################################################################################
 
-class ATP_consumption(Eznyme):
+class ATP_consumption(Enzyme):
 
     def __init__(self, atp, adp, pi, params):
 
@@ -950,263 +950,681 @@ class ATP_consumption(Eznyme):
         return dydt
 ############################################################################################################
 
+class Passive_efflux_ion(Enzyme):
 
+    def __init__(self, ion_in, ion_out, Vmm, params):
+        self.ion_in_idx = ion_in
+        self.ion_out_idx = ion_out
 
-def getIed(arg, ion="K"):
-    if ion == "K":
-        Ion_in = arg["K_cyt"]
-        Ion_mit = arg["K_mit"]
-        P = arg["potassium_ed"]["P_Kmit"]
-    elif ion == "Na":
-        Ion_in = arg["Na_cyt"]
-        Ion_mit = arg["Na_mit"]
-        P = arg["sodium_ed"]["P_Namit"]
-    elif ion == "H+":
-        Ion_in = arg["H+_cyt"]
-        Ion_mit = arg["H+_mit"]
-        P = arg["protons_ed"]["P_H_mit"]
+        self.Vmm_idx = Vmm
 
+        self.Am = params["Am"]
+        self.P = params["P"]
 
+        self.Cmm = params["Cmm"]
 
-    U = arg["mito_membrane"]["Vmm"] * F / (1000 * R * T)
-    tmp = (Ion_in - Ion_mit*np.exp(U)) / (1 - np.exp(U))
-    I = arg["mito_membrane"]["Am"] * P * U * F * tmp
+    def update(self, metabolits, dydt):
+        ion_in = metabolits[self.ion_in_idx]
+        ion_out = metabolits[self.ion_out_idx]
+        Vmm = metabolits[self.Vmm_idx]
 
-    return I
+        U = Vmm * F / (1000 * R * T)
+        tmp = (ion_in - ion_out * np.exp(U)) / (1 - np.exp(U))
+        I = self.P * U * F * tmp # * self.Am
 
+        # dydt[self.ion_in_idx] -=
+        # dydt[self.ion_out_idx] +=
 
-def getVpumps(arg, ion="K"):
 
-    if ion == "K":
-        ion_in = arg["K_cyt"]
-        ion_mit = arg["K_mit"]
-        Vmax = arg["K_pump"]["Vmax"]
+        dydt[self.Vmm_idx] += I / self.Cmm # / self.Am
 
-    elif ion == "Na":
-        ion_in = arg["Na_cyt"]
-        ion_mit = arg["Na_mit"]
-        Vmax = arg["Na_pump"]["Vmax"]
+        return dydt
+############################################################################################################
+class Pump(Enzyme):
 
-    elif ion == "pi":
-        ion_in = arg["pi_cyt"]
-        ion_mit = arg["pi_mit"]
-        Vmax = arg["phos_pump"]["Vmax"]
+    def __init__(self, ion_cyt, ion_mit, h_cyt, h_mit, params):
 
-    if ion=="K" or ion=="Na":
-        V = Vmax * (ion_in*arg["H+_mit"] - ion_mit*arg["H+_cyt"])
-    else:
-        V = Vmax * (ion_in * arg["H+_cyt"] - ion_mit * arg["H+_mit"])
+        self.ion_cyt_idx = ion_cyt
+        self.ion_mit_idx = ion_mit
+        self.h_cyt_idx = h_cyt
+        self.h_mit_idx = h_mit
 
-    return V
+        self.Vmax = params["Vmax"]
+        self.is_simport = params["is_simport"]
 
 
-def getIca_ed(arg):
+    def update(self, metabolits, dydt):
 
-    U = arg["mito_membrane"]["Vmm"] * F / (1000 * R * T)
-    tmp1 = (arg["Ca_cyt"] - arg["Ca_mit"] * np.exp(2 * U)) / (1 - np.exp(2 * U))
-    tmp2 = arg["calcium_ed"]["P_RMC"]*(1 - arg["Ca_cyt"]/(arg["Ca_cyt"] + arg["calcium_ed"]["Ki_cacyt" ]))
-    tmp3 = arg["calcium_ed"]["P_Mcu"] * arg["Ca_cyt"]**arg["calcium_ed"]["n"] / (arg["Ca_cyt"]**arg["calcium_ed"]["n"] + arg["calcium_ed"]["Km_Mcu"]**arg["calcium_ed"]["n"])
-    tmp4 = arg["Ca_cyt"]**arg["calcium_ed"]["n_a"] / (arg["Ca_cyt"]**arg["calcium_ed"]["n_a"] + arg["calcium_ed"]["Ka"]**arg["calcium_ed"]["n_a"])
+        ion_cyt = metabolits[self.ion_cyt_idx]
+        ion_mit = metabolits[self.ion_mit_idx]
+        h_cyt = metabolits[self.h_cyt_idx]
+        h_mit = metabolits[self.h_mit_idx]
 
-    I = arg["mito_membrane"]["Am"] * 2 * U * F * tmp1 * (tmp2 + tmp3 * tmp4)
-    return I
+        if self.is_simport:
+            V = self.Vmax * (ion_cyt * h_cyt - ion_mit * h_mit)
 
+            dydt[self.h_cyt_idx] -= V
+            dydt[self.h_mit_idx] += V
+        else:
+            V = self.Vmax * (ion_cyt * h_mit - ion_mit * h_cyt)
 
-def getIca_na_pump(arg):
+            dydt[self.h_mit_idx] -= V
+            dydt[self.h_cyt_idx] += V
 
-    Keq = np.exp(-0.001 * arg["mito_membrane"]["Vmm"] * F / R / T)
-    tmp1 = arg["Ca_mit"] / (arg["Ca_mit"] + arg["ca_na_pump"]["Km_ca"])
-    tmp2 = arg["Na_cyt"]**arg["ca_na_pump"]["n"] / (arg["Na_cyt"]**arg["ca_na_pump"]["n"] + arg["ca_na_pump"]["Km_na"]**arg["ca_na_pump"]["n"])
-    tmp3 = arg["Ca_mit"] * arg["Na_cyt"]**arg["ca_na_pump"]["n_Na"] - arg["Ca_cyt"] * arg["Na_mit"]**arg["ca_na_pump"]["n_Na"] / Keq
+        dydt[self.ion_cyt_idx] -= V
+        dydt[self.ion_mit_idx] += V
 
-    I = tmp1 * tmp2 * tmp3
+        return dydt
 
-    return I
+###########################################################################################################
 
-def getIca_h_pump(arg):
-    Keq = np.exp(-0.001 * arg["mito_membrane"]["Vmm"] * F / R / T)
+class Calcium_effux(Enzyme):
+    def __init__(self, ca_cyt, ca_mit, Vmm, params):
 
-    tmp1 =  arg["Ca_mit"] / (arg["Ca_mit"] + arg["ca_h_pump"]["Km_ca"])
-    tmp2 =  arg["Ca_mit"] * arg["H+_cyt"]**arg["ca_h_pump"]["n_H"] - arg["Ca_cyt"] * arg["H+_mit"]**arg["ca_h_pump"]["n_H"] / Keq
+        self.ca_cyt_idx = ca_cyt
+        self.ca_mit_idx = ca_mit
+        self.Vmm_idx = Vmm
 
-    I = tmp1 * tmp2
+        self.P_RMC = params["P_RMC"]
+        self.Ki_cacyt = params["Ki_cacyt"]
+        self.P_Mcu = params["P_Mcu"]
+        self.n = params["n"]
+        self.n_a = params["n_a"]
+        self.Ka = params["Ka"]
+        self.Am = params["Am"]
 
-    return I
+    def update(self, metabolits, dydt):
 
-def getVcomplex1(arg):
-    U = arg["mito_membrane"]["Vmm"] * F / (1000 * R * T)
-    Keq = np.exp(2*arg["mito_membrane"]["Em_N"] + 2*arg["mito_membrane"]["Em_Q"]  + 4*U ) * (arg["mito_membrane"]["h_mit"]/arg["mito_membrane"]["h_cyt"])**4
-    V = arg["complex1"]["Vmax"] * (arg["nadh_mit"] * arg["Q"] - arg["nad_mit"] * arg["QH2"] / Keq)
+        ca_cyt = metabolits[self.ca_cyt_idx]
+        ca_mit = metabolits[self.ca_mit_idx]
+        Vmm = metabolits[self.Vmm_idx]
 
-    return V
+        U = Vmm * F / (1000 * R * T)
+        tmp1 = ( ca_cyt - ca_mit * np.exp(2 * U) ) / (1 - np.exp(2 * U))
 
-def getVcomplex3(arg):
-    U = arg["mito_membrane"]["Vmm"] * F / (1000 * R * T)
+        tmp2 = self.P_RMC * (1 - ca_cyt/(ca_cyt + self.Ki_cacyt))
+        tmp3 = self.P_Mcu * ca_cyt**self.n / ( ca_cyt**self.n + self.Km_Mcu**self.n)
+        tmp4 = ca_cyt**self.n_a / (ca_cyt**self.n_a + self.Ka**self.n_a)
 
-    tmp = (arg["mito_membrane"]["h_mit"]/arg["mito_membrane"]["h_cyt"])**4
-    Keq = np.exp(-2 * arg["mito_membrane"]["Em_Q"] + 2 * arg["mito_membrane"]["Em_cytc"] + 2*U) * tmp
+        I = self.Am * 2 * U * F * tmp1 * (tmp2 + tmp3 * tmp4)
 
-    n =  arg["complex3"]["n"]
-    V  = arg["complex3"]["Vmax"]*(arg["QH2"] * arg["cytc_ox"]**n - arg["Q"] * arg["cytc_red"]**n  / Keq)
-    return V
+        # dydt[self.ca_cyt_idx] += I  # !!!!!!!!!
+        # # dydt[self.ca_mit_idx] += I !!!!!!!!!!
 
-def getVcomplex4(arg):
+        dydt[self.Vmm_idx] += I
+        return dydt
 
-    tmp1 = arg["cytc_red"]**arg["complex4"]["n"] / (arg["cytc_red"]**arg["complex4"]["n"] + arg["complex4"]["Km_cytc"]**arg["complex4"]["n"])
-    tmp2 = arg["O2_mit"] / (arg["O2_mit"] + arg["complex4"]["Km_O2"])
-    tmp3 = (np.exp(-0.001 * arg["complex4"]["dGh"] * F / R / T  ))**2
 
-    V = arg["complex4"]["Vmax"] * tmp1*tmp2*tmp3
 
-    return V
+###############################################################################################
 
-def getVpyr_exchanger(arg):
+class Ca_Na_pump(Enzyme):
 
-    tmp1 = arg["pyr_cyt"] * arg["H+_cyt"] - arg["pyr_mit"] * arg["H+_mit"]
-    tmp2 = 1 + arg["pyr_cyt"]/arg["pyr_exchanger"]["Km_pyr_cit"]
-    tmp3 = 1 + arg["pyr_mit"]/arg["pyr_exchanger"]["Km_pyr_mit"]
+    def __init__(self, ca_mit, na_cyt, ca_cyt, na_mit, Vmm, params):
+        self.ca_mit_idx = ca_mit
+        self.na_cyt_idx = na_cyt
+        self.ca_cyt_idx = ca_cyt
+        self.na_mit_idx = na_mit
+        self.Vmm_idx = Vmm
 
-    V = arg["pyr_exchanger"]["Vmax"] * tmp1 / (tmp2 * tmp3)
+        self.n_Na = params["n_Na"]
+        self.n = params["n"]
+        self.Km_ca = params["Km_ca"]
+        self.Km_na = params["Km_na"]
 
-    return V
+    def update(self, metabolits, dydt):
+        Vmm = metabolits[self.Vmm_idx]
 
-def getVpyr_dehydrogenase_complex_stage1(arg):
+        ca_mit = metabolits[self.ca_mit_idx]
+        na_cyt = metabolits[self.na_cyt_idx]
 
-    tmp1 = 1 + arg["pyr_dehyd_comp"]["Amax_Ca"] * arg["Ca_mit"] / (arg["Ca_mit"] + arg["pyr_dehyd_comp"]["Ka_Ca"] )
-    tmp2 = arg["pyr_mit"] / (arg["pyr_mit"] + arg["pyr_dehyd_comp"]["Km_pyr"] )
-    tmp3 = arg["fad_pdhg"] / (arg["fad_pdhg"] + arg["pyr_dehyd_comp"]["Km_fad"])
-    tmp4 = arg["CoA"] / (arg["CoA"] + arg["pyr_dehyd_comp"]["Km_CoA"]*(1 + arg["ACoA"] / arg["pyr_dehyd_comp"]["Ki_AcoA"]))
-    pyr_dehyd_compACoA = arg["pyr_dehyd_comp"]["Vmax_pdhc_fad"] * tmp1 * tmp2 * tmp3 * tmp4
 
-    return pyr_dehyd_compACoA
+        ca_cyt = metabolits[self.ca_cyt_idx]
+        na_mit = metabolits[self.na_mit_idx]
 
-def getVpyr_dehydrogenase_complex_stage2(arg):
-    Keq = np.exp( 2*(arg["pyr_dehyd_comp"]["Em_fad"] + arg["pyr_dehyd_comp"]["Em_nad"])*F*0.001 / R / T  )
-    tmp5 = arg["fadh2_pdhg"] * arg["nad_mit"] - arg["fad_pdhg"]*arg["nadh_mit"] / Keq
-    pyr_dehyd_compFad = arg["pyr_dehyd_comp"]["Vmax_pdhc_nad"] * tmp5 / (arg["nad_mit"] + arg["pyr_dehyd_comp"]["Km_nad"])
+        Keq = np.exp(-0.001 * Vmm * F / R / T)
+        tmp1 = ca_mit / (ca_mit + self.Km_ca)
+        tmp2 = na_cyt**self.n / (na_cyt**n + self.Km_na**self.n)
+        tmp3 = ca_mit * na_cyt**self.n_Na - ca_cyt * na_mit**self.n_Na / Keq
 
-    return pyr_dehyd_compFad
+        I = tmp1 * tmp2 * tmp3
 
-def getVcitratesyntase(arg):
+        # dydt[]
 
-    tmp1 = arg["oa_mit"] / ( arg["oa_mit"] + arg["citrate_syntase"]["Km_oxa"]*(1 + arg["citr"]/arg["citrate_syntase"]["Ki_cit"]))
-    tmp2 = arg["ACoA"] / (arg["ACoA"] + arg["citrate_syntase"]["Km_accoa"]*(1 + arg["CoA"]/arg["citrate_syntase"]["Ki_CoA"]))
+        return dydt
+###############################################################################################
 
-    V = arg["citrate_syntase"]["Vmax"] * tmp1 * tmp2
-    return V
+class Ca_H_pump(Enzyme):
 
-def getVaconitase(arg):
+    def __init__(self,  ca_mit, h_cyt, ca_cyt, h_mit, Vmm, params):
+        
+        self.ca_mit_idx = ca_mit
+        self.h_cyt_idx = h_cyt
+        self.ca_cyt_idx = ca_cyt
+        self.h_mit_idx = h_mit
+        self.Vmm_idx = Vmm
 
-    tmp1 = arg["citr"] - arg["isocitr"] /  arg["aconitase"]["Keq"]
-    tmp2 = 1 + arg["citr"]/arg["aconitase"]["Km_cit"] + arg["isocitr"]/arg["aconitase"]["Km_isocit"]
+        self.Km_ca = params["Km_ca"]
+        self.n_H = params["n_H"]
 
-    V = arg["aconitase"]["Vmax"] * tmp1 / tmp2
-    return V
 
-def getVisocit_dehydrogenase(arg):
+    def update(self, metabolits, dydt):
 
-    Km_isocitr = arg["isocit_dehydr"]["Km1_isocit"] / (1 + (arg["Ca_mit"]/arg["isocit_dehydr"]["Ka_Ca"])**arg["isocit_dehydr"]["n_Ca"]) + arg["isocit_dehydr"]["Km2_isocit"]
-    tmp1 = arg["isocitr"]**arg["isocit_dehydr"]["n_isocit"] / (arg["isocitr"]**arg["isocit_dehydr"]["n_isocit"] + Km_isocitr**arg["isocit_dehydr"]["n_isocit"])
-    tmp2 = arg["nad_mit"] / (arg["nad_mit"] + arg["isocit_dehydr"]["Km_nad"] * (1 + arg["nadh_mit"]/arg["isocit_dehydr"]["Ki_nadh"]) )
-    V = arg["isocit_dehydr"]["Vmax"] * tmp1 * tmp2
-    return V
+        Vmm = metabolits[self.Vmm_idx]
 
+        ca_mit = metabolits[self.ca_mit_idx]
+        h_cyt = metabolits[self.h_cyt_idx]
 
-def getVakg_dehydrogenase_stage1(arg):
+        ca_cyt = metabolits[self.ca_cyt_idx]
+        h_mit = metabolits[self.h_mit_idx]
 
-    Km = (arg["akg_dehydr"]["Km1"]/(1 + arg["Ca_mit"]/arg["akg_dehydr"]["Ki_ca"]) + arg["akg_dehydr"]["Km2"] ) * (1 + arg["nadh_mit"] / arg["akg_dehydr"]["Ki_nadh"])
-    tmp1 = arg["akg_mit"] / (arg["akg_mit"] + Km)
-    tmp2 = arg["fad"] / (arg["fad"] + arg["akg_dehydr"]["Km_fad"])
-    tmp3 = arg["CoA"] / (arg["CoA"] + arg["akg_dehydr"]["Km_CoA"]*(1 + arg["sucCoA"]/arg["akg_dehydr"]["Km_SucCoA"]) )
-    Vfad = arg["akg_dehydr"]["Vmax_fad"] * tmp1 * tmp2 * tmp3
+        Keq = np.exp(-0.001 * Vmm * F / R / T)
+        tmp1 = ca_mit / ( ca_mit + self.Km_ca)
+        tmp2 =  ca_mit * h_cyt**self.n_H - ca_cyt * h_mit**self.n_H / Keq
 
-    return Vfad
+        I = tmp1 * tmp2
 
-def getVakg_dehydrogenase_stage2(arg):
+        # dydt !!!!!!!!
 
-    Keq = np.exp(0.002 * F * (arg["akg_dehydr"]["Em_fad"] + arg["akg_dehydr"]["Em_nad"]) / R / T )
-    tmp4 = arg["fadh2"] * arg["nad_mit"] - arg["fad"]*arg["nadh_mit"] / Keq
-    tmp5 = arg["nad_mit"] + arg["akg_dehydr"]["Km_nad"] * (1 + arg["nadh_mit"]/arg["akg_dehydr"]["Ki_nadh"])
-    Vnad = arg["akg_dehydr"]["Vmax_nad"] * tmp4 / tmp5
+        return dydt
+##############################################################################################
 
-    return Vnad
+class Complex1(Enzyme):
 
-def getVsucCoAsyntase(arg, mode="gtp"):
+    def __init__(self, h_cyt, h_mit, q, qh2, nad, nadh, Vmm, params):
+        self.h_cyt_idx = h_cyt
+        self.h_mit_idx = h_mit
+        self.q_idx = q
+        self.qh2_idx = qh2
+        self.nad_idx = nad
+        self.nadh_idx = nadh
+        self.Vmm_idx = Vmm
 
-    if mode == "gtp":
-        Km_sucCoA = arg["sucCoAsyntase"]["Km_sucCoA_G"]
-        Km_suc = arg["sucCoAsyntase"]["Km_suc_G"]
-        Km_CoA = arg["sucCoAsyntase"]["Km_CoA_G"]
-        nuc3P = arg["gtp_mit"]
-        nuc2P = arg["gtp_mit"]
-        Km_nuc3P = arg["sucCoAsyntase"]["Km_gdp"]
-        Km_nuc2P = arg["sucCoAsyntase"]["Km_gtp"]
+        self.Em_N = params["Em_N"]
+        self.Em_Q = params["Em_Q"]
+        self.Vmax = params["Vmax"]
 
-    elif mode == "atp":
-        Km_sucCoA = arg["sucCoAsyntase"]["Km_sucCoA"]
+    def update(self, metabolits, dydt):
 
-        Km_suc = arg["sucCoAsyntase"]["Km_suc"]
-        Km_CoA = arg["sucCoAsyntase"]["Km_CoA"]
+        Vmm = metabolits[self.Vmm_idx]
+        h_cyt = metabolits[self.h_cyt_idx]
+        h_mit = metabolits[self.h_mit_idx]
+        Q = metabolits[self.q_idx]
+        QH2 = metabolits[self.qh2_idx]
+        nadh = metabolits[self.nadh_idx]
+        nad = metabolits[self.nad_idx]
 
-        nuc3P = arg["atp_mit"]
-        nuc2P = arg["adp_mit"]
-        Km_nuc3P = arg["sucCoAsyntase"]["Km_atp"]
-        Km_nuc2P = arg["sucCoAsyntase"]["Km_atp"]
+        U = Vmm * F / (1000 * R * T)
+        Keq = np.exp(2 * self.Em_N + 2*self.Em_Q  + 4*U ) * (h_mit/h_cyt)**4
+        V = self.Vmax * (nadh * Q - nad * QH2 / Keq)
 
-    tmp1 = arg["sucCoAsyntase"]["Amax_P"]**arg["sucCoAsyntase"]["n_P"] * arg["pi_mit"]**arg["sucCoAsyntase"]["n_P"]
-    tmp1 /= (arg["pi_mit"]**arg["sucCoAsyntase"]["n_P"] + arg["sucCoAsyntase"]["Km_P"]**arg["sucCoAsyntase"]["n_P"])
-    tmp1 += 1
+        dydt[self.nadh_idx] -= V
+        dydt[self.q_idx] -= V
+        dydt[self.h_mit_idx] -= 4 * V
 
-    tmp2 = arg["sucCoA"] * arg["gdp_mit"] * arg["pi_mit"] - arg["suc"]*arg["CoA"]*arg["gtp_mit"]/arg["sucCoAsyntase"]["Keq"]
+        dydt[self.h_cyt_idx] += 4 * V
+        dydt[self.qh2_idx] += V
+        dydt[self.nad_idx] += V
 
-    vsuccoa = 1 + arg["sucCoA"] / Km_sucCoA
-    vnuc3P = 1 + nuc3P/Km_nuc3P
-    vp = 1 + arg["pi_mit"] / arg["sucCoAsyntase"]["Km_P"]
 
-    Vsuc = 1 + arg["suc"] / Km_suc
-    Vcoa = 1 + arg["CoA"] / Km_CoA
-    vnuc2P = 1 + nuc2P / Km_nuc2P
+        return dydt
+###################################################################################
 
-    V = arg["sucCoAsyntase"]["Vmax"] * tmp1 * tmp2 / (vsuccoa*vnuc3P*vp + Vsuc*Vcoa*vnuc2P - 1)
+class Complex3(Enzyme):
 
-    return V
+    def __init__(self, h_cyt, h_mit, q, qh2, cytc_ox, cytc_red, Vmm, params):
+        self.h_cyt_idx = h_cyt
+        self.h_mit_idx = h_mit
+        self.q_idx = q
+        self.qh2_idx = qh2
+        self.cytc_ox_idx = cytc_ox
+        self.cytc_red_idx = cytc_red
+        self.Vmm_idx = Vmm
 
+        self.Em_Q = params["Em_Q"]
+        self.Em_cytc = params["Em_cytc"]
+        self.n = params["n"]
+        self.Vmax = params["Vmax"]
 
-def getVsuc_dehydrydrogenase_stage1(arg):
+    def update(self, metabolits, dydt):
+        Vmm = metabolits[self.Vmm_idx]
+        h_cyt = metabolits[self.h_cyt_idx]
+        h_mit = metabolits[self.h_mit_idx]
+        Q = metabolits[self.q_idx]
+        QH2 = metabolits[self.qh2_idx]
+        cytc_ox = metabolits[self.cytc_ox_idx]
+        cytc_red = metabolits[self.cytc_red_idx]
 
-    Keq_succdh = 1.0 # !!!!!!! np.exp( (25-arg["suc_dehydr"]["Em_FAD-succdh"]) * F / R / T )
-    tmp1 = arg["suc"] * arg["Q"] - arg["fum"] * arg["QH2"] / Keq_succdh
-    tmp2 = arg["suc"] + arg["suc_dehydr"]["Km_suc"]*(1 + arg["mal_mit"]/arg["suc_dehydr"]["Ki_mal"])
-    v_succdh_fad = arg["suc_dehydr"]["Vmax_succdh"] * tmp1 / tmp2
-    return v_succdh_fad
+        U = Vmm * F / (1000 * R * T)
 
-def getVsuc_dehydrydrogenase_stage2(arg):
+        tmp = (h_mit / h_cyt)**4
+        Keq = np.exp(-2 * self.Em_Q + 2 * self.Em_cytc + 2*U) * tmp
 
-    Keq_pdhc_fad_nad = 1.0 # !!! np.exp(-arg["suc_dehydr"]["Em_FAD-succdh"] * F / R / T) ## !!!!!! add - before Em
-    tmp3 = arg["fadh2"] * arg["nad_mit"] - arg["fad"] * arg["nadh_mit"] / Keq_pdhc_fad_nad
-    v_succdh = arg["suc_dehydr"]["Vmax_nadh"] * tmp3 / (arg["suc_dehydr"]["Km_nad"])
-    return v_succdh
+        V  = self.Vmax * (QH2 * cytc_ox**self.n - Q * cytc_red**self.n  / Keq)
 
+        dydt[self.qh2_idx] -= V
+        dydt[self.cytc_ox_idx] -= 2 * V
+        dydt[self.h_mit_idx] -= 2 * V
 
-def getVfumarase(arg):
+        dydt[self.h_cyt_idx] += 2 * V
+        dydt[self.cytc_red_idx] += 2* V
+        dydt[self.q_idx] += V
 
-    tmp1 = arg["fum"] - arg["mal_mit"] / arg["fumarase"]["Keq"]
-    tmp2 = 1 + arg["fum"]/arg["fumarase"]["Km_fum"] - arg["mal_mit"] / arg["fumarase"]["Km_mal"]
+        return dydt
 
-    V = arg["fumarase"]["Vmax"] * tmp1 / tmp2
+class Complex4(Enzyme):
 
-    return V
+    def __init__(self, h_cyt, h_mit, cytc_ox, cytc_red, o2, Vmm, params):
 
-def getVmal_dehydr(arg):
+        self.h_cyt_idx = h_cyt
+        self.h_mit_idx = h_mit
+        self.o2_idx = o2
 
-    tmp1 = arg["mal_mit"] * arg["nad_mit"] - arg["oa_mit"]*arg["nadh_mit"] / arg["mal_dehydr"]["Keq"]
+        self.cytc_ox_idx = cytc_ox
+        self.cytc_red_idx = cytc_red
+        self.Vmm_idx = Vmm
 
-    tmp2 = (1 + arg["mal_mit"] / arg["mal_dehydr"]["Km_mal"]) * (1 + arg["nad_mit"] / arg["mal_dehydr"]["Km_nad"])
-    tmp3 = (1 + arg["oa_mit"] / arg["mal_dehydr"]["Km_oa"] ) * (1 + arg["nadh_mit"] / arg["mal_dehydr"]["Km_nadh"])
+        self.Km_O2 = params["Km_O2"]
+        self.dGh = params["dGh"]
+        self.n = params["n"]
+        self.Vmax = params["Vmax"]
 
-    V = arg["mal_dehydr"]["Vmax"] * tmp1 / (tmp2 + tmp3 - 1)
+    def update(self, metabolits, dydt):
 
-    return V
+        # Vmm = metabolits[self.Vmm_idx]
+        # h_cyt = metabolits[self.h_cyt_idx]
+        # h_mit = metabolits[self.h_mit_idx]
+        o2 = metabolits[self.o2_idx]
+
+
+        cytc_red = metabolits[self.cytc_red_idx]
+
+        tmp1 = cytc_red**self.n / (cytc_red**self.n + self.Km_cytc**self.n)
+
+        tmp2 = o2 / (o2 + self.Km_O2)
+        tmp3 = (np.exp(-0.001 * self.dGh * F / R / T  ))**2
+
+        V = self.Vmax * tmp1*tmp2*tmp3
+
+        dydt[self.cytc_red_idx] -= 2*V
+        dydt[self.o2_idx] -= V
+        dydt[self.h_mit_idx] -= 2*V
+
+        dydt[self.h_cyt_idx] += 2*V
+        dydt[self.cytc_ox_idx] += 2*V
+
+        return dydt
+########################################################################################################################
+
+class Pyruvate_exchanger(Enzyme):
+    def __init__(self, pyr_cyt, pyr_mit, h_cyt, h_mit, params):
+        self.pyr_cyt_idx = pyr_cyt
+        self.pyr_mit_idx = pyr_mit
+        self.h_cyt_idx = h_cyt
+        self.h_mit_idx = h_mit
+
+        self.Km_pyr_mit = params["Km_pyr_mit"]
+        self.Km_pyr_cyt = params["Km_pyr_cyt"]
+        self.Vmax = params["Vmax"]
+
+    def update(self, metabolits, dydt):
+
+        h_cyt = metabolits[self.h_cyt_idx]
+        h_mit = metabolits[self.h_mit_idx]
+        pyr_cyt = metabolits[self.pyr_cyt_idx]
+        pyr_mit = metabolits[self.pyr_mit_idx]
+
+        tmp1 = pyr_cyt * h_cyt - pyr_mit * h_mit
+        tmp2 = 1 + pyr_cyt / self.Km_pyr_cit
+        tmp3 = 1 + pyr_mit / self.Km_pyr_mit
+
+        V = self.Vmax * tmp1 / (tmp2 * tmp3)
+
+        dydt[self.pyr_cyt_idx] -= V
+        dydt[self.pyr_mit_idx] += V
+        dydt[self.h_mit_idx] -= V
+        dydt[self.h_cyt_idx ] += V
+
+        return dydt
+########################################################################################################################
+
+class Pyruvate_dehydrogenase_complex(Enzyme):
+
+    def __init__(self, pyr, CoA, acCoA, fad_pdhc, fadh2_pdhc, nad, nadh, ca, params):
+        self.pyr_idx = pyr
+        self.CoA_idx = CoA
+        self.acCoA_idx = acCoA
+        self.fad_pdhc_idx = fad_pdhc
+        self.fadh2_pdhc_idx = fadh2_pdhc
+        self.nad_idx = nad
+        self.nadh_idx = nadh
+        self.ca_idx = ca
+
+        self.Amax_Ca = params["Amax_Ca"]
+        self.Ka_Ca = params["Ka_Ca"]
+        self.Ki_AcoA = params["Ki_AcoA"]
+        self.Vmax_pdhc_fad = params["Vmax_pdhc_fad"]
+        self.Em_fad = params["Em_fad"]
+        self.Em_nad = params["Em_nad"]
+        self.Km_nad = params["Km_nad"]
+        self.Vmax_pdhc_nad = params["Vmax_pdhc_nad"]
+        self.Vmax_pdhc_nad = params["Vmax_pdhc_nad"]
+
+    def update(self, metabolits, dydt):
+
+        pyr = metabolits[self.pyr_idx]
+        CoA = metabolits[self.CoA_idx]
+        acCoA = metabolits[self.acCoA_idx]
+        fad_pdhc = metabolits[self.fad_pdhc_idx]
+        fadh2_pdhc = metabolits[self.fadh2_pdhc_idx]
+        nad = metabolits[self.nad_idx]
+        nadh = metabolits[self.nadh_idx]
+        ca = metabolits[self.ca_idx]
+
+        tmp1 = 1 + self.Amax_Ca * ca / ( ca + self.Ka_Ca )
+        tmp2 = pyr / (pyr + self.Km_pyr )
+        tmp3 = fad_pdhc / (fad_pdhc + self.Km_fad)
+
+        tmp4 = CoA / (CoA + self.Km_CoA*(1 + acCoA / self.Ki_AcoA))
+        pyr_dehyd_compACoA = self.Vmax_pdhc_fad * tmp1 * tmp2 * tmp3 * tmp4
+
+        dydt[self.pyr_idx] -= pyr_dehyd_compACoA
+        dydt[self.CoA_idx] -= pyr_dehyd_compACoA
+        dydt[self.fad_pdhc_idx] -= pyr_dehyd_compACoA
+
+        dydt[self.acCoA_idx] += pyr_dehyd_compACoA
+        dydt[self.fadh2_pdhc_idx] += pyr_dehyd_compACoA
+
+        Keq = np.exp( 2*( self.Em_fad + self.Em_nad)*F*0.001 / R / T  )
+        tmp5 = fadh2_pdhc * nad - fad_pdhc * nadh / Keq
+        pyr_dehyd_compFad = self.Vmax_pdhc_nad * tmp5 / (nad + self.Km_nad)
+
+        dydt[self.fadh2_pdhc_idx] -= pyr_dehyd_compFad
+        dydt[self.nad_idx] -= pyr_dehyd_compFad
+        dydt[self.nadh_idx] += pyr_dehyd_compFad
+        dydt[self.fad_pdhc_idx] += pyr_dehyd_compFad
+
+        return dydt
+########################################################################################################################
+
+class Citrate_synthetase(Enzyme):
+    def __init__(self, oa, acCoA, CoA, cit, params):
+        self.oa_idx = oa
+        self.acCoA_idx = acCoA
+        self.CoA_idx = CoA
+        self.cit_idx = cit
+
+        self.Km_oxa = params["Km_oxa"]
+        self.Ki_cit = params["Ki_cit"]
+        self.Ki_CoA = params["Ki_CoA"]
+        self.Km_accoa = params["Km_accoa"]
+        self.Vmax = params["Vmax"]
+
+    def update(self, metabolits, dydt):
+        oa = metabolits[self.oa_idx]
+        acCoA = metabolits[self.acCoA_idx]
+        CoA = metabolits[self.CoA_idx]
+        cit = metabolits[self.cit_idx]
+
+        tmp1 = oa / ( oa + self.Km_oxa * (1 + cit / self.Ki_cit))
+        tmp2 = acCoA / (acCoA + self.Km_accoa*(1 + CoA / self.Ki_CoA))
+
+        V = self.Vmax * tmp1 * tmp2
+
+        dydt[self.oa_idx] -= V
+        dydt[self.acCoA_idx] -= V
+        dydt[self.cit_idx] += V
+
+        return dydt
+########################################################################################################################
+
+class Aconitase(Enzyme):
+
+    def __init__(self, citr, isocitr, params):
+
+        self.citr_idx = citr
+        self.isocitr_idx = isocitr
+
+        self.Keq = params["Keq"]
+        self.Km_cit = params["Km_cit"]
+        self.Km_isocit = params["Km_isocit"]
+        self.Vmax = params["Vmax"]
+
+    def update(self, metabolits, dydt):
+        citr = metabolits[self.citr_idx]
+        isocitr = metabolits[self.isocitr_idx]
+
+        tmp1 = citr - isocitr /  self.Keq
+        tmp2 = 1 + citr / self.Km_cit + isocitr / self.Km_isocit
+
+        V = self.Vmax * tmp1 / tmp2
+
+        dydt[self.citr_idx] -= V
+        dydt[self.isocitr_idx] += V
+
+        return dydt
+########################################################################################################################
+
+class Isocitrate_dehydrogenase(Enzyme):
+
+    def __init__(self, isocitr, nad, akg, nadh, ca, params):
+        self.isocitr_idx = isocitr
+        self.nad_idx = nad
+        self.akg_idx = akg
+        self.nadh_idx = nadh
+        self.ca_idx = ca
+
+        self.Km1_isocit = params["Km1_isocit"]
+        self.Km2_isocit = params["Km2_isocit"]
+        self.Ka_Ca = params["Ka_Ca"]
+        self.n_Ca = params["n_Ca"]
+        self.n_isocit = params["n_isocit"]
+        self.Ki_nadh = params["Ki_nadh"]
+        self.Km_nad = params["Km_nad"]
+        self.Vmax = params["Vmax"]
+
+    def update(self, metabolits, dydt):
+        isocitr = metabolits[self.isocitr_idx]
+        nad = metabolits[self.nad_idx]
+        nadh = metabolits[self.nadh_idx]
+        ca = metabolits[self.ca_idx]
+
+        Km_isocitr = self.Km1_isocit / (1 + (ca / self.Ka_Ca)**self.n_Ca) + self.Km2_isocit
+        tmp1 = isocitr**self.n_isocit / (isocitr**self.n_isocit + Km_isocitr**self.n_isocit)
+        tmp2 = nad / (nad + self.Km_nad * (1 + nadh / self.Ki_nadh) )
+        V = self.Vmax * tmp1 * tmp2
+
+        dydt[self.isocitr_idx] -= V
+        dydt[self.nad_idx] -= V
+
+        dydt[self.nadh_idx] += V
+        dydt[self.akg_idx] += V
+
+        return dydt
+########################################################################################################################
+
+class Alpha_ketoglutarate_dehydrogenase(Enzyme):
+
+    def __init__(self, ca, akg, nadh, nad, CoA, sucCoA, fad, fadh2, params):
+        self.ca_idx = ca
+        self.nadh_idx = nadh
+        self.nad_idx = nad
+        self.CoA_idx = CoA
+        self.sucCoA_idx = sucCoA
+        self.akg_idx = akg
+        self.fad_idx = fad
+        self.fadh2_idx = fadh2
+
+
+        self.Ki_ca = params["Ki_ca"]
+        self.Ki_nadh = params["Ki_nadh"]
+        self.Km2 = params["Km2"]
+        self.Km1 = params["Km1"]
+        self.Km_fad = params["Km_fad"]
+        self.Km_CoA = params["Km_CoA"]
+        self.Vmax_fad = params["Vmax_fad"]
+        self.Km_SucCoA = params["Km_SucCoA"]
+        self.Em_nad = params["Em_nad"]
+        self.Em_fad = params["Em_fad"]
+        self.Km_nad = params["Km_nad"]
+        self.Vmax_nad = params["Vmax_nad"]
+
+    def update(self, metabolits, dydt):
+
+        ca = metabolits[self.ca_idx]
+        nadh = metabolits[self.nadh_idx]
+        nad = metabolits[self.nad_idx]
+        CoA = metabolits[self.CoA_idx]
+        sucCoA = metabolits[self.sucCoA_idx]
+        akg = metabolits[self.akg_idx]
+        fad = metabolits[self.fad_idx]
+        fadh2 = metabolits[self.fadh2_idx]
+
+        Km = ( self.Km1 / (1 + ca / self.Ki_ca) + self.Km2 ) * (1 + nadh / self.Ki_nadh)
+        tmp1 = akg / (akg + Km)
+
+        tmp2 = fad / (fad + self.Km_fad)
+        tmp3 = CoA / (CoA + self.Km_CoA *(1 + sucCoA / self.Km_SucCoA) )
+        Vfad = self.Vmax_fad * tmp1 * tmp2 * tmp3
+
+        dydt[self.akg_idx] -= Vfad
+        dydt[self.CoA_idx] -= Vfad
+        dydt[self.fad_idx] -= Vfad
+
+        dydt[self.fadh2_idx] += Vfad
+        dydt[self.sucCoA_idx] += Vfad
+
+        Keq = np.exp(0.002 * F * ( self.Em_fad + self.Em_nad) / R / T )
+        tmp4 = fadh2 * nad - fad * nadh / Keq
+        tmp5 = nad + self.Km_nad * (1 + nadh / self.Ki_nadh)
+        Vnad = self.Vmax_nad * tmp4 / tmp5
+
+        dydt[self.fadh2_idx] -= Vnad
+        dydt[self.nad_idx] -= Vnad
+
+        dydt[self.fad_idx] += Vnad
+        dydt[self.nadh_idx] += Vnad
+        return dydt
+########################################################################################################################
+
+class Succinil_CoA_synthetase(Enzyme):
+
+    def __init__(self, sucCoA, pi, suc, CoA, ndp, ntp, params):
+
+        self.sucCoA_idx = sucCoA
+        self.pi_idx = pi
+        self.suc_idx = suc
+        self.CoA_idx = CoA
+        self.ndp_idx = ndp # nucleotide diphosphate ADP or GDP
+        self.ntp_idx = ntp # nucleotide triphosphate ATP or GDP
+
+        self.Km_sucCoA = params["Km_sucCoA"]
+        self.Km_suc = params["Km_suc"]
+        self.Km_CoA = params["Km_CoA"]
+
+        self.Km_nuc3P = params["Km_ndp"]
+        self.Km_nuc2P = params["Km_ntp"]
+
+        self.Amax_P = params["Amax_P"]
+        self.n_P = params["n_P"]
+        self.Km_P = params["Km_P"]
+        self.Keq = params["Keq"]
+
+    def update(self, metabolits, dydt):
+
+        sucCoA = metabolits[self.sucCoA_idx]
+        pi = metabolits[self.pi_idx]
+        suc = metabolits[self.suc_idx]
+        CoA = metabolits[self.CoA_idx]
+        ndp = metabolits[self.ndp_idx]            # nucleotide diphosphate ADP or GDP
+        ntp = metabolits[self.ntp_idx]            # nucleotide triphosphate ATP or GDP
+
+
+        tmp1 = self.Amax_P**self.n_P * pi**self.n_P
+        tmp1 /= ( pi**self.n_P + self.Km_P**self.n_P)
+        tmp1 += 1
+
+        tmp2 = sucCoA * ndp * pi - suc * CoA * ntp / self.Keq
+
+        vsuccoa = 1 + sucCoA / self.Km_sucCoA
+        vnuc2P = 1 + ndp / self.Km_nuc2P
+        vp = 1 + pi / self.Km_P
+
+        Vsuc = 1 + suc / self.Km_suc
+        Vcoa = 1 + CoA / self.Km_CoA
+        vnuc3P = 1 + ntp / self.Km_nuc3P
+
+        V = self.Vmax * tmp1 * tmp2 / (vsuccoa*vnuc2P*vp + Vsuc*Vcoa*vnuc3P - 1)
+
+        dydt[self.sucCoA_idx] -= V
+        dydt[self.ndp_idx] -= V
+        dydt[self.pi_idx] -= V
+
+        dydt[self.suc_idx] += V
+        dydt[self.CoA_idx] += V
+        dydt[self.ntp_idx] += V
+
+        return dydt
+
+########################################################################################################################
+
+class Succinate_dehydrydrogenase(Enzyme):
+    def __init__(self, suc, fad, fadh2, fum, q, qh2, mal, params):
+        self.suc_idx = suc
+        self.fad_idx = fad
+        self.fadh2_idx = fadh2
+        self.fum_idx = fum
+        self.q_idx = q
+        self.qh2_idx = qh2
+        self.mal_idx = mal
+
+        self.Em_FAD = params["Em_FAD"]
+        self.Ki_mal
+
+
+    def update(self, metabolits, dydt):
+
+        Keq_succdh = 1.0 # !!!!!!! np.exp( (25 - self.Em_FAD) * F / R / T )
+        tmp1 = suc * Q - fum * QH2 / Keq_succdh
+        tmp2 = suc + self.Km_suc * (1 + mal / self.Ki_mal )
+        v_succdh_fad = self.Vmax_succdh * tmp1 / tmp2
+        # dydt[] -= v_succdh_fad
+
+
+        Keq_pdhc_fad_nad = 1.0 # !!! np.exp(- self.Em_FAD * F / R / T) ## !!!!!! added minus before Em
+        tmp3 = fadh2 * nad - fad * nadh / Keq_pdhc_fad_nad
+        v_succdh = self.Vmax_nadh * tmp3 / self.Km_nad
+
+
+        return dydt
+
+########################################################################################################################
+
+class Fumarase(Enzyme):
+    def __init__(self, mal, fum, params):
+        self.mal_idx = mal
+        self.fum_idx = fum
+
+        self.Keq = params["Keq"]
+        self.Km_fum = params["Km_fum"]
+        self.Km_mal = params["Km_mal"]
+        self.Vmax = params["Vmax"]
+
+    def update(self, metabolits, dydt):
+
+        mal = metabolits[self.mal_idx]
+        fum = metabolits[self.fum_idx]
+
+        tmp1 = fum - mal / self.Keq
+        tmp2 = 1 + fum / self.Km_fum - mal / self.Km_mal
+
+        V = self.Vmax * tmp1 / tmp2
+
+        dydt[self.fum_idx] -= V
+        dydt[self.mal_idx] += V
+
+        return dydt
+########################################################################################################################
 
 
 
