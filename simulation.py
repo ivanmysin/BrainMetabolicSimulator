@@ -121,14 +121,14 @@ enzymes.append({"reagends":[21, 40], "pruducts":[24, 39], "short":"LDG", "full":
 
 
 enzyme_params = {
-    "mal_dehydr" : {
-        "Vmax" : 3.2 * 10**4,
-        "Keq"  : 0.0001,
-        "Km_nad" : 0.06,
-        "Km_mal" : 0.145,
-        "Km_oa"  : 0.017,
-        "Km_nadh" : 0.044,
-    },
+    # "mal_dehydr" : {
+    #     "Vmax" : 3.2 * 10**4,
+    #     "Keq"  : 0.0001,
+    #     "Km_nad" : 0.06,
+    #     "Km_mal" : 0.145,
+    #     "Km_oa"  : 0.017,
+    #     "Km_nadh" : 0.044,
+    # },
 
     "fumarase" : {
         "Vmax" : 6.4 * 10**7,
@@ -143,26 +143,45 @@ enzyme_params = {
         "Km_suc"    : 1.6,
         "Ki_mal"    : 2.2,
         "Km_nad"    : 1.0, # !!!!!!! значение свято от балды
-        "Em_FAD-succdh" : 100,
+        "Em_FAD" : 100,
     },
 
-    "sucCoAsyntase" : {
+    "sucCoAsyntase_4atp" : {
         "Vmax" : 1.92 * 10**4,
         "Keq"  : 3.8,
         "Amax_P" : 1.2,
         "Km_P"   : 2.5, # 0.72 другое значение указвнное в статье !!!!!!!!!!!!
         "n_P"    : 3,
         "Km_sucCoA" : 0.041,
-        "Km_adp"   : 0.25,
+        "Km_ndp"   : 0.25,
         "Km_suc"   : 1.6,
         "Km_CoA"   : 0.056,
-        "Km_atp"   : 0.017,
-        "Km_sucCoA_G" : 0.086,
-        "Km_gdp"  : 0.007,
-        "Km_gtp"  : 0.036,
-        "Km_suc_G" : 0.49,
-        "Km_CoA_G" : 0.036,
+        "Km_ntp"   : 0.017,
+        # "Km_sucCoA_G" : 0.086,
+        # "Km_gdp"  : 0.007,
+        # "Km_gtp"  : 0.036,
+        # "Km_suc_G" : 0.49,
+        # "Km_CoA_G" : 0.036,
 
+    },
+
+    "sucCoAsyntase_4gtp": {
+        "Vmax": 1.92 * 10 ** 4,
+        "Keq": 3.8,
+        "Amax_P": 1.2,
+        "Km_P": 2.5,  # 0.72 другое значение указвнное в статье !!!!!!!!!!!!
+        "n_P": 3,
+
+        # "Km_sucCoA": 0.041,
+        # "Km_adp": 0.25,
+        # "Km_suc": 1.6,
+        # "Km_CoA": 0.056,
+        # "Km_atp": 0.017,
+        "Km_sucCoA": 0.086,
+        "Km_ndp": 0.007,
+        "Km_ntp": 0.036,
+        "Km_suc": 0.49,
+        "Km_CoA": 0.036,
     },
 
     "akg_dehydr" : {
@@ -227,7 +246,7 @@ enzyme_params = {
 
     "pyr_exchanger" : {
         "Vmax" : 128,
-        "Km_pyr_cit" : 0.15,
+        "Km_pyr_cyt" : 0.15,
         "Km_pyr_mit" : 0.15,
 
     },
@@ -244,10 +263,14 @@ enzyme_params = {
     "complex3" : {
         "Vmax" : 2.25*10**4,
         "n" : 2,
+        "Em_Q": 1,  # !!!!!!!!
+        "Em_cytc" : 1, # !!!!!!!
     },
 
     "complex1" : {
         "Vmax" : 2.25,
+        "Em_N": 1,  # !!!!! нет данных
+        "Em_Q": 1,  # !!!!! нет данных
     },
 
     "ca_h_pump" : {
@@ -270,30 +293,41 @@ enzyme_params = {
         "n"        : 0.6,
         "Ka"       : 0.0003,
         "n_a"      : 5,
+        "Am": 3.7 * 10 ** -5,  # cm**2
+        "Cmm": 0.9 * 10 ** -6,  # F/cm**2
     },
 
     "phos_pump" : {
         "Vmax"  : 43.3485,
+        "is_simport" : True,
     },
 
     "Na_pump": {
         "Vmax": 5*10**-3,
+        "is_simport" : False,
     },
 
     "K_pump" : {
         "Vmax" : 7.5 * 10**-4,
+        "is_simport" : False,
     },
 
     "protons_ed" : {
-        "P_H_mit" : 2 * 10**-4, # m/s
+        "P" : 2 * 10**-4, # m/s
+        "Am": 3.7 * 10 ** -5,  # cm**2
+        "Cmm": 0.9 * 10 ** -6,  # F/cm**2
     },
 
     "sodium_ed" : {
-        "P_Namit" : 10**-10 # m/s
+        "P" : 10**-10, # m/s
+        "Am": 3.7 * 10 ** -5,  # cm**2
+        "Cmm": 0.9 * 10 ** -6,  # F/cm**2
     },
 
     "potassium_ed" : {
-        "P_Kmit" : 2 * 10**-10, # m/s !!!!!
+        "P" : 2 * 10**-10, # m/s !!!!!
+        "Am": 3.7 * 10 ** -5,  # cm**2
+        "Cmm": 0.9 * 10 ** -6,  # F/cm**2
     },
 
     "atp_consumption" : {
@@ -383,14 +417,14 @@ enzyme_params = {
 
     "MCT" : {
         "Vmax" : 5.0,
-        "Keq_mct" : 1.737,
-        "Km_lac" : 1.1,
-        "Km_lac_ex" : 1.1,
+        "Keq" : 1.737,
+        "Km_lac_cyt" : 1.1,
+        "Km_lac_ext" : 1.1,
     },
 
     "LDG" : {
         "Vmax" : 10**5,
-        "Keq_ldg" : 8400,
+        "Keq" : 8400,
         "Km_pyr"  : 0.36,
         "Km_nadh" : 0.043,
         "Km_lac"  : 4.2,
@@ -406,14 +440,14 @@ enzyme_params = {
 
     "enolase": {
         "Vmax" : 216000,
-        "Keq_eno" : 0.5,
+        "Keq" : 0.5,
         "Km_pg2"  : 0.05,
         "Km_pep"  : 0.15,
     },
 
     "p-gricerate_mutase": {
         "Vmax" : 14400,
-        "Keq_pgm" : 0.1814,
+        "Keq" : 0.1814,
         "Km_pg3"  : 0.22,
         "Km_pg2"  : 0.28,
 
@@ -421,7 +455,7 @@ enzyme_params = {
 
     "p-glyceratekinase": {
         "Vmax" : 396,
-        "Keq_pgk" : 1310,
+        "Keq" : 1310,
         "Km_bpg13" : 0.063,
         "Km_adp"   : 0.42,
         "Km_pg3"   : 0.67,
@@ -430,7 +464,7 @@ enzyme_params = {
 
     "grap_dehydr" : {
         "Vmax" : 72000,
-        "Keq_gapdh" : 0.0868,
+        "Keq" : 0.0868,
         "Km_nad"    : 0.01, # 0.027
         "Km_grap"   : 0.101,
         "Km_pi"     : 3.9,
@@ -442,14 +476,14 @@ enzyme_params = {
 
     "triosep-isomerase": {
         "Vmax" : 10**6,
-        "Keq_tri": 0.0545,
+        "Keq": 0.0545,
         "Km_dhap" : 0.84,
         "Km_grap" : 1.65,
     },
 
     "aldolase" : {
         "Vmax" : 46.8,
-        "Keq_aldo" : 0.0976,
+        "Keq" : 0.0976,
         "Km_fru16p" : 0.003,
         "Km_grap"   : 0.08,
         "Km_dhap"   : 0.03,
@@ -531,14 +565,76 @@ class Simulator():
         self.enzymes.append( lib.Aldolase(15, 16, 17, enzyme_params["aldolase"] ) )
         self.enzymes.append( lib.Triosophosphate_isomerase(16, 17, enzyme_params["triosep-isomerase"] ) )
         self.enzymes.append( lib.Glyceraldehyde_3_phosphate_dehydrogenase(16, 8, 39, 18, 40, enzyme_params["grap_dehydr"] ) )
-        self.enzymes.append(lib.Phosphoglycerate_kinase(18, 3, 19, 2, enzyme_params["p-glyceratekinase"] ) )
-        self.enzymes.append(lib.Phosphoglycerate_mutase(19, 71, enzyme_params["p-gricerate_mutase"] ) )
-        self.enzymes.append(lib.Enolase(71, 20, enzyme_params["enolase"] ) )
-        self.enzymes.append(lib.Pyruvate_kinase(20, 3, 21, 2, enzyme_params["pyruvatekinase"] ) )
-        self.enzymes.append(lib.Lactate_dehydrogenase(21, 40, 23, 39, enzyme_params["LDG"] ) )
-        self.enzymes.append(lib.Monocarboxilate_transporter(24, 23, enzyme_params["MCT"] ) )
-        self.enzymes.append(lib.Creatine_kinase(2, 25, 3, 26,  enzyme_params["creatinekinase"] ) )
+        self.enzymes.append( lib.Phosphoglycerate_kinase(18, 3, 19, 2, enzyme_params["p-glyceratekinase"] ) )
+        self.enzymes.append( lib.Phosphoglycerate_mutase(19, 71, enzyme_params["p-gricerate_mutase"] ) )
+        self.enzymes.append( lib.Enolase(71, 20, enzyme_params["enolase"] ) )
+        self.enzymes.append( lib.Pyruvate_kinase(20, 3, 21, 2, enzyme_params["pyruvatekinase"] ) )
+        self.enzymes.append( lib.Lactate_dehydrogenase(21, 40, 23, 39, enzyme_params["LDG"] ) )
+        self.enzymes.append( lib.Monocarboxilate_transporter(24, 23, enzyme_params["MCT"] ) )
+        self.enzymes.append( lib.Creatine_kinase(2, 25, 3, 26,  enzyme_params["creatinekinase"] ) )
+        self.enzymes.append( lib.Malate_dehydrogenase(27, 28, 39, 40,  enzyme_params["malatdehyd"] ) ) # Cytosolic enzyme
+        self.enzymes.append( lib.Malate_dehydrogenase(29, 30, 41, 42,  enzyme_params["malatdehyd"] ) ) # Mitochondrial enzyme
+        self.enzymes.append( lib.Aspartate_aminotransferase(31, 33, 28, 35, enzyme_params["asp_aminotrans"]))  # Cytosolic enzyme
+        self.enzymes.append( lib.Aspartate_aminotransferase(32, 34, 30, 36,  enzyme_params["asp_aminotrans"] ) ) # Mitochondrial enzyme
+        self.enzymes.append( lib.Aspartate_glutamate_carrier(32, 35, 56, 31, 36, 57, 65, enzyme_params["asp_glu_carrier"] ) )
+        self.enzymes.append( lib.Malate_alphaketoglutarate_carrier(27, 34, 29, 33, enzyme_params["mal_akg_carrier"] ) )
+        self.enzymes.append( lib.Glycerol_3phosphate_dehydrogenase_cytosolic(17, 40, 19, 39, enzyme_params["cytgly3pdehyd"] ) )
+        self.enzymes.append( lib.Glycerol_3phosphate_dehydrogenase_mitochondrial(19, 17, 45, 46, 47, 48, enzyme_params["mitgly3pdehyd"] ) )
+        self.enzymes.append( lib.ATP_synthetase(5, 6, 9, 56, 57, 65, enzyme_params["atp_syntase"] ) )
+        self.enzymes.append( lib.ATP_ADP_axchanger(5, 3, 6, 2, 65, enzyme_params["atp/adp_axchanger"] ) )
+        self.enzymes.append( lib.ATP_consumption(2, 3, 8, enzyme_params["atp_consumption"] ) )
+        self.enzymes.append( lib.Passive_efflux_ion(53, 52, 65, enzyme_params["potassium_ed"]))  # Efflux for potassium (K)
+        self.enzymes.append( lib.Passive_efflux_ion(55, 54, 65, enzyme_params["sodium_ed"]))  # Efflux for sodium (Na)
+        self.enzymes.append( lib.Passive_efflux_ion(56, 57, 65, enzyme_params["protons_ed"]))  # Efflux for protons (H)
+        self.enzymes.append( lib.Pump(53, 52, 56, 57, enzyme_params["K_pump"]))  # Pump for potassium (K)
+        self.enzymes.append( lib.Pump(55, 54, 56, 57, enzyme_params["Na_pump"]))  # Pump for sodium (Na)
+        self.enzymes.append( lib.Pump(8, 9, 56, 57, enzyme_params["phos_pump"]))  # Pump for inorganic phosphate
+        self.enzymes.append( lib.Calcium_effux(58, 59, 65, enzyme_params["calcium_ed"]) )
 
+        # ca_mit, na_cyt, ca_cyt, na_mit, Vmm
+        self.enzymes.append( lib.Ca_Na_pump(59, 55, 58, 54, 65, enzyme_params["ca_na_pump"]) )
+
+        #  ca_mit, h_cyt, ca_cyt, h_mit, Vmm
+        self.enzymes.append( lib.Ca_H_pump(59, 56, 58, 57, 65, enzyme_params["ca_h_pump"]) )
+
+        # h_cyt, h_mit, q, qh2, nad, nadh, Vmm
+        self.enzymes.append( lib.Complex1(56, 57, 47, 48, 41, 42, 65, enzyme_params["complex1"]) )
+
+        # h_cyt, h_mit, q, qh2, cytc_ox, cytc_red, Vmm,
+        self.enzymes.append( lib.Complex3(56, 57, 47, 48, 49, 50, 65, enzyme_params["complex3"]) )
+
+        # h_cyt, h_mit, cytc_ox, cytc_red, o2, Vmm
+        self.enzymes.append( lib.Complex4(56, 57, 49, 50, 51, 65, enzyme_params["complex4"]) )
+
+        # pyr_cyt, pyr_mit, h_cyt, h_mit
+        self.enzymes.append( lib.Pyruvate_exchanger(21, 22, 56, 57, enzyme_params["pyr_exchanger"]) )
+
+        # pyr, CoA, acCoA, fad_pdhc, fadh2_pdhc, nad, nadh, ca
+        self.enzymes.append( lib.Pyruvate_dehydrogenase_complex(22, 60, 61, 66, 67, 41, 42, 59, enzyme_params["pyr_dehyd_comp"]) )
+
+        # oa, acCoA, CoA, cit
+        self.enzymes.append( lib.Citrate_synthetase(30, 61, 60, 63, enzyme_params["citrate_syntase"]) )
+
+        # citr, isocitr
+        self.enzymes.append( lib.Aconitase(63, 64, enzyme_params["aconitase"]) )
+
+        # isocitr, nad, akg, nadh, ca,
+        self.enzymes.append( lib.Isocitrate_dehydrogenase(64, 41, 34, 42, 59, enzyme_params["isocit_dehydr"]) )
+
+        # ca, akg, nadh, nad, CoA, sucCoA, fad, fadh2
+        self.enzymes.append( lib.Alpha_ketoglutarate_dehydrogenase(59, 34, 42, 41, 60, 62, 68, 69, enzyme_params["akg_dehydr"]) )
+
+        #  sucCoA, pi, suc, CoA, adp, atp
+        self.enzymes.append( lib.Succinil_CoA_synthetase(62, 9, 37, 60, 6, 5, enzyme_params["sucCoAsyntase_4atp"]) )
+
+        #  sucCoA, pi, suc, CoA, gdp, gtp
+        self.enzymes.append( lib.Succinil_CoA_synthetase(62, 9, 37, 60, 11, 10, enzyme_params["sucCoAsyntase_4gtp"]) )
+
+        #  suc, fad, fadh2, fum, q, qh2, mal,
+        self.enzymes.append( lib.Succinate_dehydrydrogenase(37, 43, 44, 38, 47, 48, 29, enzyme_params["suc_dehydr"]) )
+
+        # mal, fum,
+        self.enzymes.append( lib.Fumarase(29, 38, enzyme_params["fumarase"]) )
 
     def run_model(self, t, y):
         dydt = [0.0 for _ in range(len(y))]
@@ -550,8 +646,8 @@ class Simulator():
 
 simulalor = Simulator(enzyme_params, metabolites)
 
-y0 = [1.0 for _ in range(70)]
-y0[-1] = -200
+y0 = [1.0 for _ in range(len(metabolites))]
+y0[65] = -200
 
 
 simulalor.run_model(0, y0)

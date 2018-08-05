@@ -298,7 +298,7 @@ class Triosophosphate_isomerase(Enzyme):
         dydt[self.dhap_idx] -= V
         dydt[self.grap_idx] += V
 
-        return grap
+        return dydt
 
 ######################################################################################################
 
@@ -317,6 +317,7 @@ class Glyceraldehyde_3_phosphate_dehydrogenase(Enzyme):
         self.Km_pi = params["Km_pi"]
         self.Km_nadh = params["Km_nadh"]
         self.Km_bpg13 = params["Km_bpg13"]
+        self.Keq = params["Keq"]
 
     def update(self, metabolites, dydt):
 
@@ -373,7 +374,7 @@ class Phosphoglycerate_kinase(Enzyme):
         pg3 = metabolites[self.pg3_idx]
         atp_cyt = metabolites[self.atp_idx ]
 
-        tmp1 = bpg13 * adp_cyt - pg3 * atp_cyt / self.Keq_pgk
+        tmp1 = bpg13 * adp_cyt - pg3 * atp_cyt / self.Keq
         tmp2 = 1 + bpg13 / self.Km_bpg13
         tmp3 = 1 + adp_cyt / self.Km_adp
         tmp4 = 1 +  pg3 / self.Km_pg3
@@ -400,6 +401,7 @@ class Phosphoglycerate_mutase(Enzyme):
         self.Vmax = params["Vmax"]
         self.Keq = params["Keq"]
         self.Km_pg2 = params["Km_pg2"]
+        self.Km_pg3 = params["Km_pg3"]
 
 
     def update(self, metabolites, dydt):
@@ -508,7 +510,7 @@ class Lactate_dehydrogenase(Enzyme):
 
         tmp1 = pyr * nadh - lac * nad / self.Keq
         tmp2 = 1 + pyr / self.Km_pyr
-        tmp3 = 1 + self.nadh / self.Km_nadh
+        tmp3 = 1 + nadh / self.Km_nadh
         tmp4 = 1 + lac / self.Km_lac
         tmp5 = 1 + nad / self.Km_nad
 
@@ -803,6 +805,7 @@ class Glycerol_3phosphate_dehydrogenase_mitochondrial(Enzyme):
 
         self.Em_FAD_g3p = params["Em_FAD_g3p"]
         self.Em_Q = params["Em_Q"]
+        self.Em_dhap_g3p = params["Em_dhap_g3p"]
 
         self.Km_dhap = params["Km_dhap"]
         self.Km_g3p = params["Km_g3p"]
@@ -813,7 +816,7 @@ class Glycerol_3phosphate_dehydrogenase_mitochondrial(Enzyme):
         g3p = metabolites[self.g3p_idx]
 
         fad = metabolites[self.fad_g3dh_idx]
-        fadh2 = metabolites[self.fadh2s_g3dh_idx]
+        fadh2 = metabolites[self.fadh2_g3dh_idx]
 
         Q = metabolites[self.q_idx]
         QH2 = metabolites[self.qh2_idx]
@@ -1032,6 +1035,7 @@ class Calcium_effux(Enzyme):
         self.n_a = params["n_a"]
         self.Ka = params["Ka"]
         self.Am = params["Am"]
+        self.Km_Mcu = params["Km_Mcu"]
 
     def update(self, metabolites, dydt):
 
@@ -1053,8 +1057,6 @@ class Calcium_effux(Enzyme):
 
         dydt[self.Vmm_idx] += I
         return dydt
-
-
 
 ###############################################################################################
 
@@ -1084,7 +1086,7 @@ class Ca_Na_pump(Enzyme):
 
         Keq = np.exp(-0.001 * Vmm * F / R / T)
         tmp1 = ca_mit / (ca_mit + self.Km_ca)
-        tmp2 = na_cyt**self.n / (na_cyt**n + self.Km_na**self.n)
+        tmp2 = na_cyt**self.n / (na_cyt**self.n + self.Km_na**self.n)
         tmp3 = ca_mit * na_cyt**self.n_Na - ca_cyt * na_mit**self.n_Na / Keq
 
         I = tmp1 * tmp2 * tmp3
@@ -1228,6 +1230,7 @@ class Complex4(Enzyme):
         self.dGh = params["dGh"]
         self.n = params["n"]
         self.Vmax = params["Vmax"]
+        self.Km_cytc = params["Km_cytc"]
 
     def update(self, metabolites, dydt):
 
@@ -1275,7 +1278,7 @@ class Pyruvate_exchanger(Enzyme):
         pyr_mit = metabolites[self.pyr_mit_idx]
 
         tmp1 = pyr_cyt * h_cyt - pyr_mit * h_mit
-        tmp2 = 1 + pyr_cyt / self.Km_pyr_cit
+        tmp2 = 1 + pyr_cyt / self.Km_pyr_cyt
         tmp3 = 1 + pyr_mit / self.Km_pyr_mit
 
         V = self.Vmax * tmp1 / (tmp2 * tmp3)
@@ -1309,6 +1312,10 @@ class Pyruvate_dehydrogenase_complex(Enzyme):
         self.Km_nad = params["Km_nad"]
         self.Vmax_pdhc_nad = params["Vmax_pdhc_nad"]
         self.Vmax_pdhc_nad = params["Vmax_pdhc_nad"]
+        self.Km_pyr = params["Km_pyr"]
+        self.Km_fad = params["Km_fad"]
+        self.Km_CoA = params["Km_CoA"]
+
 
     def update(self, metabolites, dydt):
 
@@ -1529,6 +1536,7 @@ class Succinil_CoA_synthetase(Enzyme):
         self.n_P = params["n_P"]
         self.Km_P = params["Km_P"]
         self.Keq = params["Keq"]
+        self.Vmax = params["Vmax"]
 
     def update(self, metabolites, dydt):
 
@@ -1579,10 +1587,19 @@ class Succinate_dehydrydrogenase(Enzyme):
         self.mal_idx = mal
 
         self.Em_FAD = params["Em_FAD"]
-        self.Ki_mal
+        self.Ki_mal = params["Ki_mal"]
+        self.Km_suc = params["Km_suc"]
+        self.Vmax_succdh = params["Vmax_succdh"]
 
 
     def update(self, metabolites, dydt):
+        suc = metabolites[self.suc_idx]
+        fad = metabolites[self.fad_idx]
+        fadh2 = metabolites[self.fadh2_idx]
+        fum = metabolites[self.fum_idx]
+        Q = metabolites[self.q_idx]
+        QH2 = metabolites[self.qh2_idx]
+        mal = metabolites[self.mal_idx]
 
         Keq_succdh = 1.0 # !!!!!!! np.exp( (25 - self.Em_FAD) * F / R / T )
         tmp1 = suc * Q - fum * QH2 / Keq_succdh
@@ -1592,8 +1609,8 @@ class Succinate_dehydrydrogenase(Enzyme):
 
 
         Keq_pdhc_fad_nad = 1.0 # !!! np.exp(- self.Em_FAD * F / R / T) ## !!!!!! added minus before Em
-        tmp3 = fadh2 * nad - fad * nadh / Keq_pdhc_fad_nad
-        v_succdh = self.Vmax_nadh * tmp3 / self.Km_nad
+        # tmp3 = fadh2 * nad - fad * nadh / Keq_pdhc_fad_nad
+        # v_succdh = self.Vmax_nadh * tmp3 / self.Km_nad
 
 
         return dydt
