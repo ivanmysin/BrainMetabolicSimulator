@@ -1,11 +1,10 @@
 import numpy as np
 from scipy.integrate import odeint, solve_ivp
+import matplotlib.pyplot as plt
 import lib
 
 # Notations
-
 metabolites = []
-
 metabolites.append({"idx" : 0, "full" : "External glucose", "short" : "glc_ext"})
 metabolites.append({"idx" : 1, "full" : "Cytosolic glucose", "short" : "glc"})
 metabolites.append({"idx" : 2, "full" : "Cytosolic ATP", "short" : "atp_cyt"})
@@ -79,44 +78,12 @@ metabolites.append({"idx" : 69, "full" : "FADH2 of alpha-ketoglutarate dehydroge
 metabolites.append({"idx" : 70, "full" : "CO2", "short" : "co2"})
 metabolites.append({"idx" : 71, "full" : "2-Phosphoglycerate", "short" : "pg2"})
 
-"""
-enzymes = []
-enzymes.append({"reagends":[27, 39], "pruducts":[28, 40], "short":"mal_dehydr", "full":"Cytosolic malate dehydrogenase", "func": lib.getVmal_dehydr })
-enzymes.append({"reagends":[29, 41], "pruducts":[30, 42], "short":"mal_dehydr", "full":"Mitochondrial malate dehydrogenase",  "func": lib.getVmal_dehydr })
-enzymes.append({"reagends":[38], "pruducts":[29], "short":"fumarase", "full":"Fumarase",  "func": lib.getVfumarase })
-enzymes.append({"reagends":[37, 43], "pruducts":[38, 44], "short":"suc_dehydr_s1", "full":"Succinate dehydrogenase stage 1",  "func":lib.getVsuc_dehydrydrogenase_stage1  })
-enzymes.append({"reagends":[37, 47], "pruducts":[38, 48], "short":"suc_dehydr_s2", "full":"Succinate dehydrogenase stage 2",  "func":lib.getVsuc_dehydrydrogenase_stage2  })
-enzymes.append({"reagends":[62, 6, 9], "pruducts":[37, 60, 5], "short":"sucCoAsyntase_atp", "full":"Succinil-CoA synthetase with ATP",  "func": lib.getVsucCoAsyntase })
-enzymes.append({"reagends":[62, 11, 9], "pruducts":[37, 60, 10], "short":"sucCoAsyntase_gtp", "full":"Succinil-CoA synthetase with GTP",  "func": lib.getVsucCoAsyntase })
-enzymes.append({"reagends":[34, 68, 60], "pruducts":[62, 69], "short":"akg_dehydr_s1", "full":"Alpha-ketoglutarate dehydrogenase stage 1",  "func": lib.getVakg_dehydrogenase_stage1 })
-enzymes.append({"reagends":[69, 41], "pruducts":[68, 42], "short":"akg_dehydr_s2", "full":"Alpha-ketoglutarate dehydrogenase stage 2",  "func": lib.getVakg_dehydrogenase_stage2 })
-enzymes.append({"reagends":[64, 41], "pruducts":[34, 42], "short":"isocit_dehydr", "full":"Isocitrate dehydrogenase",  "func": lib.getVisocit_dehydrogenase })
-enzymes.append({"reagends":[63], "pruducts":[64], "short":"aconitase", "full":"Aconitase",  "func": lib.getVaconitase })
-enzymes.append({"reagends":[30, 61], "pruducts":[63], "short":"citrate_syntase", "full":"Citrate syntase",  "func": lib.getVcitratesyntase })
-enzymes.append({"reagends":[22, 60, 66], "pruducts":[61, 69, 70], "short":"pyr_dehyd_comp_s1", "full":"Pyruvate dehydrogenase stage 1",  "func": lib.getVpyr_dehydrogenase_complex_stage1 })
-enzymes.append({"reagends":[69, 41], "pruducts":[42, 68], "short":"pyr_dehyd_comp_s2", "full":"Pyruvate dehydrogenase stage 2",  "func": lib.getVpyr_dehydrogenase_complex_stage2 })
-enzymes.append({"reagends":[21, 56], "pruducts":[22, 57], "short":"pyr_exchanger", "full":"Pyruvate exchanger",  "func": lib.getVpyr_exchanger })
-enzymes.append({"reagends":[50, 51, 57], "pruducts":[49, 56], "short":"complex4", "full":"Complex IV",  "func": lib.getVcomplex4})
-enzymes.append({"reagends":[48, 49, 57], "pruducts":[47, 50, 56], "short":"complex3", "full":"Complex III",  "func": lib.getVcomplex3})
-enzymes.append({"reagends":[42, 47, 57], "pruducts":[41, 48, 56], "short":"complex1", "full":"Complex I",  "func": lib.getVcomplex1})
-enzymes.append({"reagends":[59, 56], "pruducts":[58, 57], "short":"ca_h_pump", "full":"Ca - H pump",  "func": lib.getIca_h_pump})
-enzymes.append({"reagends":[59], "pruducts":[58], "short":"calcium_ed", "full":"calcium_ed",  "func": lib.getIca_ed})
-enzymes.append({"reagends":[2], "pruducts":[3, 8], "short":"atp_consumption", "full":"ATP consumption",  "func": lib.getVatp_consumption})
-enzymes.append({"reagends":[5, 3], "pruducts":[2, 6], "short":"atp/adp_axchanger", "full":"ATP/ADP axchanger",  "func": lib.getVatp_consumption})
-enzymes.append({"reagends":[5], "pruducts":[6, 9], "short":"atp_syntase", "full":"ATP synthetase",  "func": lib.getVatp_syntase})
-enzymes.append({"reagends":[16, 45], "pruducts":[17, 46], "short":"mitgly3pdehyd_s1", "full":"Mitochondrial glycerol-3-phosphate dehydrogenase stage 1",  "func": lib.getVmitg3pdehyd_stage1})
-enzymes.append({"reagends":[46, 47], "pruducts":[45, 48], "short":"mitgly3pdehyd_s2", "full":"Mitochondrial glycerol-3-phosphate dehydrogenase stage 2",  "func": lib.getVmitg3pdehyd_stage2})
-enzymes.append({"reagends":[17, 40], "pruducts":[16, 39], "short":"cytgly3pdehyd", "full":"Cytosolic glycerol-3-phosphate dehydrogenase",  "func": lib.getVcytg3pdehyd})
-enzymes.append({"reagends":[27, 34], "pruducts":[33, 29], "short":"mal_akg_carrier", "full":"Malate/alpha-ketoglutarate carrier",  "func": lib.getVmal_akg_carrier})
-enzymes.append({"reagends":[32, 36, 56], "pruducts":[31,35, 57], "short":"asp_glu_carrier", "full":"Aspartate/glutamate carrier",  "func": lib.getVasp_glu_carrier})
-enzymes.append({"reagends":[32, 34], "pruducts":[30, 36], "short":"asp_aminotrans", "full":"Mitochondrial aminotranferase",  "func": lib.getVaspartateaminotransferase})
-enzymes.append({"reagends":[31, 33], "pruducts":[28, 35], "short":"asp_aminotrans", "full":"Cytosolic aminotranferase",  "func": lib.getVaspartateaminotransferase})
-enzymes.append({"reagends":[2, 25], "pruducts":[26, 3], "short":"creatinekinase", "full":"Creatine kinase",  "func": lib.getVcreatinekinase})
-enzymes.append({"reagends":[23], "pruducts":[24], "short":"MCT", "full":"Monocarboxylate transporter",  "func": lib.getVmonocarboxilatetransporter})
-enzymes.append({"reagends":[21, 40], "pruducts":[24, 39], "short":"LDG", "full":"Lactate dehydrogenase",  "func": lib.getVlactatedehydrogenase})
 
-"""
-
+global_params = {
+    "Cmm" : 0.9 * 10**-6 * 3.7 * 10**-5, #farad,  capacity of mitochondrial membrane, 0.9 * 10**-6 F/cm^2, square 3.7 * 10**-5 cm^2
+    "Volume_cyt_mit" : 0.07,             # part of mitochondrial volume in total volume of neuron, (Jolivet, 2015)
+    "Volume_extracellular2cell" : 0.444, # ratio of extracellular volume to total volume of neurons, (Jolivet, 2015)
+}
 
 
 
@@ -249,6 +216,8 @@ enzyme_params = {
         "Km_pyr_cyt" : 0.15,
         "Km_pyr_mit" : 0.15,
 
+        "Volume_cyt_mit" : global_params["Volume_cyt_mit"]
+
     },
 
     "complex4" : {
@@ -257,7 +226,8 @@ enzyme_params = {
         "Km_cytc" : 0.001,
         "n"       : 2,
         "dGh"     : 1,
-
+        "Volume_cyt_mit": global_params["Volume_cyt_mit"],
+        "Cmm": global_params["Cmm"],
     },
 
     "complex3" : {
@@ -265,17 +235,23 @@ enzyme_params = {
         "n" : 2,
         "Em_Q": 1,  # !!!!!!!!
         "Em_cytc" : 1, # !!!!!!!
+        "Volume_cyt_mit": global_params["Volume_cyt_mit"],
+        "Cmm": global_params["Cmm"],
     },
 
     "complex1" : {
         "Vmax" : 2.25,
         "Em_N": 1,  # !!!!! нет данных
         "Em_Q": 1,  # !!!!! нет данных
+        "Volume_cyt_mit": global_params["Volume_cyt_mit"],
+        "Cmm": global_params["Cmm"],
     },
 
     "ca_h_pump" : {
         "Km_ca" : 0.01,
         "n_H"   : 3,
+        "Volume_cyt_mit": global_params["Volume_cyt_mit"],
+        "Cmm": global_params["Cmm"],
     },
 
     "ca_na_pump" : {
@@ -283,6 +259,8 @@ enzyme_params = {
         "Km_ca" : 0.0096,
         "n_Na"  : 3,
         "n"     : 2.8,
+        "Volume_cyt_mit": global_params["Volume_cyt_mit"],
+        "Cmm": global_params["Cmm"],
     },
 
     "calcium_ed" : {
@@ -294,40 +272,50 @@ enzyme_params = {
         "Ka"       : 0.0003,
         "n_a"      : 5,
         "Am": 3.7 * 10 ** -5,  # cm**2
-        "Cmm": 0.9 * 10 ** -6,  # F/cm**2
+        "Volume_cyt_mit": global_params["Volume_cyt_mit"],
+        "Cmm": global_params["Cmm"],
     },
 
     "phos_pump" : {
         "Vmax"  : 43.3485,
         "is_simport" : True,
+        "Volume_cyt_mit": global_params["Volume_cyt_mit"],
+
     },
 
     "Na_pump": {
         "Vmax": 5*10**-3,
         "is_simport" : False,
+        "Volume_cyt_mit": global_params["Volume_cyt_mit"],
+
     },
 
     "K_pump" : {
         "Vmax" : 7.5 * 10**-4,
         "is_simport" : False,
+        "Volume_cyt_mit": global_params["Volume_cyt_mit"],
+
     },
 
     "protons_ed" : {
         "P" : 2 * 10**-4, # m/s
         "Am": 3.7 * 10 ** -5,  # cm**2
-        "Cmm": 0.9 * 10 ** -6,  # F/cm**2
+        "Volume_cyt_mit": global_params["Volume_cyt_mit"],
+        "Cmm": global_params["Cmm"],
     },
 
     "sodium_ed" : {
         "P" : 10**-10, # m/s
         "Am": 3.7 * 10 ** -5,  # cm**2
-        "Cmm": 0.9 * 10 ** -6,  # F/cm**2
+        "Volume_cyt_mit": global_params["Volume_cyt_mit"],
+        "Cmm": global_params["Cmm"],
     },
 
     "potassium_ed" : {
         "P" : 2 * 10**-10, # m/s !!!!!
         "Am": 3.7 * 10 ** -5,  # cm**2
-        "Cmm": 0.9 * 10 ** -6,  # F/cm**2
+        "Volume_cyt_mit": global_params["Volume_cyt_mit"],
+        "Cmm": global_params["Cmm"],
     },
 
     "atp_consumption" : {
@@ -339,6 +327,8 @@ enzyme_params = {
     "atp/adp_axchanger" : {
         "Vmax" : 5.4 * 10**-5,
         "S_Vmm" : 0.3,
+        "Volume_cyt_mit": global_params["Volume_cyt_mit"],
+        "Cmm": global_params["Cmm"],
 
     },
 
@@ -420,6 +410,7 @@ enzyme_params = {
         "Keq" : 1.737,
         "Km_lac_cyt" : 1.1,
         "Km_lac_ext" : 1.1,
+        "Volume_extracellular2cell" : global_params["Volume_extracellular2cell"],
     },
 
     "LDG" : {
@@ -545,6 +536,7 @@ enzyme_params = {
         "Vmax" : 0.72,
         "Km_glc_cyt" : 2.87,
         "Km_glc_ext" : 2.87,
+        "Volume_extracellular2cell": global_params["Volume_extracellular2cell"],
     }
 }
 
@@ -572,6 +564,7 @@ class Simulator():
         self.enzymes.append( lib.Lactate_dehydrogenase(21, 40, 23, 39, enzyme_params["LDG"] ) )
         self.enzymes.append( lib.Monocarboxilate_transporter(24, 23, enzyme_params["MCT"] ) )
         self.enzymes.append( lib.Creatine_kinase(2, 25, 3, 26,  enzyme_params["creatinekinase"] ) )
+        """
         self.enzymes.append( lib.Malate_dehydrogenase(27, 28, 39, 40,  enzyme_params["malatdehyd"] ) ) # Cytosolic enzyme
         self.enzymes.append( lib.Malate_dehydrogenase(29, 30, 41, 42,  enzyme_params["malatdehyd"] ) ) # Mitochondrial enzyme
         self.enzymes.append( lib.Aspartate_aminotransferase(31, 33, 28, 35, enzyme_params["asp_aminotrans"]))  # Cytosolic enzyme
@@ -635,6 +628,7 @@ class Simulator():
 
         # mal, fum,
         self.enzymes.append( lib.Fumarase(29, 38, enzyme_params["fumarase"]) )
+        """
 
     def run_model(self, t, y):
         dydt = [0.0 for _ in range(len(y))]
@@ -650,7 +644,12 @@ y0 = [1.0 for _ in range(len(metabolites))]
 y0[65] = -200
 
 
-simulalor.run_model(0, y0)
-# sol = solve_ivp(simulalor.run_model, [0, 1000], y0)
+# simulalor.run_model(0, y0)
+sol = solve_ivp(simulalor.run_model, [0, 0.1], y0)
 
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+ax.plot(sol.t,sol.y[0, :],'k',linewidth = 5)
+
+plt.show()
 

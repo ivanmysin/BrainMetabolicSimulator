@@ -26,6 +26,7 @@ class GlucoseTransporter(Enzyme):
         self.Km_glc_cyt = params["Km_glc_cyt"]
         self.Km_glc_ext = params["Km_glc_ext"]
         self.Vmax = params["Vmax"]
+        self.Volume_extracellular2cell = params["Volume_extracellular2cell"]
 
     def update(self, metabolites, dydt):
 
@@ -39,7 +40,7 @@ class GlucoseTransporter(Enzyme):
 
         V = self.Vmax * glc_diff / (1 + glc_cyt_Km_ratio + glc_ext_Km_ratio)
 
-        dydt[self.glc_ext_idx] -= V
+        dydt[self.glc_ext_idx] -= V / self.Volume_extracellular2cell
         dydt[self.glc_cyt_idx] += V
 
         return dydt
@@ -536,13 +537,13 @@ class Monocarboxilate_transporter(Enzyme):
         self.Keq = params["Keq"]
         self.Km_lac_cyt = params["Km_lac_cyt"]
         self.Km_lac_ext = params["Km_lac_ext"]
+        self.Volume_extracellular2cell = params["Volume_extracellular2cell"]
+
 
 
     def update(self, metabolites, dydt):
-
         lac_ext = metabolites[self.lac_ext_idx]
         lac_cyt = metabolites[self.lac_cyt_idx]
-
 
         tmp1 = lac_cyt - lac_ext / self.Keq
         tmp2 = 1 + lac_cyt / self.Km_lac_cyt
@@ -551,7 +552,7 @@ class Monocarboxilate_transporter(Enzyme):
         V = self.Vmax * tmp1 / (tmp2 + tmp3 - 1)
 
         dydt[self.lac_cyt_idx] -= V
-        dydt[self.lac_ext_idx] += V
+        dydt[self.lac_ext_idx] += V / self.Volume_extracellular2cell
 
         return dydt
 
@@ -900,6 +901,8 @@ class ATP_ADP_axchanger(Enzyme):
 
         self.Vmax = params["Vmax"]
         self.S_Vmm = params["S_Vmm"]
+        self.Volume_cyt_mit = params["Volume_cyt_mit"]
+        self.Cmm = params["Cmm"]
 
 
     def update(self, metabolites, dydt):
@@ -918,12 +921,13 @@ class ATP_ADP_axchanger(Enzyme):
 
         V = self.Vmax * tmp1 / (tmp2 * tmp3)
 
-        dydt[self.atp_mit_idx] -= V
-        dydt[self.adp_cyt_idx] -= V
+        dydt[self.atp_mit_idx] -= V / self.Volume_cyt_mit
+        dydt[self.adp_cyt_idx] -= V / (1 - self.Volume_cyt_mit)
 
-        dydt[self.adp_mit_idx] += V
-        dydt[self.atp_cyt_idx] += V
+        dydt[self.adp_mit_idx] += V / self.Volume_cyt_mit
+        dydt[self.atp_cyt_idx] += V / (1 - self.Volume_cyt_mit)
 
+        dydt[self.Vmm_idx] += V * F / self.Cmm
         return dydt
 
 ############################################################################################################
@@ -965,6 +969,7 @@ class Passive_efflux_ion(Enzyme):
         self.P = params["P"]
 
         self.Cmm = params["Cmm"]
+        self.Volume_cyt_mit = params["Volume_cyt_mit"]
 
     def update(self, metabolites, dydt):
         ion_in = metabolites[self.ion_in_idx]
@@ -973,13 +978,13 @@ class Passive_efflux_ion(Enzyme):
 
         U = Vmm * F / (1000 * R * T)
         tmp = (ion_in - ion_out * np.exp(U)) / (1 - np.exp(U))
-        I = self.P * U * F * tmp # * self.Am
+        I = self.P * U * F * tmp * self.Am
 
-        # dydt[self.ion_in_idx] -=
-        # dydt[self.ion_out_idx] +=
+        dydt[self.ion_in_idx] -= I / F / (1 - self.Volume_cyt_mit)
+        dydt[self.ion_out_idx] += I / F / self.Volume_cyt_mit
 
 
-        dydt[self.Vmm_idx] += I / self.Cmm # / self.Am
+        dydt[self.Vmm_idx] += I / self.Cmm
 
         return dydt
 ############################################################################################################
@@ -994,6 +999,7 @@ class Pump(Enzyme):
 
         self.Vmax = params["Vmax"]
         self.is_simport = params["is_simport"]
+        self.Volume_cyt_mit = params["Volume_cyt_mit"]
 
 
     def update(self, metabolites, dydt):
@@ -1006,16 +1012,16 @@ class Pump(Enzyme):
         if self.is_simport:
             V = self.Vmax * (ion_cyt * h_cyt - ion_mit * h_mit)
 
-            dydt[self.h_cyt_idx] -= V
-            dydt[self.h_mit_idx] += V
+            dydt[self.h_cyt_idx] -= V / (1 - self.Volume_cyt_mit)
+            dydt[self.h_mit_idx] += V / self.Volume_cyt_mit
         else:
             V = self.Vmax * (ion_cyt * h_mit - ion_mit * h_cyt)
 
-            dydt[self.h_mit_idx] -= V
-            dydt[self.h_cyt_idx] += V
+            dydt[self.h_mit_idx] -= V / self.Volume_cyt_mit
+            dydt[self.h_cyt_idx] += V  / (1 - self.Volume_cyt_mit)
 
-        dydt[self.ion_cyt_idx] -= V
-        dydt[self.ion_mit_idx] += V
+        dydt[self.ion_cyt_idx] -= V  / (1 - self.Volume_cyt_mit)
+        dydt[self.ion_mit_idx] += V / self.Volume_cyt_mit
 
         return dydt
 
@@ -1036,6 +1042,8 @@ class Calcium_effux(Enzyme):
         self.Ka = params["Ka"]
         self.Am = params["Am"]
         self.Km_Mcu = params["Km_Mcu"]
+        self.Volume_cyt_mit = params["Volume_cyt_mit"]
+        self.Cmm = params["Cmm"]
 
     def update(self, metabolites, dydt):
 
@@ -1052,10 +1060,10 @@ class Calcium_effux(Enzyme):
 
         I = self.Am * 2 * U * F * tmp1 * (tmp2 + tmp3 * tmp4)
 
-        # dydt[self.ca_cyt_idx] += I  # !!!!!!!!!
-        # # dydt[self.ca_mit_idx] += I !!!!!!!!!!
+        dydt[self.ca_cyt_idx] -= I * F / (1 - self.Volume_cyt_mit)
+        dydt[self.ca_mit_idx] += I * F / self.Volume_cyt_mit
 
-        dydt[self.Vmm_idx] += I
+        dydt[self.Vmm_idx] += I / self.Cmm
         return dydt
 
 ###############################################################################################
@@ -1073,6 +1081,8 @@ class Ca_Na_pump(Enzyme):
         self.n = params["n"]
         self.Km_ca = params["Km_ca"]
         self.Km_na = params["Km_na"]
+        self.Volume_cyt_mit = params["Volume_cyt_mit"]
+        self.Cmm = params["Cmm"]
 
     def update(self, metabolites, dydt):
         Vmm = metabolites[self.Vmm_idx]
@@ -1089,9 +1099,15 @@ class Ca_Na_pump(Enzyme):
         tmp2 = na_cyt**self.n / (na_cyt**self.n + self.Km_na**self.n)
         tmp3 = ca_mit * na_cyt**self.n_Na - ca_cyt * na_mit**self.n_Na / Keq
 
-        I = tmp1 * tmp2 * tmp3
+        V = tmp1 * tmp2 * tmp3
 
-        # dydt[]
+        dydt[self.ca_mit_idx] -= V  / self.Volume_cyt_mit
+        dydt[self.na_cyt_idx] -= 3 * V / (1 - self.Volume_cyt_mit)
+
+        dydt[self.na_mit_idx] += 3 * V  / self.Volume_cyt_mit
+        dydt[self.ca_cyt_idx] += 3 * V / (1 - self.Volume_cyt_mit)
+
+        dydt[self.Vmm_idx] += V * F / self.Cmm
 
         return dydt
 ###############################################################################################
@@ -1109,6 +1125,9 @@ class Ca_H_pump(Enzyme):
         self.Km_ca = params["Km_ca"]
         self.n_H = params["n_H"]
 
+        self.Volume_cyt_mit = params["Volume_cyt_mit"]
+        self.Cmm = params["Cmm"]
+
 
     def update(self, metabolites, dydt):
 
@@ -1124,9 +1143,15 @@ class Ca_H_pump(Enzyme):
         tmp1 = ca_mit / ( ca_mit + self.Km_ca)
         tmp2 =  ca_mit * h_cyt**self.n_H - ca_cyt * h_mit**self.n_H / Keq
 
-        I = tmp1 * tmp2
+        V = tmp1 * tmp2
 
-        # dydt !!!!!!!!
+        dydt[self.ca_mit_idx] -= V  / self.Volume_cyt_mit
+        dydt[self.h_cyt_idx] -= 3 * V / (1 - self.Volume_cyt_mit)
+
+        dydt[self.h_mit_idx] += 3 * V  / self.Volume_cyt_mit
+        dydt[self.ca_cyt_idx] += 3 * V / (1 - self.Volume_cyt_mit)
+
+        dydt[self.Vmm_idx] += V * F / self.Cmm
 
         return dydt
 ##############################################################################################
@@ -1146,6 +1171,9 @@ class Complex1(Enzyme):
         self.Em_Q = params["Em_Q"]
         self.Vmax = params["Vmax"]
 
+        self.Volume_cyt_mit = params["Volume_cyt_mit"]
+        self.Cmm = params["Cmm"]
+
     def update(self, metabolites, dydt):
 
         Vmm = metabolites[self.Vmm_idx]
@@ -1162,12 +1190,13 @@ class Complex1(Enzyme):
 
         dydt[self.nadh_idx] -= V
         dydt[self.q_idx] -= V
-        dydt[self.h_mit_idx] -= 4 * V
+        dydt[self.h_mit_idx] -= 4 * V / self.Volume_cyt_mit
 
-        dydt[self.h_cyt_idx] += 4 * V
+        dydt[self.h_cyt_idx] += 4 * V  / (1 - self.Volume_cyt_mit)
         dydt[self.qh2_idx] += V
         dydt[self.nad_idx] += V
 
+        dydt[self.Vmm_idx] -= 4 * V * F / self.Cmm  # !!!!!!
 
         return dydt
 ###################################################################################
@@ -1187,6 +1216,8 @@ class Complex3(Enzyme):
         self.Em_cytc = params["Em_cytc"]
         self.n = params["n"]
         self.Vmax = params["Vmax"]
+        self.Volume_cyt_mit = params["Volume_cyt_mit"]
+        self.Cmm = params["Cmm"]
 
     def update(self, metabolites, dydt):
         Vmm = metabolites[self.Vmm_idx]
@@ -1206,11 +1237,13 @@ class Complex3(Enzyme):
 
         dydt[self.qh2_idx] -= V
         dydt[self.cytc_ox_idx] -= 2 * V
-        dydt[self.h_mit_idx] -= 2 * V
+        dydt[self.h_mit_idx] -= 2 * V / self.Volume_cyt_mit
 
-        dydt[self.h_cyt_idx] += 2 * V
+        dydt[self.h_cyt_idx] += 2 * V  / (1 - self.Volume_cyt_mit)
         dydt[self.cytc_red_idx] += 2* V
         dydt[self.q_idx] += V
+
+        dydt[self.Vmm_idx] -= 2 * V * F / self.Cmm # !!!!!!
 
         return dydt
 
@@ -1231,6 +1264,8 @@ class Complex4(Enzyme):
         self.n = params["n"]
         self.Vmax = params["Vmax"]
         self.Km_cytc = params["Km_cytc"]
+        self.Volume_cyt_mit = params["Volume_cyt_mit"]
+        self.Cmm = params["Cmm"]
 
     def update(self, metabolites, dydt):
 
@@ -1251,10 +1286,12 @@ class Complex4(Enzyme):
 
         dydt[self.cytc_red_idx] -= 2*V
         dydt[self.o2_idx] -= V
-        dydt[self.h_mit_idx] -= 2*V
+        dydt[self.h_mit_idx] -= 2*V  / self.Volume_cyt_mit
 
-        dydt[self.h_cyt_idx] += 2*V
+        dydt[self.h_cyt_idx] += 2*V / (1 - self.Volume_cyt_mit)
         dydt[self.cytc_ox_idx] += 2*V
+
+        dydt[self.Vmm_idx] -= 2 * V * F / self.Cmm # !!!!!!
 
         return dydt
 ########################################################################################################################
@@ -1269,6 +1306,7 @@ class Pyruvate_exchanger(Enzyme):
         self.Km_pyr_mit = params["Km_pyr_mit"]
         self.Km_pyr_cyt = params["Km_pyr_cyt"]
         self.Vmax = params["Vmax"]
+        self.Volume_cyt_mit = params["Volume_cyt_mit"]
 
     def update(self, metabolites, dydt):
 
@@ -1283,10 +1321,11 @@ class Pyruvate_exchanger(Enzyme):
 
         V = self.Vmax * tmp1 / (tmp2 * tmp3)
 
-        dydt[self.pyr_cyt_idx] -= V
-        dydt[self.pyr_mit_idx] += V
-        dydt[self.h_mit_idx] -= V
-        dydt[self.h_cyt_idx ] += V
+        dydt[self.pyr_cyt_idx] -= V / (1 - self.Volume_cyt_mit)
+        dydt[self.pyr_mit_idx] += V / self.Volume_cyt_mit
+
+        dydt[self.h_mit_idx] -= V / self.Volume_cyt_mit
+        dydt[self.h_cyt_idx ] += V / (1 - self.Volume_cyt_mit)
 
         return dydt
 ########################################################################################################################
