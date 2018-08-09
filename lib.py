@@ -134,6 +134,7 @@ class Phosphofructokinase_type1(Enzyme):
         fru26p = metabolites[self.fru16p_idx]
 
         fru__n = fru6p**self.n_fru26p
+        # print (fru__n)
         tmp1 = fru__n / (fru__n + self.Ka_fru26p**self.n_fru26p )
 
         Vfru = fru6p / (fru6p + self.Km_fru6p * (1 - self.K0 * tmp1) )

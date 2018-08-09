@@ -5,78 +5,78 @@ import lib
 
 # Notations
 metabolites = []
-metabolites.append({"idx" : 0, "full" : "External glucose", "short" : "glc_ext"})
-metabolites.append({"idx" : 1, "full" : "Cytosolic glucose", "short" : "glc"})
-metabolites.append({"idx" : 2, "full" : "Cytosolic ATP", "short" : "atp_cyt"})
-metabolites.append({"idx" : 3, "full" : "Cytosolic ADP", "short" : "adp_cyt"})
-metabolites.append({"idx" : 4, "full" : "Cytosolic AMP", "short" : "amp_cyt"})
-metabolites.append({"idx" : 5, "full" : "Mitochondrial ATP", "short" : "atp_mit"})
-metabolites.append({"idx" : 6, "full" : "Mitochondrial ADP", "short" : "adp_mit"})
-metabolites.append({"idx" : 7, "full" : "Mitochondrial AMP", "short" : "amp_mit"})
-metabolites.append({"idx" : 8, "full" : "Cytosolic inorganic phosphate", "short" : "pi_cyt"})
-metabolites.append({"idx" : 9, "full" : "Mitochondrial inorganic phosphate", "short" : "pi_mit"})
-metabolites.append({"idx" : 10, "full" : "Mitochondrial GTP", "short" : "gtp_mit"})
-metabolites.append({"idx" : 11, "full" : "Mitochondrial GDP", "short" : "gdp_mit"})
-metabolites.append({"idx" : 12, "full" : "Glucose-6-phosphate", "short" : "glc6p"})
-metabolites.append({"idx" : 13, "full" : "Fructose-6-phosphate", "short" : "fru6p"})
-metabolites.append({"idx" : 14, "full" : "Fructose-2,6-bisphosphate", "short" : "fru26p"})
-metabolites.append({"idx" : 15, "full" : "Fructose-1,6-bisphosphate", "short" : "fru16p"})
-metabolites.append({"idx" : 16, "full" : "Glycerol 3-phosphate", "short" : "grap"})
-metabolites.append({"idx" : 17, "full" : "Dihydroxyacetone phosphate", "short" : "dhap"})
-metabolites.append({"idx" : 18, "full" : "1,3-Bisphosphoglycerate", "short" : "bpg13"})
-metabolites.append({"idx" : 19, "full" : "3-Phosphoglycerate", "short" : "pg3"})
-metabolites.append({"idx" : 20, "full" : "Phosphoenolpyruvate", "short" : "pep"})
-metabolites.append({"idx" : 21, "full" : "Cytosolic pyruvate", "short" : "pyr_cyt"})
-metabolites.append({"idx" : 22, "full" : "Mitochondrial pyruvate", "short" : "pyr_mit"})
-metabolites.append({"idx" : 23, "full" : "Cytosolic lactate", "short" : "lac"})
-metabolites.append({"idx" : 24, "full" : "External lactate", "short" : "lac_ext"})
-metabolites.append({"idx" : 25, "full" : "Creatine", "short" : "cr"})
-metabolites.append({"idx" : 26, "full" : "Creatine phosphate", "short" : "crp"})
-metabolites.append({"idx" : 27, "full" : "Cytosolic malate", "short" : "mal_cyt"})
-metabolites.append({"idx" : 28, "full" : "Cytosolic oxaloacetate", "short" : "oa_cyt"})
-metabolites.append({"idx" : 29, "full" : "Mitochondrial malate", "short" : "mal_mit"})
-metabolites.append({"idx" : 30, "full" : "Mitochondrial oxaloacetate", "short" : "oa_mit"})
-metabolites.append({"idx" : 31, "full" : "Cytosolic aspartate", "short" : "asp_cyt"})
-metabolites.append({"idx" : 32, "full" : "Mitochondrial aspartate", "short" : "asp_mit"})
-metabolites.append({"idx" : 33, "full" : "Cytosolic alpha-ketoglutarate", "short" : "akg_cyt"})
-metabolites.append({"idx" : 34, "full" : "Mitochondrial alpha-ketoglutarate", "short" : "akg_mit"})
-metabolites.append({"idx" : 35, "full" : "Cytosolic glutamate", "short" : "glu_cyt"})
-metabolites.append({"idx" : 36, "full" : "Mitochondrial glutamate", "short" : "glu_mit"})
-metabolites.append({"idx" : 37, "full" : "Succinate", "short" : "suc"})
-metabolites.append({"idx" : 38, "full" : "Fumarate", "short" : "fum"})
-metabolites.append({"idx" : 39, "full" : "Cytosolic NAD+", "short" : "nad_cyt"})
-metabolites.append({"idx" : 40, "full" : "Cytosolic NADH", "short" : "nadh_cyt"})
-metabolites.append({"idx" : 41, "full" : "Mitochondrial NAD+", "short" : "nad_mit"})
-metabolites.append({"idx" : 42, "full" : "Mitochondrial NADH", "short" : "nadh_mit"})
-metabolites.append({"idx" : 43, "full" : "FAD of succinate dehydrogenase", "short" : "fad_sucdh"})
-metabolites.append({"idx" : 44, "full" : "FADH2 of succinate dehydrogenase", "short" : "fadh2_sucdh"})
-metabolites.append({"idx" : 45, "full" : "FAD of glycerol-3-phosphate dehydrogenase", "short" : "fad_g3dh"})
-metabolites.append({"idx" : 46, "full" : "FADH2 of glycerol-3-phosphate dehydrogenase", "short" : "fadh2_g3dh"})
-metabolites.append({"idx" : 47, "full" : "Coenzyme Q oxidized", "short" : "Q"})
-metabolites.append({"idx" : 48, "full" : "Coenzyme QH2 reduced", "short" : "QH2"})
-metabolites.append({"idx" : 49, "full" : "Cytochrome c oxidized", "short" : "cytc_ox"})
-metabolites.append({"idx" : 50, "full" : "Cytochrome c reduced", "short" : "cytc_red"})
-metabolites.append({"idx" : 51, "full" : "Mitochondrial oxigen (O2)", "short" : "o2_mit"})
-metabolites.append({"idx" : 52, "full" : "Mitochondrial potassium (K)", "short" : "k_mit"})
-metabolites.append({"idx" : 53, "full" : "Cytosolic potassium (K)", "short" : "k_cyt"})
-metabolites.append({"idx" : 54, "full" : "Mitochondrial sodium (Na)", "short" : "na_mit"})
-metabolites.append({"idx" : 55, "full" : "Cytosolic sodium (Na)", "short" : "na_cyt"})
-metabolites.append({"idx" : 56, "full" : "Cytosolic proton (H+)", "short" : "h+_cyt"})
-metabolites.append({"idx" : 57, "full" : "Mitochondrial proton (H+)", "short" : "h+_mit"})
-metabolites.append({"idx" : 58, "full" : "Cytosolic calcium (Ca)", "short" : "ca_cyt"})
-metabolites.append({"idx" : 59, "full" : "Mitochondrial calcium (Ca)", "short" : "ca_mit"})
-metabolites.append({"idx" : 60, "full" : "CoA", "short" : "coa"})
-metabolites.append({"idx" : 61, "full" : "Acetyl-CoA", "short" : "acoa"})
-metabolites.append({"idx" : 62, "full" : "Succinyl-CoA", "short" : "succoa"})
-metabolites.append({"idx" : 63, "full" : "Citrate", "short" : "citr"})
-metabolites.append({"idx" : 64, "full" : "Isocitrate", "short" : "isocitr"})
-metabolites.append({"idx" : 65, "full" : "Voltage on mitochondrial membrane", "short" : "Vmm"})
-metabolites.append({"idx" : 66, "full" : "FAD of pyruvate dehydrogenase complex", "short" : "fad_pdhc"})
-metabolites.append({"idx" : 67, "full" : "FADH2 of pyruvate dehydrogenase complex", "short" : "fadh2_pdhc"})
-metabolites.append({"idx" : 68, "full" : "FAD of alpha-ketoglutarate dehydrogenase complex", "short" : "fad_akgdhc"})
-metabolites.append({"idx" : 69, "full" : "FADH2 of alpha-ketoglutarate dehydrogenase complex", "short" : "fadh2_akgdhc"})
-metabolites.append({"idx" : 70, "full" : "CO2", "short" : "co2"})
-metabolites.append({"idx" : 71, "full" : "2-Phosphoglycerate", "short" : "pg2"})
+metabolites.append({"idx" : 0, "full" : "External glucose", "short" : "glc_ext", "rest" : 2.48 })
+metabolites.append({"idx" : 1, "full" : "Cytosolic glucose", "short" : "glc", "rest" : 1.2})
+metabolites.append({"idx" : 2, "full" : "Cytosolic ATP", "short" : "atp_cyt", "rest" : 2.2})
+metabolites.append({"idx" : 3, "full" : "Cytosolic ADP", "short" : "adp_cyt", "rest" : 0.01  })
+metabolites.append({"idx" : 4, "full" : "Cytosolic AMP", "short" : "amp_cyt", "rest" : 0.002})
+metabolites.append({"idx" : 5, "full" : "Mitochondrial ATP", "short" : "atp_mit", "rest" : 2.2 }) # такая же как в цит
+metabolites.append({"idx" : 6, "full" : "Mitochondrial ADP", "short" : "adp_mit", "rest" : 0.01}) # такая же как в цит
+metabolites.append({"idx" : 7, "full" : "Mitochondrial AMP", "short" : "amp_mit", "rest" : 0.002}) # такая же как в цит
+metabolites.append({"idx" : 8, "full" : "Cytosolic inorganic phosphate", "short" : "pi_cyt", "rest" : 0.5}) # !!!!!!!
+metabolites.append({"idx" : 9, "full" : "Mitochondrial inorganic phosphate", "short" : "pi_mit", "rest" : 0.5}) # !!!!!!!
+metabolites.append({"idx" : 10, "full" : "Mitochondrial GTP", "short" : "gtp_mit", "rest" : 1.0}) # !!!!!!!
+metabolites.append({"idx" : 11, "full" : "Mitochondrial GDP", "short" : "gdp_mit", "rest" : 0.01}) # !!!!!!!
+metabolites.append({"idx" : 12, "full" : "Glucose-6-phosphate", "short" : "glc6p", "rest" : 0.1})
+metabolites.append({"idx" : 13, "full" : "Fructose-6-phosphate", "short" : "fru6p", "rest" : 0.03})
+metabolites.append({"idx" : 14, "full" : "Fructose-2,6-bisphosphate", "short" : "fru26p", "rest" : 0.04}) # !!!!!!!
+metabolites.append({"idx" : 15, "full" : "Fructose-1,6-bisphosphate", "short" : "fru16p", "rest" : 0.04})
+metabolites.append({"idx" : 16, "full" : "Glycerol 3-phosphate", "short" : "grap", "rest" : 0.01})
+metabolites.append({"idx" : 17, "full" : "Dihydroxyacetone phosphate", "short" : "dhap", "rest" : 0.05})
+metabolites.append({"idx" : 18, "full" : "1,3-Bisphosphoglycerate", "short" : "bpg13", "rest" : 0.05}) # !!!!!!!!!!
+metabolites.append({"idx" : 19, "full" : "3-Phosphoglycerate", "short" : "pg3", "rest" : 0.1})
+metabolites.append({"idx" : 20, "full" : "Phosphoenolpyruvate", "short" : "pep", "rest" : 0.01})
+metabolites.append({"idx" : 21, "full" : "Cytosolic pyruvate", "short" : "pyr_cyt", "rest" : 0.15})
+metabolites.append({"idx" : 22, "full" : "Mitochondrial pyruvate", "short" : "pyr_mit", "rest" : 0.04})
+metabolites.append({"idx" : 23, "full" : "Cytosolic lactate", "short" : "lac", "rest" : 0.6})
+metabolites.append({"idx" : 24, "full" : "External lactate", "short" : "lac_ext", "rest" : 0.6})
+metabolites.append({"idx" : 25, "full" : "Creatine", "short" : "cr", "rest" : 0.01 }) # !!!!!!!!
+metabolites.append({"idx" : 26, "full" : "Creatine phosphate", "short" : "crp", "rest" : 4.9})
+metabolites.append({"idx" : 27, "full" : "Cytosolic malate", "short" : "mal_cyt", "rest" : 2.0})  # !!!!!!
+metabolites.append({"idx" : 28, "full" : "Cytosolic oxaloacetate", "short" : "oa_cyt", "rest" : 0.01}) # !!!!!!
+metabolites.append({"idx" : 29, "full" : "Mitochondrial malate", "short" : "mal_mit", "rest" : 2.0})
+metabolites.append({"idx" : 30, "full" : "Mitochondrial oxaloacetate", "short" : "oa_mit", "rest" : 0.01})
+metabolites.append({"idx" : 31, "full" : "Cytosolic aspartate", "short" : "asp_cyt", "rest" : 1.0}) # !!!!!!!!!!
+metabolites.append({"idx" : 32, "full" : "Mitochondrial aspartate", "short" : "asp_mit", "rest" : 1.0}) # !!!!!!!!!!
+metabolites.append({"idx" : 33, "full" : "Cytosolic alpha-ketoglutarate", "short" : "akg_cyt", "rest" : 1.0}) # !!!!!!!!!!
+metabolites.append({"idx" : 34, "full" : "Mitochondrial alpha-ketoglutarate", "short" : "akg_mit", "rest" : 0.05})
+metabolites.append({"idx" : 35, "full" : "Cytosolic glutamate", "short" : "glu_cyt", "rest" : 10.0})
+metabolites.append({"idx" : 36, "full" : "Mitochondrial glutamate", "short" : "glu_mit", "rest" : 10.0})
+metabolites.append({"idx" : 37, "full" : "Succinate", "short" : "suc", "rest" : 1.2})
+metabolites.append({"idx" : 38, "full" : "Fumarate", "short" : "fum", "rest" : 0.05})
+metabolites.append({"idx" : 39, "full" : "Cytosolic NAD+", "short" : "nad_cyt", "rest" : 0.001}) # !!!!!!!!!!
+metabolites.append({"idx" : 40, "full" : "Cytosolic NADH", "short" : "nadh_cyt", "rest" : 0.006})
+metabolites.append({"idx" : 41, "full" : "Mitochondrial NAD+", "short" : "nad_mit", "rest" : 0.01}) # !!!!!!!!!!
+metabolites.append({"idx" : 42, "full" : "Mitochondrial NADH", "short" : "nadh_mit", "rest" : 0.12})
+metabolites.append({"idx" : 43, "full" : "FAD of succinate dehydrogenase", "short" : "fad_sucdh", "rest" : 0.001}) # !!!!!!!!!!
+metabolites.append({"idx" : 44, "full" : "FADH2 of succinate dehydrogenase", "short" : "fadh2_sucdh", "rest" : 0.001}) # !!!!!!!!!!
+metabolites.append({"idx" : 45, "full" : "FAD of glycerol-3-phosphate dehydrogenase", "short" : "fad_g3dh", "rest" : 0.001})# !!!!!!!!!!
+metabolites.append({"idx" : 46, "full" : "FADH2 of glycerol-3-phosphate dehydrogenase", "short" : "fadh2_g3dh", "rest" : 0.001})# !!!!!!!!!!
+metabolites.append({"idx" : 47, "full" : "Coenzyme Q oxidized", "short" : "Q", "rest" : 0.01}) # !!!!!!!!!!
+metabolites.append({"idx" : 48, "full" : "Coenzyme QH2 reduced", "short" : "QH2", "rest" : 0.01})# !!!!!!!!!!
+metabolites.append({"idx" : 49, "full" : "Cytochrome c oxidized", "short" : "cytc_ox", "rest" : 0.01}) # !!!!!!!!!!
+metabolites.append({"idx" : 50, "full" : "Cytochrome c reduced", "short" : "cytc_red", "rest" : 0.01}) # !!!!!!!!!!
+metabolites.append({"idx" : 51, "full" : "Mitochondrial oxigen (O2)", "short" : "o2_mit", "rest" : 0.028})
+metabolites.append({"idx" : 52, "full" : "Mitochondrial potassium (K)", "short" : "k_mit", "rest" : 10.0}) # !!!!!!!!!!
+metabolites.append({"idx" : 53, "full" : "Cytosolic potassium (K)", "short" : "k_cyt", "rest" : 140.0})
+metabolites.append({"idx" : 54, "full" : "Mitochondrial sodium (Na)", "short" : "na_mit", "rest" : 7.0}) # !!!!!!!!!!
+metabolites.append({"idx" : 55, "full" : "Cytosolic sodium (Na)", "short" : "na_cyt", "rest" : 7.0})
+metabolites.append({"idx" : 56, "full" : "Cytosolic proton (H+)", "short" : "h+_cyt", "rest" : 10**-7}) # !!!!!!!!!!
+metabolites.append({"idx" : 57, "full" : "Mitochondrial proton (H+)", "short" : "h+_mit", "rest" : 10**-7}) # !!!!!!!!!!
+metabolites.append({"idx" : 58, "full" : "Cytosolic calcium (Ca)", "short" : "ca_cyt", "rest" : 10**-7})
+metabolites.append({"idx" : 59, "full" : "Mitochondrial calcium (Ca)", "short" : "ca_mit", "rest" : 10**-7})
+metabolites.append({"idx" : 60, "full" : "CoA", "short" : "coa", "rest" : 0.02})
+metabolites.append({"idx" : 61, "full" : "Acetyl-CoA", "short" : "acoa", "rest" : 1.0})
+metabolites.append({"idx" : 62, "full" : "Succinyl-CoA", "short" : "succoa", "rest" : 0.001})
+metabolites.append({"idx" : 63, "full" : "Citrate", "short" : "citr", "rest" : 1.3})
+metabolites.append({"idx" : 64, "full" : "Isocitrate", "short" : "isocitr", "rest" : 0.02})
+metabolites.append({"idx" : 65, "full" : "Voltage on mitochondrial membrane", "short" : "Vmm", "rest" : -200.0})
+metabolites.append({"idx" : 66, "full" : "FAD of pyruvate dehydrogenase complex", "short" : "fad_pdhc", "rest" : 0.001}) # !!!!!!!!!!
+metabolites.append({"idx" : 67, "full" : "FADH2 of pyruvate dehydrogenase complex", "short" : "fadh2_pdhc", "rest" : 0.001}) # !!!!!!!!!!
+metabolites.append({"idx" : 68, "full" : "FAD of alpha-ketoglutarate dehydrogenase complex", "short" : "fad_akgdhc", "rest" : 0.001}) # !!!!!!!!!!
+metabolites.append({"idx" : 69, "full" : "FADH2 of alpha-ketoglutarate dehydrogenase complex", "short" : "fadh2_akgdhc", "rest" : 0.001}) # !!!!!!!!!!
+metabolites.append({"idx" : 70, "full" : "CO2", "short" : "co2", "rest" : 0.0}) # !!!!!!!!!!
+metabolites.append({"idx" : 71, "full" : "2-Phosphoglycerate", "short" : "pg2", "rest" : 0.02})
 
 
 global_params = {
@@ -564,7 +564,7 @@ class Simulator():
         self.enzymes.append( lib.Lactate_dehydrogenase(21, 40, 23, 39, enzyme_params["LDG"] ) )
         self.enzymes.append( lib.Monocarboxilate_transporter(24, 23, enzyme_params["MCT"] ) )
         self.enzymes.append( lib.Creatine_kinase(2, 25, 3, 26,  enzyme_params["creatinekinase"] ) )
-        """
+
         self.enzymes.append( lib.Malate_dehydrogenase(27, 28, 39, 40,  enzyme_params["malatdehyd"] ) ) # Cytosolic enzyme
         self.enzymes.append( lib.Malate_dehydrogenase(29, 30, 41, 42,  enzyme_params["malatdehyd"] ) ) # Mitochondrial enzyme
         self.enzymes.append( lib.Aspartate_aminotransferase(31, 33, 28, 35, enzyme_params["asp_aminotrans"]))  # Cytosolic enzyme
@@ -628,10 +628,14 @@ class Simulator():
 
         # mal, fum,
         self.enzymes.append( lib.Fumarase(29, 38, enzyme_params["fumarase"]) )
-        """
+
 
     def run_model(self, t, y):
         dydt = [0.0 for _ in range(len(y))]
+
+        y[np.isnan(y)] = 0
+        y[(y < 0.0000001) & (y > -0.0000001)] = 0
+
 
         for enzyme in self.enzymes:
             dydt = enzyme.update(y, dydt)
@@ -640,16 +644,18 @@ class Simulator():
 
 simulalor = Simulator(enzyme_params, metabolites)
 
-y0 = [1.0 for _ in range(len(metabolites))]
-y0[65] = -200
+y0 = [metabolites[idx]["rest"] for idx in range(len(metabolites))]
+
 
 
 # simulalor.run_model(0, y0)
-sol = solve_ivp(simulalor.run_model, [0, 0.1], y0)
+sol = solve_ivp(simulalor.run_model, [0, 0.1], y0, method="LSODA")
 
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
-ax.plot(sol.t,sol.y[0, :],'k',linewidth = 5)
 
+for idx in range(5):  # len(metabolites)
+    ax.plot(sol.t,sol.y[idx, :], linewidth = 1, label=metabolites[idx]["full"])
+plt.legend()
 plt.show()
 
