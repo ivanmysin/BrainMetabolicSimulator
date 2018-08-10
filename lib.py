@@ -16,8 +16,59 @@ class Enzyme:
     def update(self):
         pass
 
+class Glucose_diffusion(Enzyme):
+    def __init__(self, glc_ext, params):
+        self.glc_ext_idx = glc_ext
 
+        self.env_glc_level = params["env_glc_level"]
+        self.D = params["D"]
 
+    def update(self, metabolites, dydt):
+        glc_ext = metabolites[self.glc_ext_idx]
+
+        V = self.D * (self.env_glc_level - glc_ext)
+        dydt[self.glc_ext_idx] += V
+
+class Lactate_diffusion(Enzyme):
+    def __init__(self, lac_ext, params):
+        self.lac_ext_idx = lac_ext
+
+        self.env_lac_level = params["env_lac_level"]
+        self.D = params["D"]
+
+    def update(self, metabolites, dydt):
+        lac_ext = metabolites[self.lac_ext_idx]
+
+        V = self.D * (self.env_lac_level - lac_ext)
+        dydt[self.lac_ext_idx] += V
+
+class Pyruvate_diffusion(Enzyme):
+    def __init__(self, pyr_ext, params):
+        self.pyr_ext_idx = pyr_ext
+
+        self.env_pyr_level = params["env_pyr_level"]
+        self.D = params["D"]
+
+    def update(self, metabolites, dydt):
+        lac_ext = metabolites[self.pyr_ext_idx]
+
+        V = self.D * (self.env_pyr_level - lac_ext)
+        dydt[self.pyr_ext_idx] += V
+
+class Oxigen_diffusion(Enzyme):
+    def __init__(self, o2_mit, params):
+        self.o2_mit_idx = o2_mit
+
+        self.env_o2_level = params["env_o2_level"]
+        self.D = params["D"]
+
+    def update(self, metabolites, dydt):
+        o2_mit = metabolites[self.o2_mit_idx]
+
+        V = self.D * (self.env_o2_level - o2_mit)
+        dydt[self.env_o2_level] += V
+
+########################################################################################################################
 class GlucoseTransporter(Enzyme):
 
     def __init__(self, glc_ext, glc_cyt, params):
