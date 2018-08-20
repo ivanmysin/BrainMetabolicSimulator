@@ -3,7 +3,7 @@ from scipy.integrate import odeint, solve_ivp
 import matplotlib.pyplot as plt
 import lib
 from parameters import *
-np.set_printoptions(precision=5, suppress=True)
+# np.set_printoptions(precision=5, suppress=True)
 
 
 class Simulator():
@@ -29,8 +29,8 @@ class Simulator():
         for enzyme in self.enzymes:
             dydt = enzyme.update(y, dydt)
 
-        # dydt[23] = -0.1 * y[23] # to remove of somebody metabolite
-        # print (y[2] + y[3])
+        dydt[0] = 0
+        dydt[24] = 0
 
         return dydt
 
@@ -58,7 +58,7 @@ enzymes.append( lib.Pyruvate_kinase(20, 3, 21, 2, enzyme_params["pyruvatekinase"
 enzymes.append( lib.Lactate_dehydrogenase(21, 40, 23, 39, enzyme_params["LDG"] ) )
 
 
-# enzymes.append( lib.Monocarboxilate_transporter(24, 23, enzyme_params["MCT"] ) )
+enzymes.append( lib.Monocarboxilate_transporter(24, 23, enzyme_params["MCT"] ) )
 # enzymes.append( lib.Creatine_kinase(2, 25, 3, 26,  enzyme_params["creatinekinase"] ) )
 #
 # enzymes.append( lib.Malate_dehydrogenase(27, 28, 39, 40,  enzyme_params["malatdehyd"] ) ) # Cytosolic enzyme
@@ -130,18 +130,41 @@ enzymes.append( lib.Lactate_dehydrogenase(21, 40, 23, 39, enzyme_params["LDG"] )
 
 
 
-y0 = [metabolites[idx]["rest"] for idx in range(len(metabolites))]
+y0 = np.asarray( [metabolites[idx]["rest"] for idx in range(len(metabolites))] )
+
+
+names = [metabolites[idx]["full"] for idx in range(len(metabolites))]
+
 simulalor = Simulator(enzymes, metabolites)
+sol = solve_ivp(simulalor.run_model, [0, 100], y0, method="LSODA", min_step=0.001, rtol=0.001,   atol=1e-6) # min_step=0.001,  LSODA
 
-sol = solve_ivp(simulalor.run_model, [0, 20], y0, method="LSODA", min_step=0.001, rtol=0.001,   atol=1e-6) # min_step=0.001,  LSODA
 
-indxes = [2, 3]
+# selected_metabolites = [2, 3]
+#
+# selected_metabolites = np.asarray(selected_metabolites).astype(int)
+# fig = plt.figure()
+# ax = fig.add_subplot(1, 1, 1)
+# ind = np.arange(3 * len(y0))
+#
+# ind_zero = ind[::2]
+# ind_last = ind[1::2]
+# ax.bar(ind_zero[:selected_metabolites.size], y0[selected_metabolites], width=0.25 )
+# ax.bar(ind_last[:selected_metabolites.size], sol.y[selected_metabolites, -1], width=0.25 )
+# # plt.xticks(ind_zero[selected_metabolites], names)
+#
+# plt.show()
+
+
+indxes = [1, 2, 3, 23, 39, 40]
 for idx in indxes:
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
     ax.plot(sol.t, sol.y[idx, :], linewidth=2, label=metabolites[idx]["full"])
     plt.legend()
 plt.show()
+
+
+
 
 """
 for en in enzymes:

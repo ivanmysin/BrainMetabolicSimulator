@@ -41,8 +41,8 @@ metabolites.append({"idx" : 37, "full" : "Succinate", "short" : "suc", "rest" : 
 metabolites.append({"idx" : 38, "full" : "Fumarate", "short" : "fum", "rest" : 0.05})
 metabolites.append({"idx" : 39, "full" : "Cytosolic NAD+", "short" : "nad_cyt", "rest" : 0.2}) # !!!!!!!!!!
 metabolites.append({"idx" : 40, "full" : "Cytosolic NADH", "short" : "nadh_cyt", "rest" : 0.006})
-metabolites.append({"idx" : 41, "full" : "Mitochondrial NAD+", "short" : "nad_mit", "rest" : 0.01}) # !!!!!!!!!!
-metabolites.append({"idx" : 42, "full" : "Mitochondrial NADH", "short" : "nadh_mit", "rest" : 0.12})
+metabolites.append({"idx" : 41, "full" : "Mitochondrial NAD+", "short" : "nad_mit", "rest" : 0.12}) # !!!!!!!!!!
+metabolites.append({"idx" : 42, "full" : "Mitochondrial NADH", "short" : "nadh_mit", "rest" : 0.001}) # "rest" : 0.12
 metabolites.append({"idx" : 43, "full" : "FAD of succinate dehydrogenase", "short" : "fad_sucdh", "rest" : 0.001}) # !!!!!!!!!!
 metabolites.append({"idx" : 44, "full" : "FADH2 of succinate dehydrogenase", "short" : "fadh2_sucdh", "rest" : 0.001}) # !!!!!!!!!!
 metabolites.append({"idx" : 45, "full" : "FAD of glycerol-3-phosphate dehydrogenase", "short" : "fad_g3dh", "rest" : 0.001})# !!!!!!!!!!
@@ -71,7 +71,7 @@ metabolites.append({"idx" : 67, "full" : "FADH2 of pyruvate dehydrogenase comple
 metabolites.append({"idx" : 68, "full" : "FAD of alpha-ketoglutarate dehydrogenase complex", "short" : "fad_akgdhc", "rest" : 0.001}) # !!!!!!!!!!
 metabolites.append({"idx" : 69, "full" : "FADH2 of alpha-ketoglutarate dehydrogenase complex", "short" : "fadh2_akgdhc", "rest" : 0.001}) # !!!!!!!!!!
 metabolites.append({"idx" : 70, "full" : "CO2", "short" : "co2", "rest" : 0.0}) # !!!!!!!!!!
-metabolites.append({"idx" : 71, "full" : "2-Phosphoglycerate", "short" : "pg2", "rest" : 0.02})
+metabolites.append({"idx" : 71, "full" : "2-Phosphoglycerate", "short" : "pg2", "rest" : 0.02}) # "rest" : 0.02
 metabolites.append({"idx" : 72, "full" : "Extracellular pyruvate", "short" : "pyr_ext", "rest" : 0.5})
 
 global_params = {
@@ -418,7 +418,7 @@ enzyme_params = {
     },
 
     "pyruvatekinase": {
-        "Vmax" : 2.376, # 23.76,
+        "Vmax" : 23.76, # 23.76,
         "Km_pep" : 0.074,
         "Km_adp" : 0.42,
         "Ki_atp" : 4.4,
@@ -433,7 +433,7 @@ enzyme_params = {
 
     "p-gricerate_mutase": {
         "Vmax" : 14.4, # 14400,
-        "Keq" : 0.1814,
+        "Keq" : 0.9, # 0.1814,
         "Km_pg3"  : 0.22,
         "Km_pg2"  : 0.28,
 
@@ -449,8 +449,8 @@ enzyme_params = {
     },
 
     "grap_dehydr" : {
-        "Vmax" : 7.2, # 72000,
-        "Keq" : 0.0868,
+        "Vmax" : 720, # 72000,
+        "Keq" :  0.0868,
         "Km_nad"    : 0.01, # 0.027
         "Km_grap"   : 0.101,
         "Km_pi"     : 3.9,
@@ -460,7 +460,7 @@ enzyme_params = {
 
     "triosep-isomerase": {
         "Vmax" : 10, # 10**6,
-        "Keq": 0.0545,
+        "Keq": 0.0545, # 0.0545,
         "Km_dhap" : 0.84,
         "Km_grap" : 1.65,
     },
