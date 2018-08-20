@@ -16,6 +16,26 @@ class Enzyme:
     def update(self):
         pass
 
+    def print_reag(self, metabilites):
+        attrs = dir(self)
+
+        print("#################################################")
+
+        enzyme_name = str(self)
+        # enzyme_name = enzyme_name.split("'")[1]
+        print(enzyme_name)
+        for a in attrs:
+            if "idx" in a:
+                v = self.__getattribute__(a)
+                try:
+                    idx = int(v)
+                    print(metabilites[idx]["full"])
+                except TypeError:
+                    pass
+                except ValueError:
+                    pass
+
+
 class Glucose_diffusion(Enzyme):
     def __init__(self, glc_ext, params):
         self.glc_ext_idx = glc_ext
@@ -28,6 +48,7 @@ class Glucose_diffusion(Enzyme):
 
         V = self.D * (self.env_glc_level - glc_ext)
         dydt[self.glc_ext_idx] += V
+        return dydt
 
 class Lactate_diffusion(Enzyme):
     def __init__(self, lac_ext, params):
@@ -41,6 +62,7 @@ class Lactate_diffusion(Enzyme):
 
         V = self.D * (self.env_lac_level - lac_ext)
         dydt[self.lac_ext_idx] += V
+        return dydt
 
 class Pyruvate_diffusion(Enzyme):
     def __init__(self, pyr_ext, params):
@@ -54,6 +76,7 @@ class Pyruvate_diffusion(Enzyme):
 
         V = self.D * (self.env_pyr_level - lac_ext)
         dydt[self.pyr_ext_idx] += V
+        return dydt
 
 class Oxigen_diffusion(Enzyme):
     def __init__(self, o2_mit, params):
@@ -66,7 +89,8 @@ class Oxigen_diffusion(Enzyme):
         o2_mit = metabolites[self.o2_mit_idx]
 
         V = self.D * (self.env_o2_level - o2_mit)
-        dydt[self.env_o2_level] += V
+        dydt[self.o2_mit_idx] += V
+        return dydt
 
 ########################################################################################################################
 class GlucoseTransporter(Enzyme):
@@ -87,7 +111,7 @@ class GlucoseTransporter(Enzyme):
         glc_diff = glc_ext - glc_cyt
 
         glc_cyt_Km_ratio = glc_cyt / self.Km_glc_cyt
-        glc_ext_Km_ratio = glc_ext / self.Km_glc_cyt
+        glc_ext_Km_ratio = glc_ext / self.Km_glc_ext
 
         V = self.Vmax * glc_diff / (1 + glc_cyt_Km_ratio + glc_ext_Km_ratio)
 
@@ -114,13 +138,17 @@ class Hexokinase(Enzyme):
 
     def update(self, metabolites, dydt):
         glc_cyt = metabolites[self.glc_cyt_idx]
-        atp_cyt = metabolites[self.adp_cyt_idx]
+        atp_cyt = metabolites[self.atp_cyt_idx]
         glc6p = metabolites[self.glc6p_idx]
+
+        # print(atp_cyt)
 
         Vglc = glc_cyt / (glc_cyt + self.Km_glc)
         Vatp = atp_cyt / (atp_cyt + self.Km_atp * (1 + glc6p / self.Ki_atp) )
-        Inh = 1 - glc6p/ self.Ki_glc6p
-        V = self.Vmax * Vglc * Vatp * Inh
+        # atp_cyt / (atp_cyt + self.Km_atp * (1 + atp_cyt / self.Ki_atp) ) #
+
+        # Inh = 1 - glc6p / self.Ki_glc6p
+        V = self.Vmax * Vglc * Vatp #* Inh
 
         dydt[self.glc_cyt_idx] -= V
         dydt[self.atp_cyt_idx] -= V
@@ -151,8 +179,8 @@ class Glucose6phosphate_isomerase(Enzyme):
         tmp2 = 1 + glc6p / self.Km_glc6p + fru6p / self.Km_fru6p
         V = self.Vmax * tmp1 / tmp2
 
-        dydt[self.glc6p_idx] += V
-        dydt[self.fru6p_idx] -= V
+        dydt[self.glc6p_idx] -= V
+        dydt[self.fru6p_idx] += V
 
         return dydt
 #################################################################################################
@@ -184,12 +212,13 @@ class Phosphofructokinase_type1(Enzyme):
         atp_cyt = metabolites[self.atp_cyt_idx]
         fru26p = metabolites[self.fru16p_idx]
 
-        fru__n = fru6p**self.n_fru26p
+        fru__n = fru26p**self.n_fru26p
         # print (fru__n)
         tmp1 = fru__n / (fru__n + self.Ka_fru26p**self.n_fru26p )
 
         Vfru = fru6p / (fru6p + self.Km_fru6p * (1 - self.K0 * tmp1) )
         Vatp = atp_cyt / (atp_cyt + self.Km_atp)
+
         Vatp__n = 1 - atp_cyt**self.n /(atp_cyt**self.n + self.Ki_atp**self.n)
 
         Vfru26p = fru26p / (fru26p + self.Ka_fru26p)
@@ -197,7 +226,6 @@ class Phosphofructokinase_type1(Enzyme):
 
         dydt[self.fru6p_idx] -= V
         dydt[self.atp_cyt_idx] -= V
-
 
         dydt[self.adp_cyt_idx] += V
         dydt[self.fru16p_idx] += V
@@ -343,10 +371,10 @@ class Triosophosphate_isomerase(Enzyme):
         grap = metabolites[self.grap_idx]
         dhap = metabolites[self.dhap_idx]
 
-        tmp1 = dhap - grap / self.Keq
+        tmp1 = dhap - grap / self.Keq # !!!! поменяны местами метаболиты
         tmp2 = 1 + dhap / self.Km_dhap + grap / self.Km_grap
 
-        V = self.Vmax * tmp1 * tmp2
+        V = self.Vmax * tmp1 / tmp2
 
         dydt[self.dhap_idx] -= V
         dydt[self.grap_idx] += V
@@ -461,7 +489,7 @@ class Phosphoglycerate_mutase(Enzyme):
         pg2 = metabolites[self.pg2_idx]
         pg3 = metabolites[self.pg3_idx]
 
-        tmp1 = pg3 - pg2 / self.Keq
+        tmp1 = pg3 - pg2 / self.Keq  #  поменяны местами метаболиты !!!!!
         tmp2 = 1 + pg3 / self.Km_pg3
         tmp3 = 1 + pg2 / self.Km_pg2
 
