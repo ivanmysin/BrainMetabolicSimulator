@@ -8,8 +8,8 @@ metabolites.append({"idx" : 4, "full" : "Cytosolic AMP", "short" : "amp_cyt", "r
 metabolites.append({"idx" : 5, "full" : "Mitochondrial ATP", "short" : "atp_mit", "rest" : 2.2 }) # такая же как в цит
 metabolites.append({"idx" : 6, "full" : "Mitochondrial ADP", "short" : "adp_mit", "rest" : 0.01}) # такая же как в цит
 metabolites.append({"idx" : 7, "full" : "Mitochondrial AMP", "short" : "amp_mit", "rest" : 0.002}) # такая же как в цит
-metabolites.append({"idx" : 8, "full" : "Cytosolic inorganic phosphate", "short" : "pi_cyt", "rest" : 5.5}) # !!!!!!!
-metabolites.append({"idx" : 9, "full" : "Mitochondrial inorganic phosphate", "short" : "pi_mit", "rest" : 0.5}) # !!!!!!!
+metabolites.append({"idx" : 8, "full" : "Cytosolic inorganic phosphate", "short" : "pi_cyt", "rest" : 0.55}) # !!!!!!!
+metabolites.append({"idx" : 9, "full" : "Mitochondrial inorganic phosphate", "short" : "pi_mit", "rest" : 0.05}) # !!!!!!!
 metabolites.append({"idx" : 10, "full" : "Mitochondrial GTP", "short" : "gtp_mit", "rest" : 1.0}) # !!!!!!!
 metabolites.append({"idx" : 11, "full" : "Mitochondrial GDP", "short" : "gdp_mit", "rest" : 0.01}) # !!!!!!!
 metabolites.append({"idx" : 12, "full" : "Glucose-6-phosphate", "short" : "glc6p", "rest" : 0.1})
@@ -52,14 +52,14 @@ metabolites.append({"idx" : 48, "full" : "Coenzyme QH2 reduced", "short" : "QH2"
 metabolites.append({"idx" : 49, "full" : "Cytochrome c oxidized", "short" : "cytc_ox", "rest" : 0.01}) # !!!!!!!!!!
 metabolites.append({"idx" : 50, "full" : "Cytochrome c reduced", "short" : "cytc_red", "rest" : 0.01}) # !!!!!!!!!!
 metabolites.append({"idx" : 51, "full" : "Mitochondrial oxigen (O2)", "short" : "o2_mit", "rest" : 0.028})
-metabolites.append({"idx" : 52, "full" : "Mitochondrial potassium (K)", "short" : "k_mit", "rest" : 10.0}) # !!!!!!!!!!
-metabolites.append({"idx" : 53, "full" : "Cytosolic potassium (K)", "short" : "k_cyt", "rest" : 140.0})
-metabolites.append({"idx" : 54, "full" : "Mitochondrial sodium (Na)", "short" : "na_mit", "rest" : 7.0}) # !!!!!!!!!!
-metabolites.append({"idx" : 55, "full" : "Cytosolic sodium (Na)", "short" : "na_cyt", "rest" : 7.0})
-metabolites.append({"idx" : 56, "full" : "Cytosolic proton (H+)", "short" : "h+_cyt", "rest" : 10**-7}) # !!!!!!!!!!
-metabolites.append({"idx" : 57, "full" : "Mitochondrial proton (H+)", "short" : "h+_mit", "rest" : 10**-7}) # !!!!!!!!!!
-metabolites.append({"idx" : 58, "full" : "Cytosolic calcium (Ca)", "short" : "ca_cyt", "rest" : 10**-7})
-metabolites.append({"idx" : 59, "full" : "Mitochondrial calcium (Ca)", "short" : "ca_mit", "rest" : 10**-7})
+metabolites.append({"idx" : 52, "full" : "Mitochondrial potassium (K)", "short" : "k_mit", "rest" : 0.01}) # !!!!!!!!!!
+metabolites.append({"idx" : 53, "full" : "Cytosolic potassium (K)", "short" : "k_cyt", "rest" : 0.14})
+metabolites.append({"idx" : 54, "full" : "Mitochondrial sodium (Na)", "short" : "na_mit", "rest" : 0.07}) # !!!!!!!!!!
+metabolites.append({"idx" : 55, "full" : "Cytosolic sodium (Na)", "short" : "na_cyt", "rest" : 0.07})
+metabolites.append({"idx" : 56, "full" : "Cytosolic proton (H+)", "short" : "h+_cyt", "rest" : 10**-3}) # !!!!!!!!!!
+metabolites.append({"idx" : 57, "full" : "Mitochondrial proton (H+)", "short" : "h+_mit", "rest" : 10**-5}) # !!!!!!!!!!
+metabolites.append({"idx" : 58, "full" : "Cytosolic calcium (Ca)", "short" : "ca_cyt", "rest" : 10**-4})
+metabolites.append({"idx" : 59, "full" : "Mitochondrial calcium (Ca)", "short" : "ca_mit", "rest" : 10**-4})
 metabolites.append({"idx" : 60, "full" : "CoA", "short" : "coa", "rest" : 0.02})
 metabolites.append({"idx" : 61, "full" : "Acetyl-CoA", "short" : "acoa", "rest" : 1.0})
 metabolites.append({"idx" : 62, "full" : "Succinyl-CoA", "short" : "succoa", "rest" : 0.001})
@@ -75,7 +75,7 @@ metabolites.append({"idx" : 71, "full" : "2-Phosphoglycerate", "short" : "pg2", 
 metabolites.append({"idx" : 72, "full" : "Extracellular pyruvate", "short" : "pyr_ext", "rest" : 0.5})
 
 global_params = {
-    "Cmm" : 0.9 * 10**-6 * 3.7 * 10**-5, #farad,  capacity of mitochondrial membrane, 0.9 * 10**-6 F/cm^2, square 3.7 * 10**-5 cm^2
+    "Cmm" : 0.9 * 10**-6 * 3.7 * 10**-5, # farad,  capacity of mitochondrial membrane, 0.9 * 10**-6 F/cm^2, square 3.7 * 10**-5 cm^2
     "Volume_cyt_mit" : 0.07,             # part of mitochondrial volume in total volume of neuron, (Jolivet, 2015)
     "Volume_extracellular2cell" : 0.444, # ratio of extracellular volume to total volume of neurons, (Jolivet, 2015)
 }
@@ -93,23 +93,23 @@ enzyme_params = {
     # },
 
     "fumarase" : {
-        "Vmax" : 6.4 * 10**7,
+        "Vmax" : 6.4, #  * 10**7,
         "Keq"  : 4.4,
         "Km_fum" : 0.14,
         "Km_mal" : 0.3,
     },
 
     "suc_dehydr": {
-        "Vmax_succdh" : 1.6*10**5,
-        "Vmax_nadh" : 10**12,
+        "Vmax_succdh" : 1.6, #*10**5,
+        "Vmax_nadh" : 0.01, # 10**12,
         "Km_suc"    : 1.6,
         "Ki_mal"    : 2.2,
         "Km_nad"    : 1.0, # !!!!!!! значение свято от балды
-        "Em_FAD" : 100,
+        "Em_FAD" : 270,
     },
 
     "sucCoAsyntase_4atp" : {
-        "Vmax" : 1.92 * 10**4,
+        "Vmax" : 1.92, # * 10**4,
         "Keq"  : 3.8,
         "Amax_P" : 1.2,
         "Km_P"   : 2.5, # 0.72 другое значение указвнное в статье !!!!!!!!!!!!
@@ -128,7 +128,7 @@ enzyme_params = {
     },
 
     "sucCoAsyntase_4gtp": {
-        "Vmax": 1.92 * 10 ** 4,
+        "Vmax": 1.92, # * 10 ** 4,
         "Keq": 3.8,
         "Amax_P": 1.2,
         "Km_P": 2.5,  # 0.72 другое значение указвнное в статье !!!!!!!!!!!!
@@ -147,8 +147,8 @@ enzyme_params = {
     },
 
     "akg_dehydr" : {
-        "Vmax_nad" : 134.4,
-        "Vmax_fad" : 1e4,
+        "Vmax_nad" : 0.1344, # 134.4,
+        "Vmax_fad" : 0.1, #  1e4,
 
         "Km1" : 2.5,
         "Km2" : 2.5, #  !!!!! величина взята от балды !!!!!
@@ -178,14 +178,14 @@ enzyme_params = {
     },
 
     "aconitase" : {
-        "Vmax" : 1.6 * 10**6,
+        "Vmax" : 1.6, # * 10**6,
         "Keq"  : 0.067,
         "Km_cit" : 0.48,
         "Km_isocit" : 0.12,
     },
 
     "citrate_syntase" : {
-        "Vmax" : 1.28 * 10**3,
+        "Vmax" : 0.128, # 1.28 * 10**3,
         "Km_oxa" : 0.0045,
         "Ki_cit" : 3.7,
         "Km_accoa" : 0.005,
@@ -194,7 +194,7 @@ enzyme_params = {
 
     "pyr_dehyd_comp" : {
         "Vmax_pdhc_fad" : 13.1,
-        "Vmax_pdhc_nad" : 1e4, # !!!!!!
+        "Vmax_pdhc_nad" : 20, # 1e4, # !!!!!!
         "Amax_Ca"  : 1.7,
         "Ka_Ca"    : 10**-3,
         "Km_pyr"   : 0.068,
@@ -216,28 +216,28 @@ enzyme_params = {
     },
 
     "complex4" : {
-        "Vmax" : 32.5,
+        "Vmax" : 0.0325, # 32.5
         "Km_O2" : 0.001,
         "Km_cytc" : 0.001,
         "n"       : 2,
-        "dGh"     : 1,
+        "dGh"     : -10,
         "Volume_cyt_mit": global_params["Volume_cyt_mit"],
         "Cmm": global_params["Cmm"],
     },
 
     "complex3" : {
-        "Vmax" : 2.25*10**4,
+        "Vmax" : 2.25, # *10**4,
         "n" : 2,
-        "Em_Q": 1,  # !!!!!!!!
-        "Em_cytc" : 1, # !!!!!!!
+        "Em_Q": -50,  # !!!!!!!!
+        "Em_cytc" : -50, # !!!!!!!
         "Volume_cyt_mit": global_params["Volume_cyt_mit"],
         "Cmm": global_params["Cmm"],
     },
 
     "complex1" : {
-        "Vmax" : 2.25,
-        "Em_N": 1,  # !!!!! нет данных
-        "Em_Q": 1,  # !!!!! нет данных
+        "Vmax" : 0.0225,
+        "Em_N": 2,  # !!!!! нет данных
+        "Em_Q": 2,  # !!!!! нет данных
         "Volume_cyt_mit": global_params["Volume_cyt_mit"],
         "Cmm": global_params["Cmm"],
     },
@@ -335,18 +335,18 @@ enzyme_params = {
     },
 
     "mitgly3pdehyd": {
-        "Vmax_g3pdh": 6.4 * 10**4,
-        "Vmax_Q" : 3.2 * 10**6,
+        "Vmax_g3pdh": 6.4, #* 10**4,
+        "Vmax_Q" : 3.2, #* 10**6,
         "Em_dhap_g3p" : 190, # mV
         "Em_FAD_g3p"  : 210, # mV
         "Em_Q"        : 200, # mV !!!!!!!! нет данных, значние взято от балды
 
-        "Km_dhap": 0.17, # сзято от цитозольного фермента
-        "Km_g3p": 0.3,   # сзято от цитозольного фермента
+        "Km_dhap": 0.17, # взято от цитозольного фермента
+        "Km_g3p": 0.3,   # взято от цитозольного фермента
     },
 
     "cytgly3pdehyd": {
-        "Vmax": 3.2 * 10**4,
+        "Vmax": 3.2, # * 10**4,
         "Keq": 3257.3,
         "Km_dhap": 0.17,
         "Km_nadh": 0.01,
@@ -355,19 +355,22 @@ enzyme_params = {
     },
 
     "mal_akg_carrier": {
-        "Vmax" : 32,
+        "Vmax" : 3.2, # 32,
         "Km_mal_cyt" : 1.36,
         "Km_akg_cyt" : 0.1,
         "Km_mal_mit" : 0.71,
         "Km_akg_mit" : 0.2,
+        "Volume_cyt_mit": global_params["Volume_cyt_mit"],
     },
 
     "asp_glu_carrier": {
-        "Vmax" : 3200,
+        "Vmax" : 32, #  3200,
         "Km_asp_mit" : 0.05,
         "Km_glu_cyt" : 2.8,
         "Km_asp_cyt" : 0.05,
         "Km_glu_mit" : 2.8,
+        "Volume_cyt_mit": global_params["Volume_cyt_mit"],
+
     },
 
     "mito_membrane" : {
@@ -381,14 +384,14 @@ enzyme_params = {
     },
 
     "asp_aminotrans" : {
-        "Vmax" : 32,
+        "Vmax" : 0.32, # 32, !!!!!
         "Keq"  : 0.147,
 
     },
 
     "malatdehyd" : {
-        "Vmax" : 10**4,
-        "Keq"  : 10**-4,
+        "Vmax" : 10, # 10**4, # !!!!!
+        "Keq"  : 10, # 10**-4, # !!!!!!
         "Km_nad" : 0.05,
         "Km_mal" : 0.77,
         "Km_oa"  : 0.04,
@@ -396,12 +399,12 @@ enzyme_params = {
     },
 
     "creatinekinase" : {
-        "Vmax" : 0.0135,
-        "Keq"  : 7.0
+        "Vmax" : 0.001, # 0.0135,
+        "Keq"  : 7.0,
     },
 
     "MCT" : {
-        "Vmax" : 5.0,
+        "Vmax" : 0.05, # 5.0,
         "Keq" : 1.737,
         "Km_lac_cyt" : 1.1,
         "Km_lac_ext" : 1.1,

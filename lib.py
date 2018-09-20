@@ -736,7 +736,7 @@ class Aspartate_aminotransferase(Enzyme):
         dydt[self.asp_idx] -= V
         dydt[self.akg_idx] -= V
 
-        dydt[self.akg_idx] += V
+        dydt[self.oa_idx] += V
         dydt[self.glu_idx] += V
 
         return dydt
@@ -760,6 +760,7 @@ class Aspartate_glutamate_carrier(Enzyme):
 
         self.Km_asp_cyt = params["Km_asp_cyt"]
         self.Km_glu_mit = params["Km_glu_mit"]
+        self.Volume_cyt_mit = params["Volume_cyt_mit"]
 
     def update(self, metabolites, dydt):
         asp_mit = metabolites[self.asp_mit_idx]
@@ -774,6 +775,7 @@ class Aspartate_glutamate_carrier(Enzyme):
         dG = -Vmm + 1000 * R * T / F * np.log( h_cyt / h_mit)
 
         Keq = np.exp(F * dG/(1000 * R * T) )
+        # print( h_cyt)
 
         tmp1 = asp_mit * glu_cyt - asp_cyt * glu_mit / Keq
         tmp2 = (asp_mit + self.Km_asp_mit) * (glu_cyt +  self.Km_glu_cyt)
@@ -781,13 +783,13 @@ class Aspartate_glutamate_carrier(Enzyme):
 
         V = self.Vmax * tmp1 / (tmp2 + tmp3)
 
-        dydt[self.asp_mit_idx] -= V
-        dydt[self.glu_cyt_idx] -= V
-        dydt[self.h_cyt_idx] -= V
+        dydt[self.asp_mit_idx] -= V / self.Volume_cyt_mit
+        dydt[self.glu_cyt_idx] -= V / (1 - self.Volume_cyt_mit)
+        # dydt[self.h_cyt_idx] -= V / (1 - self.Volume_cyt_mit)
 
-        dydt[self.h_mit_idx] += V
-        dydt[self.asp_cyt_idx] += V
-        dydt[self.glu_mit_idx] += V
+        # dydt[self.h_mit_idx] += V / self.Volume_cyt_mit
+        dydt[self.asp_cyt_idx] += V / (1 - self.Volume_cyt_mit)
+        dydt[self.glu_mit_idx] += V / self.Volume_cyt_mit
 
         return dydt
 
@@ -807,6 +809,7 @@ class Malate_alphaketoglutarate_carrier(Enzyme):
         self.Km_akg_mit = params["Km_akg_mit"]
         self.Km_mal_mit = params["Km_mal_mit"]
         self.Km_akg_cyt = params["Km_akg_cyt"]
+        self.Volume_cyt_mit = params["Volume_cyt_mit"]
 
     def update(self, metabolites, dydt):
 
@@ -821,11 +824,11 @@ class Malate_alphaketoglutarate_carrier(Enzyme):
 
         V = self.Vmax * tmp1 / (tmp2 + tmp3)
 
-        dydt[self.mal_cyt_idx] -= V
-        dydt[self.akg_mit_idx] -= V
+        dydt[self.mal_cyt_idx] -= V / (1 - self.Volume_cyt_mit)
+        dydt[self.akg_mit_idx] -= V / self.Volume_cyt_mit
 
-        dydt[self.mal_mit_idx] += V
-        dydt[self.akg_cyt_idx] += V
+        dydt[self.mal_mit_idx] += V / self.Volume_cyt_mit
+        dydt[self.akg_cyt_idx] += V / (1 - self.Volume_cyt_mit)
 
         return dydt
 
@@ -960,7 +963,11 @@ class ATP_synthetase(Enzyme):
 
         Keq = np.exp( self.dG0 /(R * T) - self.k * U ) * (( h_cyt / h_mit )**self.k)
 
-        V = Vmax * (adp * pi - atp / Keq  )
+        V = Vmax * (adp * pi - atp / Keq )
+
+        # dydt[self.h_cyt_idx] += self.k * V  / (1 - self.Volume_cyt_mit) # !!!!!
+        # dydt[self.h_mit_idx] -= self.k * V / self.Volume_cyt_mit # !!!!!
+        # dydt[self.Vmm_idx] -= self.k * V * 1000 / F    # !!!!!
 
         dydt[self.atp_idx] -= V
         dydt[self.adp_idx] += V
@@ -993,10 +1000,10 @@ class ATP_ADP_axchanger(Enzyme):
         atp_cyt = metabolites[self.atp_cyt_idx]
         Vmm = metabolites[self.Vmm_idx]
 
-        U = Vmm * F / (1000 * R * T)
+        U = -Vmm * F / (1000 * R * T)
 
         tmp1 = 1 - np.exp(U) * atp_cyt * adp_mit / (adp_cyt * atp_mit)
-        tmp2 = 1 + atp_cyt / adp_cyt  * np.exp( self.S_Vmm * U)
+        tmp2 = 1 + atp_cyt / adp_cyt  * np.exp(self.S_Vmm * U)
         tmp3 = 1 + atp_mit / adp_mit
 
         V = self.Vmax * tmp1 / (tmp2 * tmp3)
@@ -1007,7 +1014,7 @@ class ATP_ADP_axchanger(Enzyme):
         dydt[self.adp_mit_idx] += V / self.Volume_cyt_mit
         dydt[self.atp_cyt_idx] += V / (1 - self.Volume_cyt_mit)
 
-        dydt[self.Vmm_idx] += V * F / self.Cmm
+        dydt[self.Vmm_idx] += V * F * 0.001 / self.Cmm
         return dydt
 
 ############################################################################################################
@@ -1060,11 +1067,10 @@ class Passive_efflux_ion(Enzyme):
         tmp = (ion_in - ion_out * np.exp(U)) / (1 - np.exp(U))
         I = self.P * U * F * tmp * self.Am
 
-        dydt[self.ion_in_idx] -= I / F / (1 - self.Volume_cyt_mit)
-        dydt[self.ion_out_idx] += I / F / self.Volume_cyt_mit
+        dydt[self.ion_in_idx] += I / F / (1 - self.Volume_cyt_mit)
+        dydt[self.ion_out_idx] -= I / F / self.Volume_cyt_mit
 
-
-        dydt[self.Vmm_idx] += I / self.Cmm
+        dydt[self.Vmm_idx] -= I / self.Cmm
 
         return dydt
 ############################################################################################################
@@ -1091,12 +1097,10 @@ class Pump(Enzyme):
 
         if self.is_simport:
             V = self.Vmax * (ion_cyt * h_cyt - ion_mit * h_mit)
-
             dydt[self.h_cyt_idx] -= V / (1 - self.Volume_cyt_mit)
             dydt[self.h_mit_idx] += V / self.Volume_cyt_mit
         else:
             V = self.Vmax * (ion_cyt * h_mit - ion_mit * h_cyt)
-
             dydt[self.h_mit_idx] -= V / self.Volume_cyt_mit
             dydt[self.h_cyt_idx] += V  / (1 - self.Volume_cyt_mit)
 
@@ -1138,7 +1142,7 @@ class Calcium_effux(Enzyme):
         tmp3 = self.P_Mcu * ca_cyt**self.n / ( ca_cyt**self.n + self.Km_Mcu**self.n)
         tmp4 = ca_cyt**self.n_a / (ca_cyt**self.n_a + self.Ka**self.n_a)
 
-        I = self.Am * 2 * U * F * tmp1 * (tmp2 + tmp3 * tmp4)
+        I = -self.Am * 2 * U * F * tmp1 * (tmp2 + tmp3 * tmp4)
 
         dydt[self.ca_cyt_idx] -= I * F / (1 - self.Volume_cyt_mit)
         dydt[self.ca_mit_idx] += I * F / self.Volume_cyt_mit
@@ -1208,7 +1212,6 @@ class Ca_H_pump(Enzyme):
         self.Volume_cyt_mit = params["Volume_cyt_mit"]
         self.Cmm = params["Cmm"]
 
-
     def update(self, metabolites, dydt):
 
         Vmm = metabolites[self.Vmm_idx]
@@ -1254,6 +1257,8 @@ class Complex1(Enzyme):
         self.Volume_cyt_mit = params["Volume_cyt_mit"]
         self.Cmm = params["Cmm"]
 
+
+
     def update(self, metabolites, dydt):
 
         Vmm = metabolites[self.Vmm_idx]
@@ -1265,7 +1270,8 @@ class Complex1(Enzyme):
         nad = metabolites[self.nad_idx]
 
         U = Vmm * F / (1000 * R * T)
-        Keq = np.exp(2 * self.Em_N + 2*self.Em_Q  + 4*U ) * (h_mit/h_cyt)**4
+        Keq = 1.0 # np.exp(2*self.Em_N + 2*self.Em_Q + 4*U) * (h_mit/h_cyt)**4
+
         V = self.Vmax * (nadh * Q - nad * QH2 / Keq)
 
         dydt[self.nadh_idx] -= V
@@ -1276,6 +1282,7 @@ class Complex1(Enzyme):
         dydt[self.qh2_idx] += V
         dydt[self.nad_idx] += V
 
+        # print(V)
         dydt[self.Vmm_idx] -= 4 * V * F / self.Cmm  # !!!!!!
 
         return dydt
@@ -1310,8 +1317,8 @@ class Complex3(Enzyme):
 
         U = Vmm * F / (1000 * R * T)
 
-        tmp = (h_mit / h_cyt)**4
-        Keq = np.exp(-2 * self.Em_Q + 2 * self.Em_cytc + 2*U) * tmp
+        # tmp = (h_mit / h_cyt)**4
+        Keq = 1.0 # np.exp(-2 * self.Em_Q + 2 * self.Em_cytc + 2*U) * tmp
 
         V  = self.Vmax * (QH2 * cytc_ox**self.n - Q * cytc_red**self.n  / Keq)
 
@@ -1349,18 +1356,16 @@ class Complex4(Enzyme):
 
     def update(self, metabolites, dydt):
 
-        # Vmm = metabolites[self.Vmm_idx]
-        # h_cyt = metabolites[self.h_cyt_idx]
-        # h_mit = metabolites[self.h_mit_idx]
+        Vmm = metabolites[self.Vmm_idx]
+        h_cyt = metabolites[self.h_cyt_idx]
+        h_mit = metabolites[self.h_mit_idx]
         o2 = metabolites[self.o2_idx]
-
-
         cytc_red = metabolites[self.cytc_red_idx]
 
         tmp1 = cytc_red**self.n / (cytc_red**self.n + self.Km_cytc**self.n)
 
         tmp2 = o2 / (o2 + self.Km_O2)
-        tmp3 = (np.exp(-0.001 * self.dGh * F / R / T  ))**2
+        tmp3 = 0.001 # (np.exp(-0.001 * self.dGh * F / R / T  ))**2 # !!!!!!!!
 
         V = self.Vmax * tmp1*tmp2*tmp3
 
@@ -1724,7 +1729,12 @@ class Succinate_dehydrydrogenase(Enzyme):
         tmp1 = suc * Q - fum * QH2 / Keq_succdh
         tmp2 = suc + self.Km_suc * (1 + mal / self.Ki_mal )
         v_succdh_fad = self.Vmax_succdh * tmp1 / tmp2
-        # dydt[] -= v_succdh_fad
+
+        dydt[self.suc_idx] -= v_succdh_fad
+        dydt[self.q_idx] -= v_succdh_fad
+
+        dydt[self.qh2_idx] += v_succdh_fad
+        dydt[self.fum_idx] += v_succdh_fad
 
 
         Keq_pdhc_fad_nad = 1.0 # !!! np.exp(- self.Em_FAD * F / R / T) ## !!!!!! added minus before Em
@@ -1752,7 +1762,7 @@ class Fumarase(Enzyme):
         fum = metabolites[self.fum_idx]
 
         tmp1 = fum - mal / self.Keq
-        tmp2 = 1 + fum / self.Km_fum - mal / self.Km_mal
+        tmp2 = 1 + fum / self.Km_fum + mal / self.Km_mal
 
         V = self.Vmax * tmp1 / tmp2
 

@@ -22,16 +22,13 @@ class Simulator():
         dydt = np.zeros_like(y)
 
         y[np.isnan(y)] = 0
-        tmp_idx = y < 0.0000001
+        tmp_idx = y < 1e-14
         tmp_idx[65] = False
         y[tmp_idx] = 0
 
         for enzyme in self.enzymes:
             dydt = enzyme.update(y, dydt)
-
-        dydt[0] = 0
-        dydt[24] = 0
-
+        dydt[65] *= 10e-15 # !!!!!!!!
         return dydt
 
 enzymes = []
@@ -59,71 +56,72 @@ enzymes.append( lib.Lactate_dehydrogenase(21, 40, 23, 39, enzyme_params["LDG"] )
 
 
 enzymes.append( lib.Monocarboxilate_transporter(24, 23, enzyme_params["MCT"] ) )
-# enzymes.append( lib.Creatine_kinase(2, 25, 3, 26,  enzyme_params["creatinekinase"] ) )
-#
-# enzymes.append( lib.Malate_dehydrogenase(27, 28, 39, 40,  enzyme_params["malatdehyd"] ) ) # Cytosolic enzyme
-# enzymes.append( lib.Malate_dehydrogenase(29, 30, 41, 42,  enzyme_params["malatdehyd"] ) ) # Mitochondrial enzyme
-# enzymes.append( lib.Aspartate_aminotransferase(31, 33, 28, 35, enzyme_params["asp_aminotrans"]))  # Cytosolic enzyme
-# enzymes.append( lib.Aspartate_aminotransferase(32, 34, 30, 36,  enzyme_params["asp_aminotrans"] ) ) # Mitochondrial enzyme
-# enzymes.append( lib.Aspartate_glutamate_carrier(32, 35, 56, 31, 36, 57, 65, enzyme_params["asp_glu_carrier"] ) )
-# enzymes.append( lib.Malate_alphaketoglutarate_carrier(27, 34, 29, 33, enzyme_params["mal_akg_carrier"] ) )
-# enzymes.append( lib.Glycerol_3phosphate_dehydrogenase_cytosolic(17, 40, 19, 39, enzyme_params["cytgly3pdehyd"] ) )
-# enzymes.append( lib.Glycerol_3phosphate_dehydrogenase_mitochondrial(19, 17, 45, 46, 47, 48, enzyme_params["mitgly3pdehyd"] ) )
-# enzymes.append( lib.ATP_synthetase(5, 6, 9, 56, 57, 65, enzyme_params["atp_syntase"] ) )
-# enzymes.append( lib.ATP_ADP_axchanger(5, 3, 6, 2, 65, enzyme_params["atp/adp_axchanger"] ) )
-# enzymes.append( lib.ATP_consumption(2, 3, 8, enzyme_params["atp_consumption"] ) )
-# enzymes.append( lib.Passive_efflux_ion(53, 52, 65, enzyme_params["potassium_ed"]))  # Efflux for potassium (K)
-# enzymes.append( lib.Passive_efflux_ion(55, 54, 65, enzyme_params["sodium_ed"]))  # Efflux for sodium (Na)
-# enzymes.append( lib.Passive_efflux_ion(56, 57, 65, enzyme_params["protons_ed"]))  # Efflux for protons (H)
-# enzymes.append( lib.Pump(53, 52, 56, 57, enzyme_params["K_pump"]))  # Pump for potassium (K)
-# enzymes.append( lib.Pump(55, 54, 56, 57, enzyme_params["Na_pump"]))  # Pump for sodium (Na)
-# enzymes.append( lib.Pump(8, 9, 56, 57, enzyme_params["phos_pump"]))  # Pump for inorganic phosphate
-# enzymes.append( lib.Calcium_effux(58, 59, 65, enzyme_params["calcium_ed"]) )
-#         #
-#         # # ca_mit, na_cyt, ca_cyt, na_mit, Vmm
-# enzymes.append( lib.Ca_Na_pump(59, 55, 58, 54, 65, enzyme_params["ca_na_pump"]) )
-#         #
-#         # #  ca_mit, h_cyt, ca_cyt, h_mit, Vmm
-# enzymes.append( lib.Ca_H_pump(59, 56, 58, 57, 65, enzyme_params["ca_h_pump"]) )
+# enzymes.append( lib.Creatine_kinase(2, 25, 3, 26,  enzyme_params["creatinekinase"] ) ) # Делает АТФ отрицательным
+
+enzymes.append( lib.Malate_dehydrogenase(27, 28, 39, 40,  enzyme_params["malatdehyd"] ) ) # Cytosolic enzyme
+enzymes.append( lib.Malate_dehydrogenase(29, 30, 41, 42,  enzyme_params["malatdehyd"] ) ) # Mitochondrial enzyme
+enzymes.append( lib.Aspartate_aminotransferase(31, 33, 28, 35, enzyme_params["asp_aminotrans"]))  # Cytosolic enzyme
+enzymes.append( lib.Aspartate_aminotransferase(32, 34, 30, 36,  enzyme_params["asp_aminotrans"] ) ) # Mitochondrial enzyme
+enzymes.append( lib.Aspartate_glutamate_carrier(32, 35, 56, 31, 36, 57, 65, enzyme_params["asp_glu_carrier"] ) ) # !!!!!!!!
+enzymes.append( lib.Malate_alphaketoglutarate_carrier(27, 34, 29, 33, enzyme_params["mal_akg_carrier"] ) )
+enzymes.append( lib.Glycerol_3phosphate_dehydrogenase_cytosolic(17, 40, 19, 39, enzyme_params["cytgly3pdehyd"] ) )
+enzymes.append( lib.Glycerol_3phosphate_dehydrogenase_mitochondrial(19, 17, 45, 46, 47, 48, enzyme_params["mitgly3pdehyd"] ) )
+enzymes.append( lib.ATP_synthetase(5, 6, 9, 56, 57, 65, enzyme_params["atp_syntase"] ) )
+enzymes.append( lib.ATP_ADP_axchanger(5, 3, 6, 2, 65, enzyme_params["atp/adp_axchanger"] ) )
+enzymes.append( lib.ATP_consumption(2, 3, 8, enzyme_params["atp_consumption"] ) )
+
+enzymes.append( lib.Passive_efflux_ion(53, 52, 65, enzyme_params["potassium_ed"]))  # Efflux for potassium (K)
+enzymes.append( lib.Passive_efflux_ion(55, 54, 65, enzyme_params["sodium_ed"]))  # Efflux for sodium (Na)
+enzymes.append( lib.Passive_efflux_ion(56, 57, 65, enzyme_params["protons_ed"]))  # Efflux for protons (H)
+enzymes.append( lib.Pump(53, 52, 56, 57, enzyme_params["K_pump"]))  # Pump for potassium (K)
+enzymes.append( lib.Pump(55, 54, 56, 57, enzyme_params["Na_pump"]))  # Pump for sodium (Na)
+enzymes.append( lib.Pump(8, 9, 56, 57, enzyme_params["phos_pump"]))  # Pump for inorganic phosphate
+enzymes.append( lib.Calcium_effux(58, 59, 65, enzyme_params["calcium_ed"]) )
+
+        # # ca_mit, na_cyt, ca_cyt, na_mit, Vmm
+enzymes.append( lib.Ca_Na_pump(59, 55, 58, 54, 65, enzyme_params["ca_na_pump"]) )
+# #         #
+# #         # #  ca_mit, h_cyt, ca_cyt, h_mit, Vmm
+enzymes.append( lib.Ca_H_pump(59, 56, 58, 57, 65, enzyme_params["ca_h_pump"]) )
 #         #
 #         # # h_cyt, h_mit, q, qh2, nad, nadh, Vmm
-# enzymes.append( lib.Complex1(56, 57, 47, 48, 41, 42, 65, enzyme_params["complex1"]) )
-#         #
-#         # # h_cyt, h_mit, q, qh2, cytc_ox, cytc_red, Vmm,
-# enzymes.append( lib.Complex3(56, 57, 47, 48, 49, 50, 65, enzyme_params["complex3"]) )
-#         #
-#         # # h_cyt, h_mit, cytc_ox, cytc_red, o2, Vmm
-# enzymes.append( lib.Complex4(56, 57, 49, 50, 51, 65, enzyme_params["complex4"]) )
-#         #
+enzymes.append( lib.Complex1(56, 57, 47, 48, 41, 42, 65, enzyme_params["complex1"]) )
+# #         #
+# #         # # h_cyt, h_mit, q, qh2, cytc_ox, cytc_red, Vmm,
+enzymes.append( lib.Complex3(56, 57, 47, 48, 49, 50, 65, enzyme_params["complex3"]) )
+# #         #
+# #         # # h_cyt, h_mit, cytc_ox, cytc_red, o2, Vmm
+enzymes.append( lib.Complex4(56, 57, 49, 50, 51, 65, enzyme_params["complex4"]) )
+# #         #
 #         # # pyr_cyt, pyr_mit, h_cyt, h_mit
-# enzymes.append( lib.Pyruvate_exchanger(21, 22, 56, 57, enzyme_params["pyr_exchanger"]) )
+enzymes.append( lib.Pyruvate_exchanger(21, 22, 56, 57, enzyme_params["pyr_exchanger"]) )
 #
 #         # # pyr, CoA, acCoA, fad_pdhc, fadh2_pdhc, nad, nadh, ca
-# enzymes.append( lib.Pyruvate_dehydrogenase_complex(22, 60, 61, 66, 67, 41, 42, 59, enzyme_params["pyr_dehyd_comp"]) )
+enzymes.append( lib.Pyruvate_dehydrogenase_complex(22, 60, 61, 66, 67, 41, 42, 59, enzyme_params["pyr_dehyd_comp"]) )
 #         #
 #         # # oa, acCoA, CoA, cit
-# enzymes.append( lib.Citrate_synthetase(30, 61, 60, 63, enzyme_params["citrate_syntase"]) )
+enzymes.append( lib.Citrate_synthetase(30, 61, 60, 63, enzyme_params["citrate_syntase"]) )
 #         #
 #         # # citr, isocitr
-# enzymes.append( lib.Aconitase(63, 64, enzyme_params["aconitase"]) )
+enzymes.append( lib.Aconitase(63, 64, enzyme_params["aconitase"]) )
 #         #
 #         # # isocitr, nad, akg, nadh, ca,
-# enzymes.append( lib.Isocitrate_dehydrogenase(64, 41, 34, 42, 59, enzyme_params["isocit_dehydr"]) )
+enzymes.append( lib.Isocitrate_dehydrogenase(64, 41, 34, 42, 59, enzyme_params["isocit_dehydr"]) )
 #         #
 #         # # ca, akg, nadh, nad, CoA, sucCoA, fad, fadh2
-# enzymes.append( lib.Alpha_ketoglutarate_dehydrogenase(59, 34, 42, 41, 60, 62, 68, 69, enzyme_params["akg_dehydr"]) )
+enzymes.append( lib.Alpha_ketoglutarate_dehydrogenase(59, 34, 42, 41, 60, 62, 68, 69, enzyme_params["akg_dehydr"]) )
 #         #
 #         # #  sucCoA, pi, suc, CoA, adp, atp
-# enzymes.append( lib.Succinil_CoA_synthetase(62, 9, 37, 60, 6, 5, enzyme_params["sucCoAsyntase_4atp"]) )
+enzymes.append( lib.Succinil_CoA_synthetase(62, 9, 37, 60, 6, 5, enzyme_params["sucCoAsyntase_4atp"]) )
 #         #
 #         # #  sucCoA, pi, suc, CoA, gdp, gtp
-# enzymes.append( lib.Succinil_CoA_synthetase(62, 9, 37, 60, 11, 10, enzyme_params["sucCoAsyntase_4gtp"]) )
+enzymes.append( lib.Succinil_CoA_synthetase(62, 9, 37, 60, 11, 10, enzyme_params["sucCoAsyntase_4gtp"]) )
 #         #
 #         # #  suc, fad, fadh2, fum, q, qh2, mal,
-# enzymes.append( lib.Succinate_dehydrydrogenase(37, 43, 44, 38, 47, 48, 29, enzyme_params["suc_dehydr"]) )
+enzymes.append( lib.Succinate_dehydrydrogenase(37, 43, 44, 38, 47, 48, 29, enzyme_params["suc_dehydr"]) )
 #         #
 #         # # mal, fum,
-# enzymes.append( lib.Fumarase(29, 38, enzyme_params["fumarase"]) )
+enzymes.append( lib.Fumarase(29, 38, enzyme_params["fumarase"]) )
 
 ##############################################################################
 
@@ -155,7 +153,8 @@ sol = solve_ivp(simulalor.run_model, [0, 100], y0, method="LSODA", min_step=0.00
 # plt.show()
 
 
-indxes = [1, 2, 3, 23, 39, 40]
+indxes = [41, 42, 65]
+
 for idx in indxes:
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
