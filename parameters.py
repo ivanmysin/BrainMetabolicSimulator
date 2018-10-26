@@ -12,13 +12,13 @@ metabolites.append({"idx" : 8, "full" : "Cytosolic inorganic phosphate", "short"
 metabolites.append({"idx" : 9, "full" : "Mitochondrial inorganic phosphate", "short" : "pi_mit", "rest" : 0.05}) # !!!!!!!
 metabolites.append({"idx" : 10, "full" : "Mitochondrial GTP", "short" : "gtp_mit", "rest" : 1.0}) # !!!!!!!
 metabolites.append({"idx" : 11, "full" : "Mitochondrial GDP", "short" : "gdp_mit", "rest" : 0.01}) # !!!!!!!
-metabolites.append({"idx" : 12, "full" : "Glucose-6-phosphate", "short" : "glc6p", "rest" : 0.1})
+metabolites.append({"idx" : 12, "full" : "Glucose-6-phosphate", "short" : "glc6p", "rest" : 0.01})
 metabolites.append({"idx" : 13, "full" : "Fructose-6-phosphate", "short" : "fru6p", "rest" : 0.03})
-metabolites.append({"idx" : 14, "full" : "Fructose-2,6-bisphosphate", "short" : "fru26p", "rest" : 0.04}) # !!!!!!!
+metabolites.append({"idx" : 14, "full" : "Fructose-2,6-bisphosphate", "short" : "fru26p", "rest" : 0.0004}) # !!!!!!!
 metabolites.append({"idx" : 15, "full" : "Fructose-1,6-bisphosphate", "short" : "fru16p", "rest" : 0.04})
 metabolites.append({"idx" : 16, "full" : "Glycerol 3-phosphate", "short" : "grap", "rest" : 0.01})
 metabolites.append({"idx" : 17, "full" : "Dihydroxyacetone phosphate", "short" : "dhap", "rest" : 0.05})
-metabolites.append({"idx" : 18, "full" : "1,3-Bisphosphoglycerate", "short" : "bpg13", "rest" : 0.05}) # !!!!!!!!!!
+metabolites.append({"idx" : 18, "full" : "1,3-Bisphosphoglycerate", "short" : "bpg13", "rest" : 0.00005}) # !!!!!!!!!!
 metabolites.append({"idx" : 19, "full" : "3-Phosphoglycerate", "short" : "pg3", "rest" : 0.1})
 metabolites.append({"idx" : 20, "full" : "Phosphoenolpyruvate", "short" : "pep", "rest" : 0.01})
 metabolites.append({"idx" : 21, "full" : "Cytosolic pyruvate", "short" : "pyr_cyt", "rest" : 0.15})
@@ -75,7 +75,8 @@ metabolites.append({"idx" : 71, "full" : "2-Phosphoglycerate", "short" : "pg2", 
 metabolites.append({"idx" : 72, "full" : "Extracellular pyruvate", "short" : "pyr_ext", "rest" : 0.5})
 
 global_params = {
-    "Cmm" : 0.9 * 10**-6 * 3.7 * 10**-5, # farad,  capacity of mitochondrial membrane, 0.9 * 10**-6 F/cm^2, square 3.7 * 10**-5 cm^2
+    "Cmm" : 0.001, # mV/mV емкость из статьи Beard DA. 2005. A Biophysical Model of the Mitochondrial Respiratory System and Oxidative Phosphorylation. PLOS Computational Biology 1:e36.
+    #  0.9 * 10**-6 * 3.7 * 10**-5, # farad,  capacity of mitochondrial membrane, 0.9 * 10**-6 F/cm^2, square 3.7 * 10**-5 cm^2
     "Volume_cyt_mit" : 0.07,             # part of mitochondrial volume in total volume of neuron, (Jolivet, 2015)
     "Volume_extracellular2cell" : 0.444, # ratio of extracellular volume to total volume of neurons, (Jolivet, 2015)
 }
@@ -93,15 +94,15 @@ enzyme_params = {
     # },
 
     "fumarase" : {
-        "Vmax" : 6.4, #  * 10**7,
+        "Vmax" : 6.4 * 10**7,
         "Keq"  : 4.4,
         "Km_fum" : 0.14,
         "Km_mal" : 0.3,
     },
 
     "suc_dehydr": {
-        "Vmax_succdh" : 1.6, #*10**5,
-        "Vmax_nadh" : 0.01, # 10**12,
+        "Vmax_succdh" : 1.6 * 10**5,
+        "Vmax_nadh" : 0.01 * 10**12,
         "Km_suc"    : 1.6,
         "Ki_mal"    : 2.2,
         "Km_nad"    : 1.0, # !!!!!!! значение свято от балды
@@ -109,7 +110,7 @@ enzyme_params = {
     },
 
     "sucCoAsyntase_4atp" : {
-        "Vmax" : 1.92, # * 10**4,
+        "Vmax" : 1.92 * 10**4,
         "Keq"  : 3.8,
         "Amax_P" : 1.2,
         "Km_P"   : 2.5, # 0.72 другое значение указвнное в статье !!!!!!!!!!!!
@@ -128,7 +129,7 @@ enzyme_params = {
     },
 
     "sucCoAsyntase_4gtp": {
-        "Vmax": 1.92, # * 10 ** 4,
+        "Vmax": 1.92 * 10**4,
         "Keq": 3.8,
         "Amax_P": 1.2,
         "Km_P": 2.5,  # 0.72 другое значение указвнное в статье !!!!!!!!!!!!
@@ -147,8 +148,8 @@ enzyme_params = {
     },
 
     "akg_dehydr" : {
-        "Vmax_nad" : 0.1344, # 134.4,
-        "Vmax_fad" : 0.1, #  1e4,
+        "Vmax_nad" : 134.4, #  0.1344, #
+        "Vmax_fad" : 1e4, # 0.1, #
 
         "Km1" : 2.5,
         "Km2" : 2.5, #  !!!!! величина взята от балды !!!!!
@@ -178,14 +179,14 @@ enzyme_params = {
     },
 
     "aconitase" : {
-        "Vmax" : 1.6, # * 10**6,
+        "Vmax" : 1.6 * 10**6,
         "Keq"  : 0.067,
         "Km_cit" : 0.48,
         "Km_isocit" : 0.12,
     },
 
     "citrate_syntase" : {
-        "Vmax" : 0.128, # 1.28 * 10**3,
+        "Vmax" : 1.28 * 10**3, # 0.128, #
         "Km_oxa" : 0.0045,
         "Ki_cit" : 3.7,
         "Km_accoa" : 0.005,
@@ -194,7 +195,7 @@ enzyme_params = {
 
     "pyr_dehyd_comp" : {
         "Vmax_pdhc_fad" : 13.1,
-        "Vmax_pdhc_nad" : 20, # 1e4, # !!!!!!
+        "Vmax_pdhc_nad" : 1e4, # !!!!!! 20, #
         "Amax_Ca"  : 1.7,
         "Ka_Ca"    : 10**-3,
         "Km_pyr"   : 0.068,
@@ -216,7 +217,7 @@ enzyme_params = {
     },
 
     "complex4" : {
-        "Vmax" : 0.0325, # 32.5
+        "Vmax" : 32.5, # 0.0325, #
         "Km_O2" : 0.001,
         "Km_cytc" : 0.001,
         "n"       : 2,
@@ -226,7 +227,7 @@ enzyme_params = {
     },
 
     "complex3" : {
-        "Vmax" : 2.25, # *10**4,
+        "Vmax" : 2.25 *10**4,
         "n" : 2,
         "Em_Q": -50,  # !!!!!!!!
         "Em_cytc" : -50, # !!!!!!!
@@ -235,7 +236,7 @@ enzyme_params = {
     },
 
     "complex1" : {
-        "Vmax" : 0.0225,
+        "Vmax" : 2.25, # 0.0225,
         "Em_N": 2,  # !!!!! нет данных
         "Em_Q": 2,  # !!!!! нет данных
         "Volume_cyt_mit": global_params["Volume_cyt_mit"],
@@ -332,11 +333,13 @@ enzyme_params = {
         "dG0" : 30500,
         "n" : 3,
         "k" : 3,
+        "Volume_cyt_mit": global_params["Volume_cyt_mit"],
+        "Cmm": global_params["Cmm"],
     },
 
     "mitgly3pdehyd": {
-        "Vmax_g3pdh": 6.4, #* 10**4,
-        "Vmax_Q" : 3.2, #* 10**6,
+        "Vmax_g3pdh": 6.4 * 10**4,
+        "Vmax_Q" : 3.2 * 10**6,
         "Em_dhap_g3p" : 190, # mV
         "Em_FAD_g3p"  : 210, # mV
         "Em_Q"        : 200, # mV !!!!!!!! нет данных, значние взято от балды
@@ -346,7 +349,7 @@ enzyme_params = {
     },
 
     "cytgly3pdehyd": {
-        "Vmax": 3.2, # * 10**4,
+        "Vmax": 3.2 * 10**4,
         "Keq": 3257.3,
         "Km_dhap": 0.17,
         "Km_nadh": 0.01,
@@ -355,7 +358,7 @@ enzyme_params = {
     },
 
     "mal_akg_carrier": {
-        "Vmax" : 3.2, # 32,
+        "Vmax" : 32, # 3.2, #
         "Km_mal_cyt" : 1.36,
         "Km_akg_cyt" : 0.1,
         "Km_mal_mit" : 0.71,
@@ -364,7 +367,7 @@ enzyme_params = {
     },
 
     "asp_glu_carrier": {
-        "Vmax" : 32, #  3200,
+        "Vmax" : 3200,
         "Km_asp_mit" : 0.05,
         "Km_glu_cyt" : 2.8,
         "Km_asp_cyt" : 0.05,
@@ -384,27 +387,28 @@ enzyme_params = {
     },
 
     "asp_aminotrans" : {
-        "Vmax" : 0.32, # 32, !!!!!
+        "Vmax" : 32, # !!!!! 0.32, #
         "Keq"  : 0.147,
 
     },
 
     "malatdehyd" : {
-        "Vmax" : 10, # 10**4, # !!!!!
-        "Keq"  : 10, # 10**-4, # !!!!!!
+        "Vmax" : 10**4, # !!!!!
+        "Keq"  : 10**-4, # !!!!!!
         "Km_nad" : 0.05,
         "Km_mal" : 0.77,
         "Km_oa"  : 0.04,
         "Km_nadh" : 0.05,
     },
 
+
     "creatinekinase" : {
-        "Vmax" : 0.001, # 0.0135,
+        "Vmax" : 0.0135, # 0.001, #
         "Keq"  : 7.0,
     },
 
     "MCT" : {
-        "Vmax" : 0.05, # 5.0,
+        "Vmax" : 5.0,
         "Keq" : 1.737,
         "Km_lac_cyt" : 1.1,
         "Km_lac_ext" : 1.1,
@@ -412,7 +416,7 @@ enzyme_params = {
     },
 
     "LDG" : {
-        "Vmax" : 10, # 10**5,
+        "Vmax" : 10**5,
         "Keq" : 8400,
         "Km_pyr"  : 0.36,
         "Km_nadh" : 0.043,
@@ -428,22 +432,22 @@ enzyme_params = {
     },
 
     "enolase": {
-        "Vmax" : 21.6, # 216000,
+        "Vmax" :  216000, # 21.6, #
         "Keq" : 0.5,
         "Km_pg2"  : 0.05,
         "Km_pep"  : 0.15,
     },
 
     "p-gricerate_mutase": {
-        "Vmax" : 14.4, # 14400,
-        "Keq" : 0.9, # 0.1814,
+        "Vmax" :  14400, #
+        "Keq" : 0.1814, #  0.9, #
         "Km_pg3"  : 0.22,
         "Km_pg2"  : 0.28,
 
     },
 
     "p-glyceratekinase": {
-        "Vmax" : 3.96, # 3.97, #
+        "Vmax" : 396, # 3.97, #
         "Keq" : 1310,
         "Km_bpg13" : 0.063,
         "Km_adp"   : 0.42,
@@ -452,7 +456,7 @@ enzyme_params = {
     },
 
     "grap_dehydr" : {
-        "Vmax" : 720, # 72000,
+        "Vmax" :  72000, # 720, #
         "Keq" :  0.0868,
         "Km_nad"    : 0.01, # 0.027
         "Km_grap"   : 0.101,
@@ -462,7 +466,7 @@ enzyme_params = {
     },
 
     "triosep-isomerase": {
-        "Vmax" : 10, # 10**6,
+        "Vmax" : 10**6,
         "Keq": 0.0545, # 0.0545,
         "Km_dhap" : 0.84,
         "Km_grap" : 1.65,
@@ -507,8 +511,7 @@ enzyme_params = {
         "K0" : 0.55,
         "Ka_fru26p" : 0.0042,
         "n_fru26p" : 5.5,
-        "Ka_fru26p" : 0.005,
-
+       # "Ka_fru26p" : 0.005,
     },
 
     "glc6p_isomerase" : {
@@ -519,7 +522,7 @@ enzyme_params = {
     },
 
     "hexokinase" : {
-        "Vmax" : 0.050435, # 9.36, #
+        "Vmax" : 9.36, # 0.050435, #
         "Km_glc" : 0.043,
         "Km_atp" : 0.37,
         "Ki_atp" : 0.074,
@@ -529,12 +532,12 @@ enzyme_params = {
     },
 
     "glc_trs" : {
-        "Vmax" : 0.041, # 0.72, #
+        "Vmax" : 0.72, # 0.041, #
         "Km_glc_cyt" : 2.87,
         "Km_glc_ext" : 2.87,
         "Volume_extracellular2cell": global_params["Volume_extracellular2cell"],
     },
-
+    # ###### !!!!!
     "glc_diffussion" : {
         "env_glc_level" : 4.5,
         "D" : 0.1, ## !!!!!!!! значение от балды
