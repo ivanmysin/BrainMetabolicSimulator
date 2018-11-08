@@ -103,9 +103,6 @@ class GlucoseTransporter(Enzyme):
         self.Vmax = params["Vmax"]
         self.Volume_extracellular2cell = params["Volume_extracellular2cell"]
 
-
-
-
     def update(self, metabolites, dydt, jacobian):
 
         glc_ext = metabolites[self.glc_ext_idx]

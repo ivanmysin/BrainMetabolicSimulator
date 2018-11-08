@@ -9,10 +9,10 @@ np.set_printoptions(precision=5, suppress=True)
 
 enzymes = []
 
-# enzymes.append( lib.Oxigen_diffusion(51, enzyme_params["oxigen_diffussion"]) )
-# enzymes.append( lib.Pyruvate_diffusion(72, enzyme_params["pyr_diffussion"]) )
-# enzymes.append( lib.Lactate_diffusion(24, enzyme_params["lac_diffussion"]) )
-# enzymes.append( lib.Glucose_diffusion(0, enzyme_params["glc_diffussion"]) )
+enzymes.append( lib.Oxigen_diffusion(51, enzyme_params["oxigen_diffussion"]) )
+# enzymes.append( lib.Pyruvate_diffusion(71, enzyme_params["pyr_diffussion"]) )
+enzymes.append( lib.Lactate_diffusion(24, enzyme_params["lac_diffussion"]) )
+enzymes.append( lib.Glucose_diffusion(0, enzyme_params["glc_diffussion"]) )
 
 enzymes.append( lib.GlucoseTransporter(0, 1, enzyme_params["glc_trs"]) )
 enzymes.append( lib.Hexokinase(1, 2, 12, 3, enzyme_params["hexokinase"]) )
@@ -25,8 +25,8 @@ enzymes.append( lib.Aldolase(15, 16, 17, enzyme_params["aldolase"] ) )
 enzymes.append( lib.Triosophosphate_isomerase(16, 17, enzyme_params["triosep-isomerase"] ) )
 enzymes.append( lib.Glyceraldehyde_3_phosphate_dehydrogenase(16, 8, 39, 18, 40, enzyme_params["grap_dehydr"] ) )
 enzymes.append( lib.Phosphoglycerate_kinase(18, 3, 19, 2, enzyme_params["p-glyceratekinase"] ) )
-enzymes.append( lib.Phosphoglycerate_mutase(19, 71, enzyme_params["p-gricerate_mutase"] ) )
-enzymes.append( lib.Enolase(71, 20, enzyme_params["enolase"] ) )
+enzymes.append( lib.Phosphoglycerate_mutase(19, 70, enzyme_params["p-gricerate_mutase"] ) )
+enzymes.append( lib.Enolase(70, 20, enzyme_params["enolase"] ) )
 enzymes.append( lib.Pyruvate_kinase(20, 3, 21, 2, enzyme_params["pyruvatekinase"] ) )
 enzymes.append( lib.Lactate_dehydrogenase(21, 40, 23, 39, enzyme_params["LDG"] ) )
 
@@ -113,43 +113,59 @@ y0 = np.asarray( [metabolites[idx]["rest"] for idx in range(len(metabolites))] )
 long_names = [metabolites[idx]["full"] for idx in range(len(metabolites))]
 
 t = sym.symbols("t")
-model = sym.lambdify([t, metabls], fsx_expr)
+model = sym.lambdify([t, metabls], fsx_expr, "numpy")
 jacobian_expr = sym.Matrix(fsx_expr).jacobian(metabls)
-jacobian = sym.lambdify([t, metabls], jacobian_expr)
+jacobian = sym.lambdify([t, metabls], jacobian_expr, "numpy")
 
 def run_model(t, y):
     y = np.asarray(y)
-    y[np.isnan(y)] = 0
-    tmp_idx = y < 1e-14
-    tmp_idx[65] = False
-    y[tmp_idx] = 0
-
     dydt = np.asarray( model(t, y) )
-
-    # dydt[65] = 0 # 10e-15  # !!!!!!!!
     return dydt
 
 def get_jacobian(t, y):
     J = np.asarray(jacobian(t, y))
-    # n = np.linalg.norm(np.abs(J))
-    # print(n)
     return J
 
-sol = solve_ivp(run_model, [0, 100], y0, method="LSODA", jac=get_jacobian) #  , , min_step=0.0001, rtol=0.0001,   atol=1e-2
 
-print(sol.message)
 
-# print(sol.y[:, -18])
-# J = np.asarray( jacobian(0, sol.y[:, -18]))
-# print( np.sum(np.isnan(J)) )
+sol = solve_ivp(run_model, [0, 100], y0, method="LSODA", jac=get_jacobian) #  , min_step=0.001, rtol=0.0001,   atol=1e-6
 
-print(sol.t[-1])
-indxes = [0, 1, 2, 13, 15]
+y = np.copy(sol.y)
+t = np.copy(sol.t)
+
+# print( type(y) )
+# diff = (y[:, -1] - y0) / y0
+#
+# diff_idx = np.argsort(diff)
+#
+# for idx in diff_idx:
+#     print(diff[idx], metabolites[idx]["full"])
+
+# y0 = y[:, -1]
+
+# for idx in range(y0.size):
+#     print(metabolites[idx]["full"] + " %f" % y0[idx])
+
+# print(y0[70])
+#
+# y0[70] = 0 #  0.0001
+# y0[56] = 10**-3
+# y0[57] = 10**-5
+# #y0[55] = 0.07
+# y0[58] = 0.0001
+#
+# sol = solve_ivp(run_model, [0, 100], y0, method="LSODA", jac=get_jacobian)
+#
+# y = np.append(y, sol.y, axis=1)
+# t = np.append(t, sol.t + t[-1])
+
+
+indxes = [55, 58, 40, 42]
 
 for idx in indxes:
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
-    ax.plot(sol.t, sol.y[idx, :], linewidth=2, label=metabolites[idx]["full"])
+    ax.plot(t, y[idx, :], linewidth=2, label=metabolites[idx]["full"])
     plt.legend()
 plt.show()
 

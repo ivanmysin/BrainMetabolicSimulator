@@ -70,9 +70,12 @@ metabolites.append({"idx" : 66, "full" : "FAD of pyruvate dehydrogenase complex"
 metabolites.append({"idx" : 67, "full" : "FADH2 of pyruvate dehydrogenase complex", "short" : "fadh2_pdhc", "rest" : 0.001}) # !!!!!!!!!!
 metabolites.append({"idx" : 68, "full" : "FAD of alpha-ketoglutarate dehydrogenase complex", "short" : "fad_akgdhc", "rest" : 0.001}) # !!!!!!!!!!
 metabolites.append({"idx" : 69, "full" : "FADH2 of alpha-ketoglutarate dehydrogenase complex", "short" : "fadh2_akgdhc", "rest" : 0.001}) # !!!!!!!!!!
-metabolites.append({"idx" : 70, "full" : "CO2", "short" : "co2", "rest" : 0.0}) # !!!!!!!!!!
-metabolites.append({"idx" : 71, "full" : "2-Phosphoglycerate", "short" : "pg2", "rest" : 0.02}) # "rest" : 0.02
-metabolites.append({"idx" : 72, "full" : "Extracellular pyruvate", "short" : "pyr_ext", "rest" : 0.5})
+
+metabolites.append({"idx" : 70, "full" : "2-Phosphoglycerate", "short" : "pg2", "rest" : 0.02}) # 71 "rest" : 0.02
+metabolites.append({"idx" : 71, "full" : "Extracellular pyruvate", "short" : "pyr_ext", "rest" : 0.5}) # 72
+
+
+# metabolites.append({"idx" : 70, "full" : "CO2", "short" : "co2", "rest" : 0.0}) # !!!!!!!!!!
 
 global_params = {
     "Cmm" : 0.001, # mV/mV емкость из статьи Beard DA. 2005. A Biophysical Model of the Mitochondrial Respiratory System and Oxidative Phosphorylation. PLOS Computational Biology 1:e36.
@@ -540,12 +543,12 @@ enzyme_params = {
     # ###### !!!!!
     "glc_diffussion" : {
         "env_glc_level" : 4.5,
-        "D" : 0.1, ## !!!!!!!! значение от балды
+        "D" : 0.2, ## !!!!!!!! значение от балды
     },
 
     "lac_diffussion": {
         "env_lac_level": 0.6,
-        "D": 0.01,  ## !!!!!!!! значение от балды
+        "D": 0.1,  ## !!!!!!!! значение от балды
     },
 
     "pyr_diffussion": {
@@ -555,7 +558,7 @@ enzyme_params = {
 
     "oxigen_diffussion": {
         "env_o2_level": 8.35,
-        "D": 0.01,  ## !!!!!!!! значение от балды
+        "D": 0.2,  ## !!!!!!!! значение от балды
     },
 
 }
