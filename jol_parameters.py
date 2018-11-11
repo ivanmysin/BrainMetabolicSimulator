@@ -1,29 +1,21 @@
 
 
-
-# Physical constants and parameters
-R       =   8.314510      # J mol-1 K-1
-F       =   9.64853e04     # C mol-1
-RTF     =   26.73          # mV (corresponds to body temperature 37°C)
-
 FourCIN = 1
 # Volumes
-Ve      =   0.2
-Vcap    =   0.0055
-Vg      =   0.25
-Vn      =   0.45
-MVF     =   0.07           # mitochondrial volume fraction
+Ve   =   0.2
+Vcap =   0.0055
+Vg   =   0.25
+Vn   =   0.45
+MVF  =   0.07           # mitochondrial volume fraction
 
 # Surface to Volume ratios and sodium conductances
-SmVn    =   2.5e04         # cm-1
-SmVg    =   2.5e04         # cm-1
-gNan    =   0.0155         # mS cm-2
-gNag    =   0.00623        # mS cm-2
-gKpas   =   0.232          # mS cm-2
+SmVn = 2.5e04         # cm-1
+SmVg = 2.5e04         # cm-1
+gNan = 0.0155         # mS cm-2
+gNag = 0.00623        # mS cm-2
+gKpas = 0.232          # mS cm-2
 
-Nae     =   150            # mmol/L
-Vm      =   -70            # mV
-
+Nae = 150            # mmol/L
 qAK = 0.92
 totalAdenine = 2.212  # mmol / L
 
@@ -34,11 +26,12 @@ N =  0.212
 Volcap = 0.0055
 EK = -80.0
 
-# "Ve": Ve,
-# "Vcap": Vcap,
-# "Vg": Vg,
-# "Vn": Vn,
-# "MVF": MVF,  # mitochondrial volume fraction
+# Parameters for venouse volume
+F0 = 0.012 # !!!!
+Vv0 = 0.021
+alphav = 0.5
+tauv = 35
+O2a = 8.35
 
 ren = Ve / Vn
 reg = Ve / Vg
@@ -49,47 +42,10 @@ rcg = Vcap / Vg
 glob_params = {
     "qAK": qAK,
     "A": totalAdenine,  # mmol / L
+    "MVF" : MVF,
 }
 
-
-
-# Varibles y in equstions dydt = f(y, t)
-vars = []
-vars.append({"idx": 0, "short" : "nan", "rest" : 8.0, "full" : "Neuronal Na"})
-vars.append({"idx": 1, "short" : "nag", "rest" : 15.0, "full" : "Glyal Na"})
-vars.append({"idx": 2, "short" : "glcn", "rest" : 1.2, "full" : "Neuronal glucose"})
-vars.append({"idx": 3, "short" : "glcg", "rest" : 1.9, "full" : "Glyal glucose"})
-vars.append({"idx": 4, "short" : "g3pn", "rest" : 0.0046, "full" : "Neuronal glyceraldegyde-3-phosphate"})
-vars.append({"idx": 5, "short" : "g3pg", "rest" : 0.0046, "full" : "Glyal glyceraldegyde-3-phosphate"})
-vars.append({"idx": 6, "short" : "pepn", "rest" : 0.015, "full" : "Neuronal phosphoenolpuruvate"})
-vars.append({"idx": 7, "short" : "pepg", "rest" : 0.015, "full" : "Glyal phosphoenolpuruvate"})
-vars.append({"idx": 8, "short" : "pyrn", "rest" : 0.17, "full" : "Neuronal pyruvate"})
-vars.append({"idx": 9, "short" : "pyrg", "rest" : 0.17, "full" : "Glyal pyruvate"})
-vars.append({"idx": 10, "short" : "lacn", "rest" : 0.6, "full" : "Neuronal lactate"})
-vars.append({"idx": 11, "short" : "lacg", "rest" : 0.6, "full" : "Glyal lactate"})
-vars.append({"idx": 12, "short" : "nadh_cyt_n", "rest" : 0.006, "full" : "Neuronal cytosolic NADH"})
-vars.append({"idx": 13, "short" : "nadh_cyt_g", "rest" : 0.1, "full" : "Glyal cytosolic NADH"})
-vars.append({"idx": 14, "short" : "atpn", "rest" : 2.2, "full" : "Neuronal ATP"})
-vars.append({"idx": 15, "short" : "atpg", "rest" : 2.2, "full" : "Glyal ATP"})
-vars.append({"idx": 16, "short" : "crn", "rest" : 4.9, "full" : "Neuronal phosphocreatine"})
-vars.append({"idx": 17, "short" : "crg", "rest" : 4.9, "full" : "Glyal phosphocreatine"})
-vars.append({"idx": 18, "short" : "o2n", "rest" : 0.028, "full" : "Neuronal oxygen"})
-vars.append({"idx": 19, "short" : "o2g", "rest" : 0.028, "full" : "Glyal oxygen"})
-vars.append({"idx": 20, "short" : "o2c", "rest" : 7.0, "full" : "Capillary oxygen"})
-vars.append({"idx": 21, "short" : "glcc", "rest" : 4.5, "full" : "Capillary glucose"})
-vars.append({"idx": 22, "short" : "lacc", "rest" : 0.55, "full" : "Capillary lactate"})
-vars.append({"idx": 23, "short" : "Volven", "rest" : 0.02, "full" : "Venous volume"})
-vars.append({"idx": 24, "short" : "dHb", "rest" : 0.058, "full" : "Deoxyhemoglobin"})
-vars.append({"idx": 25, "short" : "glce", "rest" : 2.48, "full" : "Extracellular glucose"})
-vars.append({"idx": 26, "short" : "lace", "rest" : 0.6, "full" : "Extracellular lactate"})
-vars.append({"idx": 27, "short" : "Vpl", "rest" : -73.0, "full" : "Neuronal membrane potential"})
-vars.append({"idx": 28, "short" : "hgate", "rest" : 0.99, "full" : "h gate variable"})
-vars.append({"idx": 29, "short" : "ngate", "rest" : 0.02, "full" : "n gate variable"})
-vars.append({"idx": 30, "short" : "can", "rest" : 0.00005, "full" : "Neuronal calcium"})
-vars.append({"idx": 31, "short" : "nadh_mit_n", "rest" : 0.0, "full" : "Neuronal mitochondrial NADH"})
-vars.append({"idx": 32, "short" : "nadh_mit_g", "rest" : 0.0, "full" : "Glyal mitochondrial NADH"})
-
-
+################################################################
 params = {
     "sodium leak n" : {
         "gna_leak": 0.0155,
@@ -110,37 +66,41 @@ params = {
     "Na/K-ATPase n" : {
         "kx"  : 2.49e-06,       # cm (mmol/L)-1 sec-1
         "Km"  : 0.5,            # mmol/L
-        "vPumpg0" :  0.0708,         # mmol/L sec-1
         "SmVx" : SmVn,
         "Cmpl"  : Cmpl,
+        "Na0": 7.9717,
     },
     "Na/K-ATPase g": {
         "kx": 4.64e-07,  # cm (mmol/L)-1 sec-1
         "Km": 0.5,  # mmol/L
-        "vPumpg0": 0.0708,  # mmol/L sec-1
         "SmVx": SmVg,
-        "Cmpl": Cmpl,
+        "Cmpl": None,
+        "Na0": None,
     },
 
     # GLC exchange constants
     "GLC_exchange en" : {
         "Tmax"   : 0.041,        # mmol/L sec-1
         "Km" :  8,              # mmol/L
+        "rxy" : ren,
     },
 
     "GLC_exchange ce": {
         "Tmax": 0.239,  # mmol/L sec-1
         "Km": 8,  # mmol/L
+        "rxy" : rce,
     },
 
     "GLC_exchange eg": {
         "Tmax": 0.147,  # mmol/L sec-1
         "Km": 8,  # mmol/L
+        "rxy" : reg,
     },
 
     "GLC_exchange cg": {
         "Tmax": 0.00164,  # mmol/L sec-1
         "Km": 8,  # mmol/L
+        "rxy" : rcg,
     },
 
     # Hexokinase-phosphofructokinase system
@@ -187,37 +147,41 @@ params = {
     },
 
     # Lactate exchange constants
-    "Lactate exchange ne" : {
+    "Lactate exchange en" : {
         "Tmax" : FourCIN*23.5, # mmol/L sec-1
         "Km" : 0.74,       # mmol/L
+        "rxy" : ren,
     },
 
-    "Lactate exchange ge": {
+    "Lactate exchange eg": {
         "Tmax": 107,  # mmol/L sec-1
         "Km": 3.5,  # mmol/L
+        "rxy": reg,
     },
 
-    "Lactate exchange ec": {
+    "Lactate exchange ce": {
         "Tmax": 0.30,  # mmol/L sec-1
         "Km": 1.0,  # mmol/L # and leegsma-vogt01.pdf
+        "rxy": rce,
     },
 
-    "Lactate exchange gc": {
+    "Lactate exchange cg": {
         "Tmax": 2.43e-03,  # mmol/L sec-1
         "Km": 1.0,  # mmol/L # see cremer79.pdf
+        "rxy": rcg,
     },
 
 
     # Lactate dehydrogenase
     "Lactate dehydrogenase n" : {
-        "kxplus" : 78.1,           # L/mmol/sec
-        "kxminus" : 0.768,          # L/mmol/sec
+        "kxplus" : 72.3,           # L/mmol/sec
+        "kxminus" : 0.144,          # L/mmol/sec
         "N": N,  # mmol/L
     },
 
     "Lactate dehydrogenase g": {
-        "kxplus": 1.71,  # L/mmol/sec
-        "kxminus": 0.099,  # L/mmol/sec
+        "kxplus": 1.59,  # L/mmol/sec
+        "kxminus": 0.071,  # L/mmol/sec
         "N": N,  # mmol/L
     },
 
@@ -235,12 +199,12 @@ params = {
     },
 
     # Constant ATP rates
-    "ATP rates n" : {
-        "vATPasesn" : 0.1388, #0.0832;     # mmol/L/sec
+    "vATPases n" : {
+        "v" : 0.1695, #0.0832;     # mmol/L/sec
     },
 
-    "ATP rates g": {
-        "vATPasesg": 0.1351,  # 0.1061;     # mmol/L/sec
+    "vATPases g": {
+        "v": 0.1404,  # 0.1061;     # mmol/L/sec
     },
 
     # Mitochondrial respiration
@@ -293,14 +257,14 @@ params = {
         "A": totalAdenine,  # mmol / L
     },
 
-
     # Oxygen exchange constants
     "Oxygen exchange n" : {
-        "PScapVx" : 1.6608,    #1.79;       # sec-1
+        "PScapVx" : 1.66,    #1.79;       # sec-1
         "Ko2" : 0.0361,      # mmol/L
         "HbOP" : 8.6,        # mmol/L
-        "nh" : 2.73,       #
+        "nh" : 1 / 2.73,       #
         "Volx" : Vn,
+        "rxy": rcn,
     },
 
     "Oxygen exchange g": {
@@ -309,11 +273,12 @@ params = {
         "HbOP": 8.6,  # mmol/L
         "nh": 2.73,  #
         "Volx" : Vg,
+        "rxy": rcg,
     },
 
     # Blood flow contributions
     "Blood flow oxygen" : {
-        "vara" : 8.35,       # O2a mmol/L
+        "vara" : O2a,  # O2a mmol/L
         "Volcap" : Volcap,
     },
 
@@ -327,12 +292,21 @@ params = {
         "Volcap" : Volcap,
     },
 
-
-
     # Venous flow
     "Venous flow" : {
-        "tauv" : 35,         # secs
-        "alphav" : 0.5,        #
+        "tauv" : tauv,         # secs
+        "alphav" : alphav,     #
+        "F0" : F0,
+        "Vv0" : Vv0,
+    },
+
+    "Dexyhemoglobin rate" : {
+        "tauv": tauv,  # secs
+        "alphav": alphav,  #
+        "F0": F0,
+        "Vv0": Vv0,
+        "o2a" : O2a,
+
     },
 
     # Neuronal membrane parameters
@@ -362,6 +336,7 @@ params = {
         "Cmpl" : Cmpl,          # mF/cm2
         "gmax" : 0.02,           # mS/cm2
         "ECa" : 120,            # mV
+        "SmVn" : SmVn,
     },
 
     "AHP current" : {
@@ -376,9 +351,53 @@ params = {
         "Ca0"   : 0.5e-04,        # mmol/L
     },
 
+    "Jpump0" : {
+        "vPumpg0" : 0.57 * 0.0687,
+    },
+
+
 
 
 }
+
+
+# Varibles y in equstions dydt = f(y, t)
+vars = []
+vars.append({"idx": 0, "short" : "nan", "rest" : 8.0, "full" : "Neuronal Na"})
+vars.append({"idx": 1, "short" : "nag", "rest" : 15.0, "full" : "Glyal Na"})
+vars.append({"idx": 2, "short" : "glcn", "rest" : 1.2, "full" : "Neuronal glucose"})
+vars.append({"idx": 3, "short" : "glcg", "rest" : 1.9, "full" : "Glyal glucose"})
+vars.append({"idx": 4, "short" : "g3pn", "rest" : 0.0046, "full" : "Neuronal glyceraldegyde-3-phosphate"})
+vars.append({"idx": 5, "short" : "g3pg", "rest" : 0.0046, "full" : "Glyal glyceraldegyde-3-phosphate"})
+vars.append({"idx": 6, "short" : "pepn", "rest" : 0.015, "full" : "Neuronal phosphoenolpuruvate"})
+vars.append({"idx": 7, "short" : "pepg", "rest" : 0.015, "full" : "Glyal phosphoenolpuruvate"})
+vars.append({"idx": 8, "short" : "pyrn", "rest" : 0.17, "full" : "Neuronal pyruvate"})
+vars.append({"idx": 9, "short" : "pyrg", "rest" : 0.17, "full" : "Glyal pyruvate"})
+vars.append({"idx": 10, "short" : "lacn", "rest" : 0.6, "full" : "Neuronal lactate"})
+vars.append({"idx": 11, "short" : "lacg", "rest" : 0.6, "full" : "Glyal lactate"})
+vars.append({"idx": 12, "short" : "nadh_cyt_n", "rest" : 0.006, "full" : "Neuronal cytosolic NADH"})
+vars.append({"idx": 13, "short" : "nadh_cyt_g", "rest" : 0.1, "full" : "Glyal cytosolic NADH"})
+vars.append({"idx": 14, "short" : "atpn", "rest" : 2.2, "full" : "Neuronal ATP"})
+vars.append({"idx": 15, "short" : "atpg", "rest" : 2.2, "full" : "Glyal ATP"})
+vars.append({"idx": 16, "short" : "crn", "rest" : 4.9, "full" : "Neuronal phosphocreatine"})
+vars.append({"idx": 17, "short" : "crg", "rest" : 4.9, "full" : "Glyal phosphocreatine"})
+vars.append({"idx": 18, "short" : "o2n", "rest" : 0.028, "full" : "Neuronal oxygen"})
+vars.append({"idx": 19, "short" : "o2g", "rest" : 0.028, "full" : "Glyal oxygen"})
+vars.append({"idx": 20, "short" : "o2c", "rest" : 7.0, "full" : "Capillary oxygen"})
+vars.append({"idx": 21, "short" : "glcc", "rest" : 4.5, "full" : "Capillary glucose"})
+vars.append({"idx": 22, "short" : "lacc", "rest" : 0.55, "full" : "Capillary lactate"})
+vars.append({"idx": 23, "short" : "Volven", "rest" : 0.02, "full" : "Venous volume"})
+vars.append({"idx": 24, "short" : "dHb", "rest" : 0.058, "full" : "Deoxyhemoglobin"})
+vars.append({"idx": 25, "short" : "glce", "rest" : 2.48, "full" : "Extracellular glucose"})
+vars.append({"idx": 26, "short" : "lace", "rest" : 0.6, "full" : "Extracellular lactate"})
+vars.append({"idx": 27, "short" : "Vpl", "rest" : -73.0, "full" : "Neuronal membrane potential"})
+vars.append({"idx": 28, "short" : "hgate", "rest" : 0.99, "full" : "h gate variable"})
+vars.append({"idx": 29, "short" : "ngate", "rest" : 0.02, "full" : "n gate variable"})
+vars.append({"idx": 30, "short" : "can", "rest" : 0.00005, "full" : "Neuronal calcium"})
+vars.append({"idx": 31, "short" : "nadh_mit_n", "rest" : 0.0, "full" : "Neuronal mitochondrial NADH"})
+vars.append({"idx": 32, "short" : "nadh_mit_g", "rest" : 0.0, "full" : "Glyal mitochondrial NADH"})
+
+
 
 
 

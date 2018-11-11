@@ -10,8 +10,14 @@ exp = sym.functions.elementary.exponential.exp
 sqrt = sym.sqrt
 
 
-F = physical_constants["Faraday constant"][0]
-R = const.R
+
+
+
+# F = physical_constants["Faraday constant"][0]
+# R = const.R
+
+R       =   8.314510       # J mol-1 K-1
+F       =   9.64853e04     # C mol-1
 T = 310  # 37 grad Celcium
 RTF = 26.7300
 
@@ -29,6 +35,30 @@ def get_damp_datp(atp, qAK, A):
     damp_datp = -1.0 + 0.5*qAK - 0.5*sqrt_ux + qAK/(atp * sqrt_ux)
     return damp_datp
     
+def get_blood_flow():
+
+    # lastF0 = F0 * builtin1(tstim - lag)
+    # taurise = 0.1 * 1 / builtin2(0)
+    #
+    # if CBF == 'on':
+    #     if t <= (tstim + t1) & & t >= (t1 + lag):
+    #         y = F0 * builtin1(t - t1 - lag);
+    #     elif t > (tstim + t1):
+    #         y = F0 + (lastF0 - F0) * exp(-(t - tstim - t1) / 5);
+    # else:
+    #     y = F0 * (1 + 0.1 * builtin3(t - t1, lag, taurise))
+
+    return 0.012
+
+
+def builtin1():
+    pass
+
+def builtin2():
+    pass
+
+def builtin3():
+    pass
 
 
 class BaseRate:
@@ -58,10 +88,7 @@ class SodiumLeak(BaseRate):
         else:
             Vpl = self.Vcpl_g
 
-        Jl = self.SmVx / F * self.gna_leak * ( R * T / F * log(self.na_ext / na) - Vpl)
-
-        if self.Vcpl_g is None:
-            dydt[self.Vpl_idx] += Jl * F / self.Cmpl
+        Jl = self.SmVx / F * self.gna_leak * ( RTF * log(self.na_ext / na) - Vpl)
         dydt[self.na_idx] += Jl
 
         return dydt
@@ -76,6 +103,7 @@ class NaKATPase(BaseRate):
         self.SmVx = params["SmVx"]
         self.Cmpl = params["Cmpl"]
         self.Km = params["Km"]
+        self.Na0 = params["Na0"]
 
     def update(self, y, dydt, t):
         nax = y[self.nax_idx]
@@ -83,9 +111,12 @@ class NaKATPase(BaseRate):
 
         Jpump = self.SmVx * self.kx * atp * nax / (1 + atp / self.Km)
 
-        # dydt[self.Vpl_idx] -= Jpump * F / self.Cmpl !!!!!!!
-        dydt[self.nax_idx] -= Jpump
+        dydt[self.nax_idx] -= 3*Jpump
         dydt[self.atp_idx] -= Jpump
+
+        if not (self.Cmpl is None):
+            dIPump = F * self.kx * atp * (nax - self.Na0) / (1 + atp / self.Km)
+            dydt[self.Vpl_idx] -= dIPump / self.Cmpl
 
         return dydt
 ########################################################################################################################
@@ -96,6 +127,7 @@ class GlucoseTransport(BaseRate):
 
         self.Tmax = params["Tmax"]
         self.Km = params["Km"]
+        self.rxy = params["rxy"]
 
     def update(self, y, dydt, t):
         glcx = y[self.glcx_idx]
@@ -103,7 +135,7 @@ class GlucoseTransport(BaseRate):
 
         Jglc = self.Tmax * (glcx / (glcx + self.Km) - glcy / (glcy + self.Km))
 
-        dydt[self.glcx_idx] -= Jglc
+        dydt[self.glcx_idx] -= Jglc / self.rxy
         dydt[self.glcy_idx] += Jglc
 
         return dydt
@@ -127,8 +159,8 @@ class HexokinasePhosphofructoKinase(BaseRate):
         Jhkpfk = self.kx * atp * glcx / (glcx + self.Km) / ( 1 + (atp/self.Ki_atp)**self.nH )
 
         dydt[self.glcx_idx] -= Jhkpfk
-        dydt[self.atp_idx] -= Jhkpfk
-        dydt[self.gap_idx] += Jhkpfk
+        dydt[self.atp_idx] -= 2 * Jhkpfk
+        dydt[self.gap_idx] += 2 * Jhkpfk
 
         return dydt
 ########################################################################################################################
@@ -216,6 +248,7 @@ class LactateTransport(BaseRate):
 
         self.Tmax = params["Tmax"]
         self.Km = params["Km"]
+        self.rxy = params["rxy"]
 
     def update(self, y, dydt, t):
         lacx = y[self.lacx_idx]
@@ -223,7 +256,7 @@ class LactateTransport(BaseRate):
 
         Jlac = self.Tmax * (lacx / (lacx + self.Km) - lacy / (lacy + self.Km))
 
-        dydt[self.lacx_idx] -= Jlac
+        dydt[self.lacx_idx] -= Jlac / self.rxy
         dydt[self.lacy_idx] += Jlac
 
         return dydt
@@ -272,8 +305,8 @@ class ETC(BaseRate):
         nadh = y[self.nadh_idx]
         adp = get_adp(atp, self.qAK, self.A)
         Jetc = self.kx * o2 / (o2 + self.Km_o2) * adp / (adp + self.Km_adp) * nadh / (nadh + self.Km_nadh)
-        dydt[self.o2_idx] -= Jetc
-        dydt[self.nadh_idx] -= 3 *Jetc
+        dydt[self.o2_idx] -= 0.6 * Jetc
+        dydt[self.nadh_idx] -= Jetc
         dydt[self.atp_idx] += 3.6 * Jetc
 
         return dydt
@@ -331,19 +364,19 @@ class OxygenExchange(BaseRate):
          self.o2x_idx = o2x
 
          self.PScapVx = params["PScapVx"]
-         self.Volx = params["Volx"]
          self.Ko2 = params["Ko2"]
          self.HbOP = params["HbOP"]
          self.nh = params["nh"]
+         self.rxy = params["rxy"]
 
      def update(self, y, dydt, t):
 
          o2c = y[self.o2c_idx]
          o2x = y[self.o2x_idx]
 
-         Jcxo2m = self.PScapVx / self.Volx * ( self.Ko2 / (self.HbOP/o2c - 1)**self.nh - o2x )
+         Jcxo2m = self.PScapVx * ( self.Ko2 / (self.HbOP/o2c - 1)**self.nh - o2x )
 
-         dydt[self.o2c_idx] -= Jcxo2m
+         dydt[self.o2c_idx] -= Jcxo2m / self.rxy
          dydt[self.o2x_idx] += Jcxo2m
 
          return dydt
@@ -359,10 +392,10 @@ class CappilaryFlow(BaseRate):
     def update(self, y, dydt, t):
 
         varc = y[self.varc_idx]
-        Fin = get_Fin(t)
-        Jcap = Fin / self.Volcap * (self.vara - varc)
+        BF = get_blood_flow()
+        Jcap = 2 * BF / self.Volcap * (self.vara - varc)
 
-        dydt[self.varc_idx] -= Jcap
+        dydt[self.varc_idx] += Jcap
 
         return dydt
 ########################################################################################################################
@@ -385,9 +418,9 @@ class LeakCurrent(BaseRate):
 
          El = self.gKpas * self.EK / (self.gKpas + self.gNan) + self.gNan / (self.gKpas + self.gNan) * RTF * log(self.nae / nan)
 
-         Il = self.gl * (El - Vpl) / self.Cmpl
+         Il = self.gl * (El - Vpl)
 
-         dydt[self.Vpl_idx] += Il
+         dydt[self.Vpl_idx] += Il / self.Cmpl
 
          return dydt
 ########################################################################################################################
@@ -412,25 +445,23 @@ class SodiumCurrent(BaseRate):
         Ina = self.gmax * mNa**3 * hNa * (R * T / F * log(self.nae / nan) - Vpl)
 
         dydt[self.Vpl_idx] += Ina / self.Cmpl
-        dydt[self.hNa_idx] += self._get_dhdt(Vpl, hNa)
+        dydt[self.hNa_idx] = 4 * self._get_dhdt(Vpl, hNa)
 
         return dydt
 
     def _get_minf(self, V):
 
-        alpha_m = -0.1*(V + 33) / ( exp(-0.1*(V+33)) - 1 )
+        alpha_m = -0.1*(V + 33) / ( exp( -0.1 * (V + 33) ) - 1 )
         beta_m = 4 * exp( (V + 58) / -12  )
-
-        tau_m = 1 / (alpha_m + beta_m )
-        m_inf = alpha_m * tau_m
+        m_inf = alpha_m / (alpha_m + beta_m )
         return m_inf
 
     def _get_dhdt(self, V, h):
         alpha_h = 0.07 * exp(-0.1 * (V + 50))
-        beta_h = 1 / (exp(-0.1*(V + 20) + 1) )
+        beta_h = 1 / ( exp(-0.1*(V + 20) + 1) )
 
-        tau_h = 1 / (alpha_h + beta_h )
-        h_inf = alpha_h * tau_h
+        tau_h = 0.001 / (alpha_h + beta_h )
+        h_inf = alpha_h / (alpha_h + beta_h )
 
         dhdt = (h_inf - h) / tau_h
         return dhdt
@@ -450,38 +481,39 @@ class PotassiumCurrent(BaseRate):
         Vpl = y[self.Vpl_idx]
         nK = y[self.nK_idx]
 
-        IK = self.gmax * nK * (self.EK - Vpl)
+        IK = self.gmax * nK**4 * (self.EK - Vpl)
 
         dydt[self.Vpl_idx] += IK / self.Cmpl
-        dydt[self.nK_idx] += self._get_dndt(Vpl, nK)
+        dydt[self.nK_idx] = 4 * self._get_dndt(Vpl, nK)
 
         return dydt
 
     def _get_dndt(self, V, n):
-
         alpha_n = -0.01 * (V + 34) / ( exp(-0.1*(V + 34)) -1 )
-        beta_n = 0.125 * exp( -0.04*(V+44))
-
-        tau_n = 1 / (alpha_n + beta_n )
-        n_inf = alpha_n * tau_n
+        beta_n = 0.125 * exp(-0.04 * (V + 44) )
+        tau_n = 0.001 / (alpha_n + beta_n)
+        n_inf = alpha_n / (alpha_n + beta_n)
 
         dndt = (n_inf - n) / tau_n
         return dndt
 ########################################################################################################################
 class CalciumCurrent(BaseRate):
-    def __init__(self,  Vpl,  params):
+    def __init__(self,  Vpl,  ca, params):
         self.Vpl_idx = Vpl
-
+        self.ca_idx = ca
 
         self.gmax = params["gmax"]
         self.Cmpl = params["Cmpl"]
         self.ECa = params["ECa"]
+        self.SmVn = params["SmVn"]
 
     def update(self, y, dydt, t):
         Vpl = y[self.Vpl_idx]
+
         mCa = 1 / (1 + exp( (Vpl + 20) /-9))
         ICa = self.gmax * mCa**2 * (self.ECa - Vpl)
         dydt[self.Vpl_idx] += ICa / self.Cmpl
+        dydt[self.ca_idx] += ICa * self.SmVn / F
 
         return dydt
 
@@ -524,5 +556,91 @@ class CalciumDecay(BaseRate):
 
         return dydt
 
+########################################################################################################################
+
+class VenousVolume(BaseRate):
+
+    def __init__(self, Vv, params):
+        self.Vv_idx = Vv
+        self.F0 = params["F0"]
+        self.Vv0 = params["Vv0"]
+        self.alphav = params["alphav"]
+        self.tauv = params["tauv"]
+
+    def update(self, y, dydt, t):
+        Vv = y[self.Vv_idx]
+
+        BF = get_blood_flow()
+
+        dydt[self.Vv_idx] = (BF-self.F0*(Vv / self.Vv0)**(1/self.alphav)) / (1 + self.F0 * self.tauv/ self.Vv0*(Vv / self.Vv0)**(-1/2))
+
+        return dydt
+
+class DeoxyhemoglobinRate(BaseRate):
+    def __init__(self, dHb, o2c, Vv, params):
+        self.dHb_idx = dHb
+        self.o2c_idx = o2c
+        self.Vv_idx = Vv
+
+        self.F0 = params["F0"]
+        self.Vv0 = params["Vv0"]
+        self.alphav = params["alphav"]
+        self.tauv = params["tauv"]
+        self.o2a = params["o2a"]
+
+    def update(self, y, dydt, t):
+        dHb = y[self.dHb_idx]
+        o2c = y[self.o2c_idx]
+        Vv = y[self.Vv_idx]
+        dVvdt = dydt[self.Vv_idx]
+
+        BF = get_blood_flow()
+
+        Fout = self.F0 * ( (Vv / self.Vv0)**(1 / self.alphav) + dVvdt * self.tauv / self.Vv0 * (Vv / self.Vv0) ** (-1 / 2))
+        #Fout =      F0 * ( (Y(24) / Vv0) ^  (1 / alphav     ) + dY(24) *     tauv /      Vv0 * (Y(24) / Vv0) ^ (-1 / 2));
+
+        dydt[self.dHb_idx] = 2*BF*( self.o2a - o2c) - Fout * dHb / Vv
+
+        return dydt
 
 
+
+def get_model(short_names, agents, params, glob_params):
+    metabls = sym.symbols(short_names, real=True)  # , nonnegative=True
+    t = sym.symbols("t")
+
+    fsx_expr = [0 for _ in range(len(short_names))]
+
+    for en in agents:
+        fsx_expr = en.update(metabls, fsx_expr, t)
+
+    # fsx_expr[14] -= params["vATPases n"]["v"]
+    # fsx_expr[15] -= params["vATPases g"]["v"]
+    # fsx_expr[15] -= params["Jpump0"]["vPumpg0"]
+
+    fsx_expr[14] = fsx_expr[14] / (1 - get_damp_datp(metabls[14], glob_params["qAK"], glob_params["A"]))
+    fsx_expr[15] = fsx_expr[15] / (1 - get_damp_datp(metabls[15], glob_params["qAK"], glob_params["A"]))
+
+    fsx_expr[12] = fsx_expr[12] / (1 - glob_params["MVF"])
+    fsx_expr[13] = fsx_expr[13] / (1 - glob_params["MVF"])
+    fsx_expr[31] = fsx_expr[31] / glob_params["MVF"]
+    fsx_expr[32] = fsx_expr[32] / glob_params["MVF"]
+
+    # fsx_expr[27] += 5000
+
+    # print( fsx_expr[27] )
+
+    model = sym.lambdify([t, metabls], fsx_expr, "numpy")
+    jacobian_expr = sym.Matrix(fsx_expr).jacobian(metabls)
+    jacobian = sym.lambdify([t, metabls], jacobian_expr)
+
+    # def run_model(t, y):
+    #     y = np.asarray(y)
+    #     dydt = np.asarray(model(t, y))
+    #     return dydt
+    #
+    # def get_jacobian(t, y):
+    #     J = np.asarray(jacobian(t, y))
+    #     return J
+
+    return model, jacobian
