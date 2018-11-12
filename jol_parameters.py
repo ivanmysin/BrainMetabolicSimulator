@@ -48,7 +48,7 @@ glob_params = {
 ################################################################
 params = {
     "sodium leak n" : {
-        "gna_leak": 0.0155,
+        "gna_leak": 0.0136,
         "na_ext" : na_ext,
         "SmVx" : SmVn,
         "Vcpl_g" : None,
@@ -56,7 +56,7 @@ params = {
     },
 
     "sodium leak g": {
-        "gna_leak": 0.00623,
+        "gna_leak": 0.0061,
         "na_ext": na_ext,
         "Vcpl_g" : Vcpl_g,
         "SmVx" : SmVg,
@@ -64,14 +64,14 @@ params = {
     },
 
     "Na/K-ATPase n" : {
-        "kx"  : 2.49e-06,       # cm (mmol/L)-1 sec-1
+        "kx"  : 2.2000e-06,       # cm (mmol/L)-1 sec-1
         "Km"  : 0.5,            # mmol/L
         "SmVx" : SmVn,
         "Cmpl"  : Cmpl,
         "Na0": 7.9717,
     },
     "Na/K-ATPase g": {
-        "kx": 4.64e-07,  # cm (mmol/L)-1 sec-1
+        "kx": 4.5e-07,  # cm (mmol/L)-1 sec-1
         "Km": 0.5,  # mmol/L
         "SmVx": SmVg,
         "Cmpl": None,
@@ -98,14 +98,14 @@ params = {
     },
 
     "GLC_exchange cg": {
-        "Tmax": 0.00164,  # mmol/L sec-1
+        "Tmax": 0.0016,  # mmol/L sec-1
         "Km": 8,  # mmol/L
         "rxy" : rcg,
     },
 
     # Hexokinase-phosphofructokinase system
     "Hexokinase-phosphofructokinase n" : {
-        "kx" : 0.050435,       # sec-1
+        "kx" : 0.0504,       # sec-1
         "Ki_atp"   :  1,              # mmol/L
         "nH"      :   4,              #
         "Km"      :   0.05,           # mmol/L
@@ -148,25 +148,25 @@ params = {
 
     # Lactate exchange constants
     "Lactate exchange en" : {
-        "Tmax" : FourCIN*23.5, # mmol/L sec-1
+        "Tmax" : FourCIN*24.3, # mmol/L sec-1
         "Km" : 0.74,       # mmol/L
         "rxy" : ren,
     },
 
     "Lactate exchange eg": {
-        "Tmax": 107,  # mmol/L sec-1
+        "Tmax": 106.1,  # mmol/L sec-1
         "Km": 3.5,  # mmol/L
         "rxy": reg,
     },
 
     "Lactate exchange ce": {
-        "Tmax": 0.30,  # mmol/L sec-1
+        "Tmax": 0.25,  # mmol/L sec-1
         "Km": 1.0,  # mmol/L # and leegsma-vogt01.pdf
         "rxy": rce,
     },
 
     "Lactate exchange cg": {
-        "Tmax": 2.43e-03,  # mmol/L sec-1
+        "Tmax": 0.0026,  # mmol/L sec-1
         "Km": 1.0,  # mmol/L # see cremer79.pdf
         "rxy": rcg,
     },
@@ -187,15 +187,17 @@ params = {
 
     # NADH Shuttles
     "NADH Shuttles n" : {
-        "Tmax" : 9446,           # mmol/L/sec
-        "Km_cyt" : 4.653e-08,      # Total sum NAD+ and NADH
-        "Km_mit" : 3.666e+05,      #
+        "Tmax" : 10330,           # mmol/L/sec
+        "Km_cyt" : 4.9e-08,      # Total sum NAD+ and NADH
+        "Km_mit" : 393000,      #
+        "N": N,  # mmol/L
     },
 
     "NADH Shuttles g": {
-        "Tmax": 134.2,  # mmol/L/sec
-        "Km_cyt": 2.614e-04,  #
-        "Km_mit": 9.620e+03,  #
+        "Tmax": 150,  # mmol/L/sec
+        "Km_cyt": 22.5000e-04,  #
+        "Km_mit": 10600,  #
+        "N": N,  # mmol/L
     },
 
     # Constant ATP rates
@@ -209,49 +211,49 @@ params = {
 
     # Mitochondrial respiration
     "TCA n" : {
-        "kx": 0.147,  # mmol/L/sec
+        "kx": 0.1303,  # mmol/L/sec
         "N": N,  # mmol/L
         "Km_pyr" : 0.04,
         "Km_nad" : 0.409,
     },
 
     "TCA g": {
-        "kx": 5.31,  # mmol/L/sec
+        "kx": 5.7,  # mmol/L/sec
         "N": N,  # mmol/L
         "Km_nad" : 40.3,
         "Km_pyr" : 0.04,
     },
 
     "Mitochondrial respiration n" : {
-        "Km_nadh"  : 0.04,           # mmol/L
+        "Km_nadh"  : 0.0444,           # mmol/L
         "Km_o2" : 0.001,          # mmol/L
-        "Km_adp" : 3.328e-03,       # mmol/L
-        "kx" : 0.1610,    # mmol/L/sec
+        "Km_adp" : 0.0034,       # mmol/L
+        "kx" : 0.164,    # mmol/L/sec
         "qAK": qAK,
         "A": totalAdenine,  # mmol / L
     },
 
     "Mitochondrial respiration g": {
-        "Km_nadh": 0.04,  # mmol/L
+        "Km_nadh": 0.0269,  # mmol/L
         "Km_o2": 0.001,  # mmol/L
-        "Km_adp": 4.989e-04,  # mmol/L
-        "kx": 0.0627,  # mmol/L/sec
+        "Km_adp": 4.8300e-04,  # mmol/L
+        "kx": 0.064,  # mmol/L/sec
         "qAK": qAK,
         "A": totalAdenine,  # mmol / L
     },
 
     # Creatine kinase
     "Creatine kinase n" : {
-        "kxplus" : 8.85e-02,       # L/mmol/sec
-        "kxminus" : 0.00057,        # L/mmol/sec
+        "kxplus" : 0.0433,       # L/mmol/sec
+        "kxminus" : 2.8e-04,        # L/mmol/sec
         "Creatinefull"      : 10.0,               # mmol/L
         "qAK" : qAK,
         "A" : totalAdenine,  # mmol / L
     },
 
     "Creatine kinase g": {
-        "kxplus": 1.0e-03,  # L/mmol/sec
-        "kxminus": 0.000007,  # L/mmol/sec
+        "kxplus": 0.0014,  # L/mmol/sec
+        "kxminus": 0.00001,  # L/mmol/sec
         "Creatinefull": 10.0,  # mmol/L
         "qAK": qAK,
         "A": totalAdenine,  # mmol / L
@@ -263,16 +265,14 @@ params = {
         "Ko2" : 0.0361,      # mmol/L
         "HbOP" : 8.6,        # mmol/L
         "nh" : 1 / 2.73,       #
-        "Volx" : Vn,
         "rxy": rcn,
     },
 
     "Oxygen exchange g": {
-        "PScapVx": 0.8736,  # 0.94;       # sec-1
+        "PScapVx": 0.87,  # 0.94;       # sec-1
         "Ko2": 0.0361,  # mmol/L
         "HbOP": 8.6,  # mmol/L
-        "nh": 2.73,  #
-        "Volx" : Vg,
+        "nh": 1 / 2.73,  #
         "rxy": rcg,
     },
 
@@ -323,7 +323,7 @@ params = {
         "Cmpl" : Cmpl,          # mF/cm2
         "gmax" : 40,   # mS/cm2
         "nae"  : na_ext,
-
+        "SmVn": SmVn,
     },
 
     "potassium current" : {
@@ -356,7 +356,12 @@ params = {
     },
 
 
+    "stimulation" : {
+        "ge" : 360,
+        "tau" : 0.005,
+        "frequency" : 10,
 
+    }
 
 }
 

@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import jol_lib as lib
 from jol_parameters import params, vars, glob_params
 
-
 agents = []
 agents.append( lib.SodiumLeak(0, 27, params["sodium leak n"])  )
 agents.append( lib.SodiumLeak(1, 27, params["sodium leak g"])  )
@@ -31,40 +30,43 @@ agents.append( lib.TCA(8, 31, 14, params["TCA n"]) )
 agents.append( lib.TCA(9, 32, 15, params["TCA g"]) )
 agents.append( lib.ETC(18, 14, 31, params["Mitochondrial respiration n"]) )
 agents.append( lib.ETC(19, 15, 32, params["Mitochondrial respiration g"]) )
-
 agents.append( lib.NADHShuttle(12, 31, params["NADH Shuttles n"]) )
 agents.append( lib.NADHShuttle(13, 32, params["NADH Shuttles g"]) )
-
 agents.append( lib.CreatineKinase(16, 14, params["Creatine kinase n"]) )
 agents.append( lib.CreatineKinase(17, 15, params["Creatine kinase g"]) )
-
 agents.append( lib.OxygenExchange(20, 18, params["Oxygen exchange n"]) )
 agents.append( lib.OxygenExchange(20, 19, params["Oxygen exchange g"]) )
-
 agents.append( lib.CappilaryFlow(20, params["Blood flow oxygen"]) )
 agents.append( lib.CappilaryFlow(21, params["Blood flow glucose"]) )
 agents.append( lib.CappilaryFlow(22, params["Blood flow lactate"]) )
-
 agents.append( lib.LeakCurrent(27, 0, params["leak current"]) )
 agents.append( lib.SodiumCurrent(27, 28, 0, params["sodium current"]) )
 agents.append( lib.PotassiumCurrent(27, 29, params["potassium current"]) )
 agents.append( lib.CalciumCurrent(27, 30, params["calcium current"]) )
 agents.append( lib.AHPCurrent(27, 30, params["AHP current"]) )
 agents.append( lib.CalciumDecay(30, params["calcium decay"]) )
-
 agents.append( lib.VenousVolume(23, params["Venous flow"]) )
 agents.append( lib.DeoxyhemoglobinRate(24, 20, 23, params["Dexyhemoglobin rate"]) )
+agents.append( lib.Stimulation(27, 0, params["stimulation"]) )
 
 
 short_names = [met["short"] for met in vars ]
 run_model, jacobian = lib.get_model(short_names, agents, params, glob_params)
-y0 = np.asarray( [vars[idx]["rest"] for idx in range(len(vars))] )
+
+y0 = np.load("init_vars.npy") # np.asarray( [vars[idx]["rest"] for idx in range(len(vars))] )  #  # np.loadtxt("initstate.data", dtype=np.float64) #
+
+# for idx, y in enumerate(y0):
+#     print("Rest value of %s = %f" % (vars[idx]["full"], y)  )
+
 sol = solve_ivp(run_model, [0, 100], y0, method="LSODA", jac=jacobian, rtol=1e-3, atol=1e-6 ) #min_step=0.0001
+
+# y_last = sol.y[:, -1]
+# np.save("init_vars.npy", y_last)
 
 y = np.copy(sol.y)
 t = np.copy(sol.t)
 
-indxes = [18, 19, 10, 11, 31, 32]
+indxes = [27, 14, 15, 31, 32] # list( range(len(vars)) ) #
 long_names = [vars[idx]["full"] for idx in range(len(vars))]
 for idx in indxes:
     fig = plt.figure()
@@ -72,6 +74,8 @@ for idx in indxes:
     ax.plot(t, y[idx, :], linewidth=2, label=vars[idx]["full"])
     plt.legend()
 plt.show()
+
+
 
 
 # for en in agents:

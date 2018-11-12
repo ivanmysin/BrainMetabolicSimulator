@@ -1,5 +1,6 @@
 import numpy as np
 import sympy as sym
+from sympy.functions.special.delta_functions import Heaviside
 
 from scipy import constants as const
 from scipy.constants import physical_constants
@@ -8,7 +9,8 @@ from scipy.constants import physical_constants
 log = sym.functions.elementary.exponential.log
 exp = sym.functions.elementary.exponential.exp
 sqrt = sym.sqrt
-
+cos = sym.cos
+pi = sym.pi
 
 
 
@@ -277,11 +279,11 @@ class TCA(BaseRate):
         pyr = y[self.pyr_idx]
         nadh_mit = y[self.nadh_mit_idx]
 
-        Itca = self.kx * pyr / (pyr + self.Km_pyr) * (self.N - nadh_mit) / (self.N - nadh_mit + self.Km_nad)
+        Jtca = self.kx * pyr / (pyr + self.Km_pyr) * (self.N - nadh_mit) / (self.N - nadh_mit + self.Km_nad)
 
-        dydt[self.pyr_idx] -= Itca
-        dydt[self.nadh_mit_idx] += 3*Itca
-        dydt[self.atp_idx] += Itca
+        dydt[self.pyr_idx] -= Jtca
+        dydt[self.nadh_mit_idx] += 3*Jtca
+        dydt[self.atp_idx] += Jtca
 
         return dydt
 ########################################################################################################################
@@ -305,6 +307,7 @@ class ETC(BaseRate):
         nadh = y[self.nadh_idx]
         adp = get_adp(atp, self.qAK, self.A)
         Jetc = self.kx * o2 / (o2 + self.Km_o2) * adp / (adp + self.Km_adp) * nadh / (nadh + self.Km_nadh)
+
         dydt[self.o2_idx] -= 0.6 * Jetc
         dydt[self.nadh_idx] -= Jetc
         dydt[self.atp_idx] += 3.6 * Jetc
@@ -314,22 +317,26 @@ class ETC(BaseRate):
 ########################################################################################################################
 
 class NADHShuttle(BaseRate):
-    def __init__(self, Rx, Ry, params):
-        self.Rx_idx = Rx
-        self.Ry_idx = Ry
+    def __init__(self, Rcyt, Rmit, params):
+        self.Rcyt_idx = Rcyt
+        self.Rmit_idx = Rmit
 
         self.Tmax = params["Tmax"]
         self.Km_cyt = params["Km_cyt"]
         self.Km_mit = params["Km_mit"]
+        self.N = params["N"]
 
     def update(self, y, dydt, t):
-        Rx = y[self.Rx_idx]
-        Ry = y[self.Ry_idx]
+        Rcyt = y[self.Rcyt_idx]
+        Rmit = y[self.Rmit_idx]
 
-        Jshuttle = self.Tmax * Rx / (Rx + self.Km_cyt) *  Ry / (Ry + self.Km_mit)
+        Rx_minus = Rcyt / (self.N - Rcyt)
+        Rx_plus = (self.N - Rmit) / Rmit
 
-        dydt[self.Rx_idx] -= Jshuttle # !!!!
-        dydt[self.Ry_idx] += Jshuttle # !!!!
+        Jshuttle = self.Tmax * Rx_minus / (Rx_minus + self.Km_cyt) *  Rx_plus / (Rx_plus + self.Km_mit)
+
+        dydt[self.Rcyt_idx] -= Jshuttle
+        dydt[self.Rmit_idx] += Jshuttle
 
         return dydt
 ########################################################################################################################
@@ -349,8 +356,7 @@ class CreatineKinase(BaseRate):
         atp = y[self.atp_idx]
         adp = get_adp(atp, self.qAK, self.A)
 
-        # print(self.kxplus, adp, pcr)
-        Jck = self.kxplus * adp * pcr  - self.kxminus * atp * (self.Creatinefull - pcr) #
+        Jck = self.kxplus * adp * pcr  - self.kxminus * atp * (self.Creatinefull - pcr)
 
         dydt[self.pcr_idx] -= Jck
         dydt[self.atp_idx] += Jck
@@ -434,6 +440,7 @@ class SodiumCurrent(BaseRate):
         self.gmax = params["gmax"]
         self.Cmpl = params["Cmpl"]
         self.nae = params["nae"]
+        self.SmVn = params["SmVn"]
 
     def update(self, y, dydt, t):
 
@@ -446,6 +453,8 @@ class SodiumCurrent(BaseRate):
 
         dydt[self.Vpl_idx] += Ina / self.Cmpl
         dydt[self.hNa_idx] = 4 * self._get_dhdt(Vpl, hNa)
+
+        dydt[self.nan_idx] += Ina * self.SmVn / F
 
         return dydt
 
@@ -603,6 +612,33 @@ class DeoxyhemoglobinRate(BaseRate):
 
         return dydt
 
+class Stimulation(BaseRate):
+    def __init__(self, Vpl, nan, params):
+        self.Vpl_idx = Vpl
+        self.na_idx = nan
+
+        self.ge = params["ge"]
+        self.tau = params["tau"]
+        self.frequency = params["frequency"]
+
+    def update(self, y, dydt, t):
+
+
+        tstim1 = -1.0 * ( t - 40 )
+        hav1 = Heaviside( tstim1 )
+
+        tstim2 = t - 20
+        hav2 = Heaviside( tstim2 )
+
+        Istim = hav1 * hav2 * self.ge # * exp( -t / self.tau )  # * ( cos(2 * pi * t * self.frequency) + 1 )
+
+        dydt[self.Vpl_idx] += Istim
+        # dydt[self.na_idx]  += 0
+
+        return dydt
+
+
+
 
 
 def get_model(short_names, agents, params, glob_params):
@@ -614,9 +650,9 @@ def get_model(short_names, agents, params, glob_params):
     for en in agents:
         fsx_expr = en.update(metabls, fsx_expr, t)
 
-    # fsx_expr[14] -= params["vATPases n"]["v"]
-    # fsx_expr[15] -= params["vATPases g"]["v"]
-    # fsx_expr[15] -= params["Jpump0"]["vPumpg0"]
+    fsx_expr[14] -= params["vATPases n"]["v"]
+    fsx_expr[15] -= params["vATPases g"]["v"]
+    fsx_expr[15] -= params["Jpump0"]["vPumpg0"]
 
     fsx_expr[14] = fsx_expr[14] / (1 - get_damp_datp(metabls[14], glob_params["qAK"], glob_params["A"]))
     fsx_expr[15] = fsx_expr[15] / (1 - get_damp_datp(metabls[15], glob_params["qAK"], glob_params["A"]))
@@ -626,11 +662,9 @@ def get_model(short_names, agents, params, glob_params):
     fsx_expr[31] = fsx_expr[31] / glob_params["MVF"]
     fsx_expr[32] = fsx_expr[32] / glob_params["MVF"]
 
-    # fsx_expr[27] += 5000
+    # fsx_expr[27] += 3600
 
-    # print( fsx_expr[27] )
-
-    model = sym.lambdify([t, metabls], fsx_expr, "numpy")
+    model = sym.lambdify([t, metabls], fsx_expr, modules=['numpy', 'sympy'])
     jacobian_expr = sym.Matrix(fsx_expr).jacobian(metabls)
     jacobian = sym.lambdify([t, metabls], jacobian_expr)
 
