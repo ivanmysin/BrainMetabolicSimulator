@@ -5,6 +5,10 @@ import matplotlib.pyplot as plt
 import jol_lib as lib
 from jol_parameters import params, vars, glob_params
 
+RTF = lib.RTF
+# params["Hexokinase-phosphofructokinase n"]["kx"] *= 0.5
+# params["Hexokinase-phosphofructokinase g"]["kx"] *= 0.5
+
 agents = []
 agents.append( lib.SodiumLeak(0, 27, params["sodium leak n"])  )
 agents.append( lib.SodiumLeak(1, 27, params["sodium leak g"])  )
@@ -47,34 +51,53 @@ agents.append( lib.AHPCurrent(27, 30, params["AHP current"]) )
 agents.append( lib.CalciumDecay(30, params["calcium decay"]) )
 agents.append( lib.VenousVolume(23, params["Venous flow"]) )
 agents.append( lib.DeoxyhemoglobinRate(24, 20, 23, params["Dexyhemoglobin rate"]) )
-agents.append( lib.Stimulation(27, 0, params["stimulation"]) )
+agents.append( lib.Stimulation(27, 0, 1, params["stimulation"]) )
 
+y0 =np.load("init_vars.npy")  # np.loadtxt("initstate.data", dtype=np.float64)  #  np.asarray( [vars[idx]["rest"] for idx in range(len(vars))] )  #
+
+
+# for ag in agents:
+#     ag.update(y0, np.zeros_like(y0), 0)
 
 short_names = [met["short"] for met in vars ]
 run_model, jacobian = lib.get_model(short_names, agents, params, glob_params)
 
-y0 = np.load("init_vars.npy") # np.asarray( [vars[idx]["rest"] for idx in range(len(vars))] )  #  # np.loadtxt("initstate.data", dtype=np.float64) #
+# dydt = run_model(0, y0)
+#
+# for idx, y in enumerate(dydt):
+#     print("Rate value of %s = %f" % (vars[idx]["full"], y)  )
 
+
+# np.load("init_vars.npy") #
 # for idx, y in enumerate(y0):
 #     print("Rest value of %s = %f" % (vars[idx]["full"], y)  )
 
-sol = solve_ivp(run_model, [0, 100], y0, method="LSODA", jac=jacobian, rtol=1e-3, atol=1e-6 ) #min_step=0.0001
+y = np.empty( (33, 0), dtype=float)
+t = np.array([], dtype=float)
 
-# y_last = sol.y[:, -1]
-# np.save("init_vars.npy", y_last)
+for i in range(1):
+    sol = solve_ivp(run_model, [0, 110], y0, method="LSODA", jac=jacobian, rtol=1e-3, atol=1e-6)  # min_step=0.0001
+    y0 = sol.y[:, -1]
 
-y = np.copy(sol.y)
-t = np.copy(sol.t)
+    # print(sol.y.shape)
 
-indxes = [27, 14, 15, 31, 32] # list( range(len(vars)) ) #
+    y = np.append(y, sol.y, axis=1)
+    t = np.append(t, sol.t + 110 * i)
+
+
+# np.save("init_vars.npy", y[:, -1])
+
+
+
+indxes = [0, 1, 26, 27, 31, 32, 12, 13] # list( range(len(vars)) ) #
 long_names = [vars[idx]["full"] for idx in range(len(vars))]
 for idx in indxes:
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
     ax.plot(t, y[idx, :], linewidth=2, label=vars[idx]["full"])
     plt.legend()
-plt.show()
 
+plt.show()
 
 
 

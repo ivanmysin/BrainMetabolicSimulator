@@ -34,7 +34,7 @@ def get_adp(atp, qAK, A):
 
 def get_damp_datp(atp, qAK, A):
     sqrt_ux = sqrt( qAK**2 + 4*qAK * (A / atp - 1) )
-    damp_datp = -1.0 + 0.5*qAK - 0.5*sqrt_ux + qAK/(atp * sqrt_ux)
+    damp_datp = -1.0 + 0.5*qAK - 0.5*sqrt_ux + qAK * A/(atp * sqrt_ux)
     return damp_datp
     
 def get_blood_flow():
@@ -114,11 +114,13 @@ class NaKATPase(BaseRate):
         Jpump = self.SmVx * self.kx * atp * nax / (1 + atp / self.Km)
 
         dydt[self.nax_idx] -= 3*Jpump
-        dydt[self.atp_idx] -= Jpump
 
         if not (self.Cmpl is None):
+            dydt[self.atp_idx] -= Jpump
             dIPump = F * self.kx * atp * (nax - self.Na0) / (1 + atp / self.Km)
             dydt[self.Vpl_idx] -= dIPump / self.Cmpl
+        else:
+            dydt[self.atp_idx] -= 7/4 * Jpump
 
         return dydt
 ########################################################################################################################
@@ -282,8 +284,8 @@ class TCA(BaseRate):
         Jtca = self.kx * pyr / (pyr + self.Km_pyr) * (self.N - nadh_mit) / (self.N - nadh_mit + self.Km_nad)
 
         dydt[self.pyr_idx] -= Jtca
-        dydt[self.nadh_mit_idx] += 3*Jtca
-        dydt[self.atp_idx] += Jtca
+        dydt[self.nadh_mit_idx] += 4 * Jtca
+        # dydt[self.atp_idx] += Jtca
 
         return dydt
 ########################################################################################################################
@@ -449,11 +451,10 @@ class SodiumCurrent(BaseRate):
         nan = y[self.nan_idx]
 
         mNa = self._get_minf(Vpl)
-        Ina = self.gmax * mNa**3 * hNa * (R * T / F * log(self.nae / nan) - Vpl)
+        Ina = self.gmax * mNa**3 * hNa * (RTF * log(self.nae / nan) - Vpl)
 
         dydt[self.Vpl_idx] += Ina / self.Cmpl
         dydt[self.hNa_idx] = 4 * self._get_dhdt(Vpl, hNa)
-
         dydt[self.nan_idx] += Ina * self.SmVn / F
 
         return dydt
@@ -467,7 +468,7 @@ class SodiumCurrent(BaseRate):
 
     def _get_dhdt(self, V, h):
         alpha_h = 0.07 * exp(-0.1 * (V + 50))
-        beta_h = 1 / ( exp(-0.1*(V + 20) + 1) )
+        beta_h = 1 / ( exp(-0.1*(V + 20)) + 1)
 
         tau_h = 0.001 / (alpha_h + beta_h )
         h_inf = alpha_h / (alpha_h + beta_h )
@@ -521,6 +522,7 @@ class CalciumCurrent(BaseRate):
 
         mCa = 1 / (1 + exp( (Vpl + 20) /-9))
         ICa = self.gmax * mCa**2 * (self.ECa - Vpl)
+
         dydt[self.Vpl_idx] += ICa / self.Cmpl
         dydt[self.ca_idx] += ICa * self.SmVn / F
 
@@ -613,27 +615,44 @@ class DeoxyhemoglobinRate(BaseRate):
         return dydt
 
 class Stimulation(BaseRate):
-    def __init__(self, Vpl, nan, params):
+    def __init__(self, Vpl, nan, nag, params):
         self.Vpl_idx = Vpl
-        self.na_idx = nan
+        self.nan_idx = nan
+        self.nag_idx = nag
 
         self.ge = params["ge"]
         self.tau = params["tau"]
         self.frequency = params["frequency"]
+        self.Cmpl = params["Cmpl"]
+        self.Eext = params["Eext"]
+        self.SmVn = params["SmVn"]
+        self.SmVg = params["SmVg"]
+        self.glia_na = params["glia_na"]
+        self.gmax_na = params["gmax_na"]
 
     def update(self, y, dydt, t):
+        Vpl = y[self.Vpl_idx]
 
+        # s = cos(2 * pi * t * self.frequency)
+        #
+        # piece_wise_conditions = tuple([(0, s < 0.9), (t, s >= 0.9)])
+        #
+        # tstim = sym.Piecewise(*piece_wise_conditions)
+        # g = self.ge * exp(-tstim / self.tau)
+        # dVdt = g * (self.Eext - Vpl) / self.Cmpl
 
-        tstim1 = -1.0 * ( t - 40 )
-        hav1 = Heaviside( tstim1 )
+        tstim = t - 10
+        g = self.ge * exp( -tstim / self.tau )
+        Isyne =  g * (self.Eext - Vpl)
+        dVdtstim = -Isyne / self.Cmpl
 
-        tstim2 = t - 20
-        hav2 = Heaviside( tstim2 )
+        dVdt = sym.Piecewise( (0, t < 10), (dVdtstim, t >= 10), (0, t > 30) )
+        dNandt =  sym.Piecewise( (0, t < 10), (self.SmVn / F * 2/3 * Isyne, t >= 10), (0, t > 30) )
+        dNagdt =  sym.Piecewise( (0, t < 10), (self.SmVg / F * 2/3 * self.glia_na * g, t >= 10), (0, t > 30) )
 
-        Istim = hav1 * hav2 * self.ge # * exp( -t / self.tau )  # * ( cos(2 * pi * t * self.frequency) + 1 )
-
-        dydt[self.Vpl_idx] += Istim
-        # dydt[self.na_idx]  += 0
+        dydt[self.Vpl_idx] -= dVdt
+        dydt[self.nan_idx] += dNandt
+        dydt[self.nag_idx] += dNagdt
 
         return dydt
 
@@ -652,7 +671,7 @@ def get_model(short_names, agents, params, glob_params):
 
     fsx_expr[14] -= params["vATPases n"]["v"]
     fsx_expr[15] -= params["vATPases g"]["v"]
-    fsx_expr[15] -= params["Jpump0"]["vPumpg0"]
+    fsx_expr[15] += params["Jpump0"]["vPumpg0"] # !!!! +
 
     fsx_expr[14] = fsx_expr[14] / (1 - get_damp_datp(metabls[14], glob_params["qAK"], glob_params["A"]))
     fsx_expr[15] = fsx_expr[15] / (1 - get_damp_datp(metabls[15], glob_params["qAK"], glob_params["A"]))

@@ -288,7 +288,7 @@ params = {
 
     },
     "Blood flow lactate": {
-        "vara": 0.498,  # LACa mmol/L
+        "vara": 0.506,  # LACa mmol/L
         "Volcap" : Volcap,
     },
 
@@ -352,16 +352,22 @@ params = {
     },
 
     "Jpump0" : {
-        "vPumpg0" : 0.57 * 0.0687,
+        "vPumpg0" : 0.75 * 0.0687,
     },
 
 
     "stimulation" : {
-        "ge" : 360,
-        "tau" : 0.005,
-        "frequency" : 10,
+        "ge" : 0.0599,
+        "tau" : 2.5,
+        "frequency" : 10.0,
+        "Cmpl" : Cmpl,          # mF/cm2
+        "Eext" : 0.0,
+        "SmVn" : SmVn,
+        "SmVg" : SmVg,
+        "glia_na" : 50.0,
 
-    }
+        "gmax_na" : 40,
+    },
 
 }
 
