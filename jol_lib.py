@@ -18,9 +18,9 @@ pi = sym.pi
 # F = physical_constants["Faraday constant"][0]
 # R = const.R
 
-R       =   8.314510       # J mol-1 K-1
-F       =   9.64853e04     # C mol-1
-T = 310  # 37 grad Celcium
+R   = 8.314510       # J mol-1 K-1
+F   = 9.64853e04     # C mol-1
+T   = 310  # 37 grad Celcium
 RTF = 26.7300
 
 
@@ -29,12 +29,31 @@ def get_Fin(t):
     return 1.0
 
 def get_adp(atp, qAK, A):
+
+    # thr = 0.00001
+    # atp_new = atp # sym.Piecewise((thr, atp < thr), (atp, atp >= thr))
+    # if type(atp) is np.ndarray:
+    #     sqrt = np.sqrt
+    #     # adp = 0.5 * atp * ( -qAK + sqrt(qAK * qAK + 4 * qAK * (A / atp - 1)) )
+    # else:
+    #     sqrt = sym.sqrt
     adp = 0.5 * atp * ( -qAK + sqrt(qAK * qAK + 4 * qAK * (A / atp - 1)) )
+
     return adp
 
 def get_damp_datp(atp, qAK, A):
+
+    # if type(atp) is np.ndarray:
+    #     sqrt = np.sqrt
+    # else:
+    #     sqrt = sym.sqrt
+
+    # thr = 0.00001
+    #atp_new = atp # sym.Piecewise((thr, atp < thr), (atp, atp >= thr))
+
     sqrt_ux = sqrt( qAK**2 + 4*qAK * (A / atp - 1) )
     damp_datp = -1.0 + 0.5*qAK - 0.5*sqrt_ux + qAK * A/(atp * sqrt_ux)
+
     return damp_datp
     
 def get_blood_flow():
@@ -90,30 +109,75 @@ class SodiumLeak(BaseRate):
         else:
             Vpl = self.Vcpl_g
 
-        Jl = self.SmVx / F * self.gna_leak * ( RTF * log(self.na_ext / na) - Vpl)
+        Ena = RTF * log(self.na_ext / na)
+        Ina = self.gna_leak * (Ena  - Vpl)
+        Jl = self.SmVx / F * Ina
         dydt[self.na_idx] += Jl
+
+        if self.Vcpl_g is None:
+            dydt[self.Vpl_idx] += Ina / self.Cmpl
 
         return dydt
 
+
+class PotassiumLeak(BaseRate):
+
+    def __init__(self, kext, Vpl, params):
+        self.kext_idx = kext
+        self.Vpl_idx = Vpl
+        self.SmVx = params["SmVx"]
+        self.gk_leak = params["gk_leak"]
+        self.Cmpl = params["Cmpl"]
+        self.Kcyt = params["Kcyt"]
+        self.Vcpl_g = params["Vcpl_g"]
+        self.rex = params["rex"]
+
+
+    def update(self, y, dydt, t):
+
+        kext = y[self.kext_idx]
+
+        if self.Vcpl_g is None:
+            Vpl = y[self.Vpl_idx]
+        else:
+            Vpl = self.Vcpl_g
+
+        EK = RTF * log(kext / self.Kcyt)
+        IK = self.gk_leak * (Vpl - EK)
+        Jl = self.SmVx / F * IK
+        dydt[self.kext_idx] += Jl / self.rex
+
+        if self.Vcpl_g is None:
+            dydt[self.Vpl_idx] -= IK / self.Cmpl
+
+        return dydt
+
+
 ########################################################################################################################
 class NaKATPase(BaseRate):
-    def __init__(self, nax, Vpl, atp, params):
+    def __init__(self, nax, Vpl, atp, kext, params):
         self.nax_idx = nax
         self.Vpl_idx = Vpl
         self.atp_idx = atp
+        self.kext_idx = kext
+
         self.kx = params["kx"]
         self.SmVx = params["SmVx"]
         self.Cmpl = params["Cmpl"]
         self.Km = params["Km"]
         self.Na0 = params["Na0"]
+        self.rex = params["rex"]
 
     def update(self, y, dydt, t):
         nax = y[self.nax_idx]
         atp = y[self.atp_idx]
+        kext = y[self.kext_idx]
 
-        Jpump = self.SmVx * self.kx * atp * nax / (1 + atp / self.Km)
+        Jpump = self.SmVx * self.kx * atp * nax / (1 + atp / self.Km) * kext
 
-        dydt[self.nax_idx] -= 3*Jpump
+        dydt[self.nax_idx] -= 3 * Jpump
+
+        dydt[self.kext_idx] -= 2 * Jpump / self.rex
 
         if not (self.Cmpl is None):
             dydt[self.atp_idx] -= Jpump
@@ -121,6 +185,49 @@ class NaKATPase(BaseRate):
             dydt[self.Vpl_idx] -= dIPump / self.Cmpl
         else:
             dydt[self.atp_idx] -= 7/4 * Jpump
+
+        return dydt
+
+########################################################################################################################
+class NaKATPase2(BaseRate):
+    def __init__(self, nax, Vpl, atp, kext, params):
+        self.nax_idx = nax
+        self.Vpl_idx = Vpl
+        self.atp_idx = atp
+        self.kext_idx = kext
+
+        self.kx = params["kx"]
+        self.SmVx = params["SmVx"]
+        self.Cmpl = params["Cmpl"]
+        self.KmNa = params["KmNa"]
+        self.KmK = params["KmK"]
+        self.KmATP = params["KmATP"]
+
+        self.rex = params["rex"]
+
+        #self.Na0 = params["Na0"]
+
+    def update(self, y, dydt, t):
+        nax = y[self.nax_idx]
+        atp = y[self.atp_idx]
+        kext = y[self.kext_idx]
+
+        atp = 1.5
+
+        Vatp = 1 / (1 + self.KmATP / atp)
+        Vna = (1 / (1 + self.KmNa / nax))**3
+        Vk = (1 / (1 + self.KmK/kext))**2
+        Jpump = self.SmVx * self.kx * Vk * Vna * Vatp
+
+        dydt[self.nax_idx] -= 3 * Jpump
+        dydt[self.kext_idx] -= 2 * Jpump / self.rex
+        dydt[self.atp_idx] -= Jpump
+
+        if not (self.Cmpl is None):
+            dIPump = F * Jpump / self.SmVx  # is Vext         # F * self.kx * atp * (nax - self.Na0) / (1 + atp / self.Km)
+            dydt[self.Vpl_idx] -= dIPump / self.Cmpl
+        # else:
+        #     dydt[self.atp_idx] -= 7 / 4 * Jpump
 
         return dydt
 ########################################################################################################################
@@ -162,6 +269,7 @@ class HexokinasePhosphofructoKinase(BaseRate):
 
         Jhkpfk = self.kx * atp * glcx / (glcx + self.Km) / ( 1 + (atp/self.Ki_atp)**self.nH )
 
+        # print(2 * Jhkpfk)
         dydt[self.glcx_idx] -= Jhkpfk
         dydt[self.atp_idx] -= 2 * Jhkpfk
         dydt[self.gap_idx] += 2 * Jhkpfk
@@ -190,7 +298,7 @@ class PhosphoglycerateKinase(BaseRate):
         adp = get_adp(atp, self.qAK, self.A)
 
         Jpgk = self.kx * gap * adp * (self.N - nadh_cyt) / nadh_cyt
-
+        # print(Jpgk)
         dydt[self.gap_idx] -= Jpgk
         dydt[self.nadh_cyt_idx] += Jpgk
         dydt[self.pep_idx] += Jpgk
@@ -308,6 +416,7 @@ class ETC(BaseRate):
         atp = y[self.atp_idx]
         nadh = y[self.nadh_idx]
         adp = get_adp(atp, self.qAK, self.A)
+
         Jetc = self.kx * o2 / (o2 + self.Km_o2) * adp / (adp + self.Km_adp) * nadh / (nadh + self.Km_nadh)
 
         dydt[self.o2_idx] -= 0.6 * Jetc
@@ -408,23 +517,29 @@ class CappilaryFlow(BaseRate):
         return dydt
 ########################################################################################################################
 class LeakCurrent(BaseRate):
-    def __init__(self, Vpl, nan, params):
+    def __init__(self, Vpl, nan, kext, params):
         self.Vpl_idx = Vpl
         self.nan_idx = nan
+        self.kext_idx = kext
 
         self.gl = params["gl"]
 
         self.Cmpl = params["Cmpl"]
         self.gKpas = params["gKpas"]
-        self.EK = params["EK"]
+        # self.EK = params["EK"]
         self.gNan = params["gNan"]
         self.nae = params["nae"]
+        self.Kcyt = params["Kcyt"]
 
     def update(self, y, dydt, t):
          Vpl = y[self.Vpl_idx]
          nan = y[self.nan_idx]
+         kext = y[self.kext_idx]
 
-         El = self.gKpas * self.EK / (self.gKpas + self.gNan) + self.gNan / (self.gKpas + self.gNan) * RTF * log(self.nae / nan)
+         EK = -80.0 # RTF * log(kext / self.Kcyt)
+         ENa =  RTF * log(self.nae / nan)
+
+         El = self.gKpas * EK / (self.gKpas + self.gNan) + self.gNan * ENa / (self.gKpas + self.gNan)
 
          Il = self.gl * (El - Vpl)
 
@@ -478,23 +593,30 @@ class SodiumCurrent(BaseRate):
 ########################################################################################################################
 
 class PotassiumCurrent(BaseRate):
-    def __init__(self, Vpl, nK, params):
+    def __init__(self, Vpl, nK, kext, params):
         self.Vpl_idx = Vpl
         self.nK_idx = nK
+        self.kext_idx = kext
 
         self.gmax = params["gmax"]
         self.Cmpl = params["Cmpl"]
-        self.EK = params["EK"]
+        self.Kcyt = params["Kcyt"]
+        self.SmVn = params["SmVn"]
+        self.ren = params["ren"]
 
     def update(self, y, dydt, t):
 
         Vpl = y[self.Vpl_idx]
         nK = y[self.nK_idx]
+        kext = y[self.kext_idx]
 
-        IK = self.gmax * nK**4 * (self.EK - Vpl)
+        EK = RTF * log(kext / self.Kcyt ) # -80.0
+
+        IK = self.gmax * nK**4 * (EK - Vpl)
 
         dydt[self.Vpl_idx] += IK / self.Cmpl
         dydt[self.nK_idx] = 4 * self._get_dndt(Vpl, nK)
+        dydt[self.kext_idx] -= IK * self.SmVn / F / self.ren
 
         return dydt
 
@@ -531,22 +653,30 @@ class CalciumCurrent(BaseRate):
 
 class AHPCurrent(BaseRate):
 
-    def __init__(self, Vpl, ca, params):
+    def __init__(self, Vpl, ca, kext, params):
         self.Vpl_idx = Vpl
         self.ca_idx = ca
+        self.kext_idx = kext
 
         self.gmax = params["gmax"]
-        self.EK = params["EK"]
+        self.Kcyt = params["Kcyt"]
         self.KD = params["KD"]
         self.Cmpl = params["Cmpl"]
+        self.SmVn = params["SmVn"]
+        self.ren = params["ren"]
 
     def update(self, y, dydt, t):
         Vpl = y[self.Vpl_idx]
         ca = y[self.ca_idx]
 
-        Iahp = self.gmax * ca / (ca + self.KD) * (self.EK - Vpl)
+        kext = y[self.kext_idx]
+
+        EK = RTF * log(kext / self.Kcyt ) #  -80.0 #
+
+        Iahp = self.gmax * ca / (ca + self.KD) * (EK - Vpl)
 
         dydt[self.Vpl_idx] += Iahp / self.Cmpl
+        dydt[self.kext_idx] -= Iahp * self.SmVn / F / self.ren
 
         return dydt
 ########################################################################################################################
@@ -609,8 +739,20 @@ class DeoxyhemoglobinRate(BaseRate):
 
         Fout = self.F0 * ( (Vv / self.Vv0)**(1 / self.alphav) + dVvdt * self.tauv / self.Vv0 * (Vv / self.Vv0) ** (-1 / 2))
         #Fout =      F0 * ( (Y(24) / Vv0) ^  (1 / alphav     ) + dY(24) *     tauv /      Vv0 * (Y(24) / Vv0) ^ (-1 / 2));
-
         dydt[self.dHb_idx] = 2*BF*( self.o2a - o2c) - Fout * dHb / Vv
+
+        return dydt
+
+class ATP_Consumption(BaseRate):
+    def __init__(self, atpx, params):
+        self.atp_idx = atpx
+        self.Vmax = params["Vmax"]
+        self.Km = params["Km"]
+
+    def update(self, y, dydt, t):
+        atpx = y[self.atp_idx]
+        Jatpc = self.Vmax * atpx / (atpx + self.Km)
+        dydt[self.atp_idx] -= Jatpc
 
         return dydt
 
@@ -641,16 +783,19 @@ class Stimulation(BaseRate):
         # g = self.ge * exp(-tstim / self.tau)
         # dVdt = g * (self.Eext - Vpl) / self.Cmpl
 
-        tstim = t - 10
+        tstart = 10
+        tend = 30
+
+        tstim = t - tstart
         g = self.ge * exp( -tstim / self.tau )
         Isyne =  g * (self.Eext - Vpl)
-        dVdtstim = -Isyne / self.Cmpl
+        dVdtstim = Isyne / self.Cmpl
 
-        dVdt = sym.Piecewise( (0, t < 10), (dVdtstim, t >= 10), (0, t > 30) )
-        dNandt =  sym.Piecewise( (0, t < 10), (self.SmVn / F * 2/3 * Isyne, t >= 10), (0, t > 30) )
-        dNagdt =  sym.Piecewise( (0, t < 10), (self.SmVg / F * 2/3 * self.glia_na * g, t >= 10), (0, t > 30) )
+        dVdt = sym.Piecewise( (0, t < tstart), (dVdtstim, (t >= tstart) & (t <= tend) ), (0, t > tend)  )
+        dNandt =  sym.Piecewise( (0, t < tstart), (self.SmVn / F * 2/3 * Isyne,  (t >= tstart) & (t <= 30)), (0, t > tend)  )
+        dNagdt =  sym.Piecewise( (0, t < tstart), (self.SmVg / F * 2/3 * self.glia_na * g, (t >= tstart) & (t <= tend)), (0, t > tend)  )
 
-        dydt[self.Vpl_idx] -= dVdt
+        dydt[self.Vpl_idx] += dVdt
         dydt[self.nan_idx] += dNandt
         dydt[self.nag_idx] += dNagdt
 
@@ -661,17 +806,26 @@ class Stimulation(BaseRate):
 
 
 def get_model(short_names, agents, params, glob_params):
-    metabls = sym.symbols(short_names, real=True)  # , nonnegative=True
+
+    metabls = sym.symbols(short_names, real=True) # , nonnegative=True
     t = sym.symbols("t")
 
-    fsx_expr = [0 for _ in range(len(short_names))]
+    # thr = 0.00001
+    # metabls[14] = sym.Piecewise((sym.Float(0), metabls[14] < thr), (metabls[14], metabls[14] >= thr))
+    # metabls[15] = sym.Piecewise((sym.Float(0), metabls[15] < thr), (metabls[15], metabls[15] >= thr))
+
+    fsx_expr = [0 for _ in range(len(metabls))]
 
     for en in agents:
         fsx_expr = en.update(metabls, fsx_expr, t)
 
-    fsx_expr[14] -= params["vATPases n"]["v"]
-    fsx_expr[15] -= params["vATPases g"]["v"]
-    fsx_expr[15] += params["Jpump0"]["vPumpg0"] # !!!! +
+    # fsx_expr[14] -= params["vATPases n"]["v"]
+    # fsx_expr[15] -= params["vATPases g"]["v"]
+    # fsx_expr[15] += params["Jpump0"]["vPumpg0"]
+
+
+    # fsx_expr[14] = sym.Piecewise((0.0, metabls[14] < 0.01), (dvatpn, metabls[14] >= 0.01) )
+    # fsx_expr[15] = sym.Piecewise((0.0, metabls[15] < 0.01), (dvatpg, metabls[15] >= 0.01) )
 
     fsx_expr[14] = fsx_expr[14] / (1 - get_damp_datp(metabls[14], glob_params["qAK"], glob_params["A"]))
     fsx_expr[15] = fsx_expr[15] / (1 - get_damp_datp(metabls[15], glob_params["qAK"], glob_params["A"]))
@@ -681,19 +835,45 @@ def get_model(short_names, agents, params, glob_params):
     fsx_expr[31] = fsx_expr[31] / glob_params["MVF"]
     fsx_expr[32] = fsx_expr[32] / glob_params["MVF"]
 
-    # fsx_expr[27] += 3600
 
     model = sym.lambdify([t, metabls], fsx_expr, modules=['numpy', 'sympy'])
     jacobian_expr = sym.Matrix(fsx_expr).jacobian(metabls)
     jacobian = sym.lambdify([t, metabls], jacobian_expr)
 
-    # def run_model(t, y):
-    #     y = np.asarray(y)
-    #     dydt = np.asarray(model(t, y))
-    #     return dydt
-    #
-    # def get_jacobian(t, y):
-    #     J = np.asarray(jacobian(t, y))
-    #     return J
+    simulator = Simulator(model, jacobian, short_names)
 
-    return model, jacobian
+    return simulator.run_model, simulator.jacobian
+
+
+class Simulator:
+    def __init__(self, model, jacobian, short_names):
+
+        self.model = model
+        self.jacobian = jacobian
+        self.short_names = short_names
+
+    def _remove_negative(self, y):
+        y = np.asarray(y)
+        y[ np.isnan(y) ] = 0
+        belowzero_idx = y < 0 # 1e-7
+        belowzero_idx[27] = False
+
+        # print("################")
+        # for i in np.arange(0, y.size, dtype=int)[belowzero_idx]:
+        #     print(self.short_names[i], " ", y[i])
+
+
+        y[belowzero_idx] = 1e-10
+        return y
+
+    def run_model(self, t, y):
+        y = self._remove_negative(y)
+        dydt = self.model(t, y)
+        dydt = np.asarray(dydt)
+        return dydt
+
+    def jacobian(self, t, y):
+        y = self._remove_negative(y)
+        jac = self.jacobian(t, y)
+        jac = np.asarray(jac)
+        return jac
